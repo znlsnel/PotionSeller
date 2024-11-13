@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
 	Animator _anim;
 
         JoystickController _joystick;
+	PlayerCombatController _combatCtrl;
 
 	InputAction _touch;
 	InputAction _touchMove;
@@ -18,6 +19,7 @@ public class PlayerController : MonoBehaviour
         {
 		_rigid = GetComponent<Rigidbody>();
 		_anim = GetComponent<Animator>();
+		_combatCtrl = GetComponent<PlayerCombatController>();
 		_touch = InputManager.instance.Touch;
 		_touchMove = InputManager.instance.TouchMove;
 		_joystick = UIHandler.instance._joystick;
@@ -31,6 +33,7 @@ public class PlayerController : MonoBehaviour
 	{                 
 		if (_touch.ReadValue<float>() != 0) 
                         OnMove();
+
 	}
 
 	void OnMove()
@@ -40,8 +43,11 @@ public class PlayerController : MonoBehaviour
 		Vector3 movePos = _rigid.position + new Vector3(dir.x, 0.0f, dir.y) * Time.fixedDeltaTime * _moveSpeed;
 
 		_rigid.MovePosition(movePos);
-		transform.LookAt(movePos); 
 		_joystick.UpdateJoystick(_touchStartPos, touchPos); 
+
+		
+		if (!_combatCtrl._isAttacking) 
+			transform.LookAt(movePos);
 	}
 
 	void StartTouch(InputAction.CallbackContext context)
