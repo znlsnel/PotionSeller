@@ -45,6 +45,7 @@ public class PlayerController : MonoBehaviour
 		_rigid.MovePosition(movePos);
 		_joystick.UpdateJoystick(_touchStartPos, touchPos); 
 
+		//_rigid.MoveRotation()
 		
 		if (!_combatCtrl._isAttacking) 
 			transform.LookAt(movePos);
@@ -60,5 +61,18 @@ public class PlayerController : MonoBehaviour
 	{
 		_anim.SetBool("moving", false);
 		_joystick.DisableJoystickUI();
+	}
+
+	public void LookAt(Vector3 target, float rotSpeed = 0.1f)
+	{
+		Quaternion targetRot = Quaternion.LookRotation((target - transform.position).normalized);
+
+		Quaternion rot = Quaternion.Lerp(
+			_rigid.rotation,
+			targetRot,
+			rotSpeed * Time.fixedDeltaTime
+		);
+
+		_rigid.MoveRotation(rot);
 	}
 }

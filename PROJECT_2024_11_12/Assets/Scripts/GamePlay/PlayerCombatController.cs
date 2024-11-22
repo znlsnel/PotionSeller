@@ -23,8 +23,9 @@ public class PlayerCombatController : MonoBehaviour
 
 	private void OnTriggerEnter(Collider other)
 	{
+		
 		MonsterController mc = other.GetComponent<MonsterController>();
-		if (mc != null )
+		if (mc != null)
 		{
 			_anim.SetLayerWeight(_upperBodyIdx, 1.0f);
 			_anim.SetBool("attacking", true);
@@ -38,7 +39,7 @@ public class PlayerCombatController : MonoBehaviour
 	private void OnTriggerExit(Collider other)
 	{
 		MonsterController mc = other.GetComponent<MonsterController>();
-		if (mc != null) 
+		if (mc != null ) 
 		{
 			_monsters.Remove(mc);
 			if (_monsters.Count == 0)
@@ -50,10 +51,11 @@ public class PlayerCombatController : MonoBehaviour
 		}
 	}
 
-	private void Update()
+	private void FixedUpdate()
 	{
-		if (_lookTarget != null)
+		if (_isAttacking) 
 			transform.LookAt(_lookTarget.transform); 
+		
 	}
 
 
