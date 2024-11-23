@@ -53,9 +53,13 @@ public class PlayerCombatController : MonoBehaviour
 
 	private void FixedUpdate()
 	{
-		if (_isAttacking) 
-			transform.LookAt(_lookTarget.transform); 
-		
+		if (_isAttacking)
+		{
+			if ((_lookTarget.transform.position - transform.position).magnitude > 0.1)
+				transform.LookAt(_lookTarget.transform);
+			 
+		}
+
 	}
 
 

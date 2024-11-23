@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
 
 public class MonsterController : MonoBehaviour
 {
@@ -15,6 +17,8 @@ public class MonsterController : MonoBehaviour
 
         GameObject _target;
 
+	UnityEvent _onRelase = new UnityEvent();
+
         private void Awake()
         {
                 _anim = GetComponent<Animator>();
@@ -26,6 +30,16 @@ public class MonsterController : MonoBehaviour
         {
 		if (_target != null)
 		        AttackMove();
+	}
+
+	public void InitMonster(Vector3 pos, Action relaseListener)
+	{
+		if (_onRelase != null) 
+			_onRelase.RemoveAllListeners();
+		_onRelase.AddListener(()=>relaseListener.Invoke()); 
+
+		gameObject.SetActive(true);
+		transform.position = pos;
 	}
 
         void AttackMove()
@@ -43,8 +57,6 @@ public class MonsterController : MonoBehaviour
 
 		if (!attack)
 			_agent.SetDestination(_target.transform.position);
-		   //     _rigid.MovePosition(transform.position + dir.normalized * Time.fixedDeltaTime * _monsterSpeed);
-
 	}
         
 	private void OnTriggerEnter(Collider other)
@@ -68,7 +80,5 @@ public class MonsterController : MonoBehaviour
 		_anim.SetBool("attack", false);
 		_anim.SetBool("move", false); 
 	}
-
-
-
+	
 }
