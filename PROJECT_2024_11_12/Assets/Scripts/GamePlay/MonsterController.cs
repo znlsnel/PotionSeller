@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
+using static UnityEditor.PlayerSettings;
 
-public class MonsterController : MonoBehaviour
+public class MonsterController : HealthEntity
 {
-
 	[SerializeField] float _attackRange = 1.0f;
 	[SerializeField] float _monsterSpeed = 1.0f;
-	 
+	  
 	Animator _anim;
         Rigidbody _rigid;
 	NavMeshAgent _agent;
@@ -19,8 +19,11 @@ public class MonsterController : MonoBehaviour
 
 	UnityEvent _onRelase = new UnityEvent();
 
-        private void Awake()
+
+
+        protected override void Awake()
         {
+		base.Awake();
                 _anim = GetComponent<Animator>();
 		_rigid = GetComponent<Rigidbody>();
 		_agent = GetComponent<NavMeshAgent>();
@@ -80,5 +83,12 @@ public class MonsterController : MonoBehaviour
 		_anim.SetBool("attack", false);
 		_anim.SetBool("move", false); 
 	}
-	
+
+	//public void UpdateRate()
+	//{
+	//	if (_hpBar == null)
+	//		return;
+
+	//	_hpBar.UpdateRate((float)_hp / _initHp);
+	//}
 }

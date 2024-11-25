@@ -1,29 +1,32 @@
+using System;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : HealthEntity
 {
+	PlayerCombatController _combatCtrl;
+        JoystickController _joystick;
         Rigidbody _rigid;
 	Animator _anim;
 
-        JoystickController _joystick;
-	PlayerCombatController _combatCtrl;
-
-	InputAction _touch;
 	InputAction _touchMove;
+	InputAction _touch;
 
-        [SerializeField] float _moveSpeed = 5.0f;
+	[SerializeField] float _moveSpeed = 5.0f;
+
         Vector2 _touchStartPos;
+
 
 	void Start()
         {
 		_rigid = GetComponent<Rigidbody>();
 		_anim = GetComponent<Animator>();
 		_combatCtrl = GetComponent<PlayerCombatController>();
+
 		_touch = InputManager.instance.Touch;
 		_touchMove = InputManager.instance.TouchMove;
 		_joystick = UIHandler.instance._joystick;
-
 
 		_touch.performed += StartTouch;
 		_touch.canceled += EndtTouch;
@@ -44,8 +47,6 @@ public class PlayerController : MonoBehaviour
 
 		_rigid.MovePosition(movePos);
 		_joystick.UpdateJoystick(_touchStartPos, touchPos); 
-
-		//_rigid.MoveRotation()
 		
 		if (!_combatCtrl._isAttacking) 
 			transform.LookAt(movePos);
@@ -75,4 +76,12 @@ public class PlayerController : MonoBehaviour
 
 		_rigid.MoveRotation(rot);
 	}
+
+	//public void UpdateRate()
+	//{
+	//	if (_hpBar == null)
+	//		return;
+	//	_hpBar.UpdateRate((float)_hp / _initHp);
+	//}
 }
+ 
