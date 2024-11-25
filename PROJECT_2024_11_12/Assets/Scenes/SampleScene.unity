@@ -854,6 +854,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 8855052669108507864}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &847088674
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 847088675}
+  m_Layer: 0
+  m_Name: PlayerGenPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &847088675
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 847088674}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 5.15, y: 0, z: -5.43}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &980653125
 GameObject:
   m_ObjectHideFlags: 0
@@ -2017,6 +2048,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 839163676}
     - target: {fileID: 1770102983809130451, guid: eff482cf896daf64f8d8b714024ce741, type: 3}
+      propertyPath: _genPos
+      value: 
+      objectReference: {fileID: 847088675}
+    - target: {fileID: 1770102983809130451, guid: eff482cf896daf64f8d8b714024ce741, type: 3}
       propertyPath: _hpBarPrefab
       value: 
       objectReference: {fileID: 4902472496073307143, guid: 480bfdbc71569004289df7a244961dc0, type: 3}
@@ -2095,3 +2130,4 @@ SceneRoots:
   - {fileID: 1052951979}
   - {fileID: 1987534813}
   - {fileID: 2047393948}
+  - {fileID: 847088675}

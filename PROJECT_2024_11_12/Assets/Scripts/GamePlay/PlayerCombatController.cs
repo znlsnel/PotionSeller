@@ -7,6 +7,7 @@ using UnityEngine;
 public class PlayerCombatController : MonoBehaviour
 {
 	HashSet<MonsterController> _monsters = new HashSet<MonsterController>();
+	PlayerController _playerCtrl;
 	Animator _anim;
 
 	int _upperBodyIdx = -1;
@@ -18,16 +19,27 @@ public class PlayerCombatController : MonoBehaviour
 	{
 		_anim = GetComponent<Animator>();
 		_upperBodyIdx = _anim.GetLayerIndex("Upper Body");
+		_playerCtrl = GetComponent<PlayerController>();
 		StartCoroutine(LookAtMonster());
 	}
 
+	public void SetActiveUpperBody(bool on)
+	{
+		if (on)
+			_anim.SetLayerWeight(_upperBodyIdx, 1.0f);
+		else
+			_anim.SetLayerWeight(_upperBodyIdx, 0.0f);
+
+	}
 	private void OnTriggerEnter(Collider other)
 	{
+		if (_playerCtrl.isDead)
+			return;
 		
 		MonsterController mc = other.GetComponent<MonsterController>();
 		if (mc != null)
 		{
-			_anim.SetLayerWeight(_upperBodyIdx, 1.0f);
+			SetActiveUpperBody(true);
 			_anim.SetBool("attacking", true);
 
 			_monsters.Add(mc);
@@ -52,7 +64,7 @@ public class PlayerCombatController : MonoBehaviour
 		_monsters.Remove(mc);
 		if (_monsters.Count == 0)
 		{
-			_anim.SetLayerWeight(_upperBodyIdx, 0.0f);
+			SetActiveUpperBody(false);
 			_anim.SetBool("attacking", false);
 			_lookTarget = null;
 		}
@@ -85,6 +97,9 @@ public class PlayerCombatController : MonoBehaviour
 			float dist = -1f;
 			foreach (MonsterController mc in _monsters)
 			{
+			//	if (mc == null)
+			///		continue; 
+
 				if (target == null)
 				{
 					target = mc;

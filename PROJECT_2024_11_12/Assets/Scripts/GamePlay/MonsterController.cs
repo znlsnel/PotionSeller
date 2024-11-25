@@ -40,6 +40,7 @@ public class MonsterController : HealthEntity
 
 		_onRelase.AddListener(()=>relaseListener.Invoke()); 
 
+		_anim.SetBool("die", false);
 		gameObject.SetActive(true);
 		transform.position = pos;
 	}
@@ -86,17 +87,30 @@ public class MonsterController : HealthEntity
 
 	public override void OnDead()
 	{
+		_agent.isStopped = true;
 		_target = null;
+
 		_onDead?.Invoke();
 		_onDead.RemoveAllListeners();
-		_onRelase?.Invoke();
+		_anim.SetBool("die", true);
 	}
 
-	//public void UpdateRate()
-	//{
-	//	if (_hpBar == null)
-	//		return;
+	public void AE_Attack()
+	{
+		if (_target == null)
+			return;
 
-	//	_hpBar.UpdateRate((float)_hp / _initHp);
-	//}
+		Vector3 dir = (_target.transform.position - transform.position);
+		float dist = dir.magnitude;
+
+		if (dist < _attackRange)
+		{
+			_target.GetComponent<HealthEntity>().OnDamage(gameObject, 1);
+		}
+	}
+
+	public void AE_Die()
+	{
+		_onRelase?.Invoke();
+	}
 }

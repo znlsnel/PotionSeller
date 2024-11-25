@@ -1,4 +1,5 @@
 using System;
+using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -13,10 +14,12 @@ public class PlayerController : HealthEntity
 	InputAction _touchMove;
 	InputAction _touch;
 
+	[SerializeField] Transform _genPos; 
 	[SerializeField] float _moveSpeed = 5.0f;
 
         Vector2 _touchStartPos;
-
+	 
+	public bool isDead { get{ return HP == 0; } }
 
 	void Start()
         {
@@ -34,7 +37,7 @@ public class PlayerController : HealthEntity
         
 	private void FixedUpdate()
 	{                 
-		if (_touch.ReadValue<float>() != 0) 
+		if (isDead == false &&  _touch.ReadValue<float>() != 0) 
                         OnMove();
 
 	}
@@ -77,16 +80,24 @@ public class PlayerController : HealthEntity
 		_rigid.MoveRotation(rot);
 	}
 
-	public override void OnDead()
+	void InitPlayer()
 	{
-		throw new NotImplementedException();
+		_anim.SetBool("die", false);
+		HP = _initHp;
+		transform.position = _genPos.position;
+	}
+	public override void OnDead()
+	{ 
+		_anim.SetBool("die", true);
+		_combatCtrl.SetActiveUpperBody(false);
+
+		Utils.instance.SetTimer(() => {
+			InitPlayer();
+			
+			
+
+		}, 2.0f); 
 	}
 
-	//public void UpdateRate()
-	//{
-	//	if (_hpBar == null)
-	//		return;
-	//	_hpBar.UpdateRate((float)_hp / _initHp);
-	//}
 }
  
