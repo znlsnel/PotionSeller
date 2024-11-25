@@ -608,7 +608,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _hpBarPrefab: {fileID: 4902472496073307143, guid: 480bfdbc71569004289df7a244961dc0, type: 3}
   _hpPos: {fileID: 3188094155950123576}
-  _initHp: 3
+  _initHp: 10
   _attackRange: 1
   _monsterSpeed: 1
 --- !u!135 &7655861651194965138

@@ -77,6 +77,11 @@ public class PlayerController : HealthEntity
 		_rigid.MoveRotation(rot);
 	}
 
+	public override void OnDead()
+	{
+		throw new NotImplementedException();
+	}
+
 	//public void UpdateRate()
 	//{
 	//	if (_hpBar == null)

@@ -12,10 +12,11 @@ public class HpBar : MonoBehaviour
 
 	Transform _hpUIRootPos;
 
-	void Start()
+	void Awake()
 	{
-		_slider = GetComponent<Slider>();
-	} 
+		_slider = GetComponentInChildren<Slider>();
+
+	}
 
 	public void InitHpBar(HealthEntity parent, Transform uipos)
 	{
@@ -25,8 +26,9 @@ public class HpBar : MonoBehaviour
 	}
 
 	public void UpdateRate()
-	{
+	{ 
 		_slider.value = _hpEntity.HpRate;
+		gameObject.SetActive(_slider.value > 0);
 	}
 	 
 	private void FixedUpdate()

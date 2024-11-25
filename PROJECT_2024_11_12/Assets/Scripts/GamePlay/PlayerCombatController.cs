@@ -31,6 +31,8 @@ public class PlayerCombatController : MonoBehaviour
 			_anim.SetBool("attacking", true);
 
 			_monsters.Add(mc);
+			mc._onDead.AddListener(()=>RemoveMonster(mc)); 
+
 			if (_monsters.Count == 1)
 				_lookTarget = other.gameObject;
 		}
@@ -41,13 +43,18 @@ public class PlayerCombatController : MonoBehaviour
 		MonsterController mc = other.GetComponent<MonsterController>();
 		if (mc != null ) 
 		{
-			_monsters.Remove(mc);
-			if (_monsters.Count == 0)
-			{
-				_anim.SetLayerWeight(_upperBodyIdx, 0.0f);
-				_anim.SetBool("attacking", false);
-				_lookTarget = null;
-			}
+			RemoveMonster(mc);
+		}
+	}
+
+	void RemoveMonster(MonsterController mc)
+	{
+		_monsters.Remove(mc);
+		if (_monsters.Count == 0)
+		{
+			_anim.SetLayerWeight(_upperBodyIdx, 0.0f);
+			_anim.SetBool("attacking", false);
+			_lookTarget = null;
 		}
 	}
 
@@ -62,6 +69,13 @@ public class PlayerCombatController : MonoBehaviour
 
 	}
 
+	public void AE_Attack()
+	{
+		foreach(MonsterController mc in _monsters)
+		{
+			mc.OnDamage(gameObject, 1);  
+		}
+	}
 
 	IEnumerator LookAtMonster()
 	{

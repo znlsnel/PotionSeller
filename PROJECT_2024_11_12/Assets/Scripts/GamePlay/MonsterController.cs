@@ -9,7 +9,6 @@ using static UnityEditor.PlayerSettings;
 public class MonsterController : HealthEntity
 {
 	[SerializeField] float _attackRange = 1.0f;
-	[SerializeField] float _monsterSpeed = 1.0f;
 	  
 	Animator _anim;
         Rigidbody _rigid;
@@ -18,9 +17,7 @@ public class MonsterController : HealthEntity
         GameObject _target;
 
 	UnityEvent _onRelase = new UnityEvent();
-
-
-
+	public UnityEvent _onDead = new UnityEvent();
         protected override void Awake()
         {
 		base.Awake();
@@ -37,8 +34,10 @@ public class MonsterController : HealthEntity
 
 	public void InitMonster(Vector3 pos, Action relaseListener)
 	{
+		HP = _initHp;
 		if (_onRelase != null) 
 			_onRelase.RemoveAllListeners();
+
 		_onRelase.AddListener(()=>relaseListener.Invoke()); 
 
 		gameObject.SetActive(true);
@@ -61,7 +60,8 @@ public class MonsterController : HealthEntity
 		if (!attack)
 			_agent.SetDestination(_target.transform.position);
 	}
-        
+
+
 	private void OnTriggerEnter(Collider other)
 	{
 		PlayerController pc = other.GetComponent<PlayerController>();
@@ -82,6 +82,14 @@ public class MonsterController : HealthEntity
 
 		_anim.SetBool("attack", false);
 		_anim.SetBool("move", false); 
+	}
+
+	public override void OnDead()
+	{
+		_target = null;
+		_onDead?.Invoke();
+		_onDead.RemoveAllListeners();
+		_onRelase?.Invoke();
 	}
 
 	//public void UpdateRate()
