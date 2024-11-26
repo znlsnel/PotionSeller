@@ -59,19 +59,21 @@ public class MonsterSpawner : MonoBehaviour
 
 	private void OnTriggerEnter(Collider other)
 	{
-		if (other.GetComponent<PlayerController>() != null)
+		PlayerCombatController pc = other.GetComponent<PlayerCombatController>();
+		if (pc != null)
 		{
-			Debug.Log("µé¾î¿È");
 			isPlayerIn = true;
+			pc.isInHuntZone = true;
 		}
 	}
 
 	private void OnTriggerExit(Collider other)
 	{
-		if (other.GetComponent<PlayerController>() != null)
+		PlayerCombatController pc = other.GetComponent<PlayerCombatController>();
+		if (pc != null)
 		{
-			Debug.Log("³ª°¨");
 			isPlayerIn = false;
+			pc.isInHuntZone = false; 
 		}
 	}
 }

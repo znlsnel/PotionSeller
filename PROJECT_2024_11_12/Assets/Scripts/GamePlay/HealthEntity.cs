@@ -40,4 +40,7 @@ public abstract class HealthEntity : MonoBehaviour
 	 
 	public abstract void OnDead();
 
+
+	public abstract void TargetEnter(GameObject go);
+	public abstract void TargetExit(GameObject go); 
 }

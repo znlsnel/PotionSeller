@@ -14,6 +14,7 @@ public class PlayerCombatController : MonoBehaviour
 
 	GameObject _lookTarget;
 	public bool _isAttacking { get { return _monsters.Count > 0; }}
+	public bool isInHuntZone = false;
 
 	private void Start()
 	{
@@ -21,6 +22,7 @@ public class PlayerCombatController : MonoBehaviour
 		_upperBodyIdx = _anim.GetLayerIndex("Upper Body");
 		_playerCtrl = GetComponent<PlayerController>();
 		StartCoroutine(LookAtMonster());
+		StartCoroutine(AttackCheck()); 
 	}
 
 	public void SetActiveUpperBody(bool on)
@@ -31,32 +33,28 @@ public class PlayerCombatController : MonoBehaviour
 			_anim.SetLayerWeight(_upperBodyIdx, 0.0f);
 
 	}
-	private void OnTriggerEnter(Collider other)
+
+	public void EnterMonster(GameObject monster)
 	{
-		if (_playerCtrl.isDead)
-			return;
-		
-		MonsterController mc = other.GetComponent<MonsterController>();
+		MonsterController mc = monster.GetComponent<MonsterController>();
 		if (mc != null)
 		{
-			SetActiveUpperBody(true);
-			_anim.SetBool("attacking", true);
 
 			_monsters.Add(mc);
-			mc._onDead.AddListener(()=>RemoveMonster(mc)); 
+			mc._onDead.AddListener(() => RemoveMonster(mc));
 
 			if (_monsters.Count == 1)
-				_lookTarget = other.gameObject;
+				_lookTarget = monster;
 		}
 	}
 
-	private void OnTriggerExit(Collider other)
+	public void ExitMonster(GameObject monster)
 	{
-		MonsterController mc = other.GetComponent<MonsterController>();
-		if (mc != null ) 
+		MonsterController mc = monster.GetComponent<MonsterController>();
+		if (mc != null)
 		{
 			RemoveMonster(mc);
-		}
+		} 
 	}
 
 	void RemoveMonster(MonsterController mc)
@@ -64,15 +62,13 @@ public class PlayerCombatController : MonoBehaviour
 		_monsters.Remove(mc);
 		if (_monsters.Count == 0)
 		{
-			SetActiveUpperBody(false);
-			_anim.SetBool("attacking", false);
 			_lookTarget = null;
 		}
 	}
 
 	private void FixedUpdate()
 	{
-		if (_isAttacking)
+		if (_isAttacking && _playerCtrl.isDead == false)
 		{
 			if ((_lookTarget.transform.position - transform.position).magnitude > 0.1)
 				transform.LookAt(_lookTarget.transform);
@@ -92,7 +88,7 @@ public class PlayerCombatController : MonoBehaviour
 	IEnumerator LookAtMonster()
 	{
 		while (true)
-		{
+		{ 
 			MonsterController target = null;
 			float dist = -1f;
 			foreach (MonsterController mc in _monsters)
@@ -122,5 +118,15 @@ public class PlayerCombatController : MonoBehaviour
 
 			yield return new WaitForSeconds(0.3f);
 		}
+	}
+
+	IEnumerator AttackCheck()
+	{
+		while (true)
+		{
+			SetActiveUpperBody(_monsters.Count > 0 && isInHuntZone && _playerCtrl.isDead == false);
+			_anim.SetBool("attacking", _monsters.Count > 0 && isInHuntZone);
+			yield return new WaitForSeconds(0.3f); 
+		} 
 	}
 }

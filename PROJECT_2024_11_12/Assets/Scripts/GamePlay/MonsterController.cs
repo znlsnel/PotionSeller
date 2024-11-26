@@ -29,8 +29,9 @@ public class MonsterController : HealthEntity
 
         void FixedUpdate()
         {
-		if (_target != null)
+		if (_ms.isPlayerIn &&  _target != null)
 		        AttackMove();
+		
 	}
 
 	public void InitMonster(MonsterSpawner ms, Vector3 pos, Action relaseListener)
@@ -63,7 +64,7 @@ public class MonsterController : HealthEntity
 		if (!attack)
 			_agent.SetDestination(_target.transform.position);
 
-		if (_target.GetComponent<PlayerController>().isDead)
+		if (_ms.isPlayerIn == false || _target.GetComponent<PlayerController>().isDead)
 		{
 			_target = null;
 			_anim.SetBool("move", false);
@@ -72,19 +73,18 @@ public class MonsterController : HealthEntity
 	}
 
 
-	private void OnTriggerEnter(Collider other)
+	public override void TargetEnter(GameObject go)
 	{
-		PlayerController pc = other.GetComponent<PlayerController>();
+		PlayerController pc = go.GetComponent<PlayerController>();
                 if (pc == null)
                         return;
 
-
-		_target = other.gameObject;
+		_target = go;
 	}
 
-        private void OnTriggerExit(Collider other)
-        {
-		PlayerController pc = other.GetComponent<PlayerController>();
+	public override void TargetExit(GameObject go)
+	{
+		PlayerController pc = go.GetComponent<PlayerController>();
 		if (pc == null) 
 			return;
 		_target = null;

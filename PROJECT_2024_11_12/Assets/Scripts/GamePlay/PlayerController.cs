@@ -99,5 +99,14 @@ public class PlayerController : HealthEntity
 		}, 2.0f); 
 	}
 
-}
+	public override void TargetEnter(GameObject go)
+	{
+		_combatCtrl.EnterMonster(go);
+	}
+
+	public override void TargetExit(GameObject go)
+	{
+		_combatCtrl.ExitMonster(go);
+	}
+} 
  
