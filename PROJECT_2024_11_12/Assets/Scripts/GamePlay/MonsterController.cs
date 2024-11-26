@@ -13,6 +13,7 @@ public class MonsterController : HealthEntity
 	Animator _anim;
         Rigidbody _rigid;
 	NavMeshAgent _agent;
+	MonsterSpawner _ms;
 
         GameObject _target;
 
@@ -32,8 +33,9 @@ public class MonsterController : HealthEntity
 		        AttackMove();
 	}
 
-	public void InitMonster(Vector3 pos, Action relaseListener)
+	public void InitMonster(MonsterSpawner ms, Vector3 pos, Action relaseListener)
 	{
+		_ms = ms;
 		HP = _initHp;
 		if (_onRelase != null) 
 			_onRelase.RemoveAllListeners();
@@ -60,6 +62,13 @@ public class MonsterController : HealthEntity
 
 		if (!attack)
 			_agent.SetDestination(_target.transform.position);
+
+		if (_target.GetComponent<PlayerController>().isDead)
+		{
+			_target = null;
+			_anim.SetBool("move", false);
+			_anim.SetBool("attack", false);
+		}
 	}
 
 

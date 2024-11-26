@@ -4,21 +4,20 @@ using UnityEngine;
 using UnityEngine.Pool;
 
 
-
- 
 public class MonsterSpawner : MonoBehaviour
 {
         [SerializeField] List<GameObject> _monsterPrefab;
         ObjectPool<GameObject> _pool;
 
-
 	[SerializeField] int _maxCount = 20;
+
+	public bool isPlayerIn = true;
 
 	private void Awake()
 	{
 		_pool = new ObjectPool<GameObject>(
 			createFunc: () => Instantiate<GameObject>(_monsterPrefab[Random.Range(0, _monsterPrefab.Count)]),
-			actionOnGet: (obj) => obj.GetComponent<MonsterController>().InitMonster(GetSpawnPos(), () => { _pool.Release(obj); }),
+			actionOnGet: (obj) => obj.GetComponent<MonsterController>().InitMonster(this, GetSpawnPos(), () => { _pool.Release(obj); }),
 			actionOnRelease: (obj) => { obj.SetActive(false); },
 			actionOnDestroy: (obj) => Destroy(obj), 
 			defaultCapacity: 2,
@@ -54,6 +53,25 @@ public class MonsterSpawner : MonoBehaviour
 					_pool.Get();
 			}
 			yield return new WaitForSeconds(2.0f);
+		}
+	}
+
+
+	private void OnTriggerEnter(Collider other)
+	{
+		if (other.GetComponent<PlayerController>() != null)
+		{
+			Debug.Log("µé¾î¿È");
+			isPlayerIn = true;
+		}
+	}
+
+	private void OnTriggerExit(Collider other)
+	{
+		if (other.GetComponent<PlayerController>() != null)
+		{
+			Debug.Log("³ª°¨");
+			isPlayerIn = false;
 		}
 	}
 }
