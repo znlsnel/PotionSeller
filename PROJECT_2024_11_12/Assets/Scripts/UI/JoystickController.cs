@@ -30,7 +30,8 @@ public class JoystickController : MonoBehaviour
 
 	public void EnableJoystickUI()
 	{
-		gameObject.SetActive(true);
+		Utils.instance.SetTimer(() => { gameObject.SetActive(true); }, 0.1f);
+		
 
 	}
 }

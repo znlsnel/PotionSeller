@@ -15,13 +15,15 @@ public class HpBar : MonoBehaviour
 	void Awake()
 	{
 		_slider = GetComponentInChildren<Slider>();
-
+		gameObject.SetActive(false);
 	}
 
 	public void InitHpBar(HealthEntity parent, Transform uipos)
 	{
 		_hpEntity = parent;
 		_hpUIRootPos = uipos;
+		MoveUI();
+		gameObject.SetActive(true);
 		parent._onChangedHp.AddListener(() => UpdateRate());
 	}
 
@@ -33,10 +35,15 @@ public class HpBar : MonoBehaviour
 	 
 	private void FixedUpdate()
 	{
+		MoveUI();
+	}
+	
+	void MoveUI()
+	{
 		if (_hpUIRootPos != null)
 		{
 			Vector2 pos = Camera.main.WorldToScreenPoint(_hpUIRootPos.position);
 			_rectTransform.localPosition = _rectTransform.parent.InverseTransformPoint(pos);
-		} 
-	} 
+		}
+	}
 } 
