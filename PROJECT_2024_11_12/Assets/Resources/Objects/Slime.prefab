@@ -677,8 +677,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _hpBarPrefab: {fileID: 4902472496073307143, guid: 480bfdbc71569004289df7a244961dc0, type: 3}
   _hpPos: {fileID: 3188094155950123576}
-  _initHp: 10
+  _initHp: 3
   _attackRange: 1
+  _dropItem: {fileID: 5366707112403216439, guid: 80477c503071ecb44b1ff39923c0f827, type: 3}
   _onDead:
     m_PersistentCalls:
       m_Calls: []

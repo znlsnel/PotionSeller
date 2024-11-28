@@ -26,11 +26,12 @@ public class MonsterSpawner : MonoBehaviour
 	}
 	 
 	Vector3 GetSpawnPos()
-	{
+	{ 
 		float xOffset = transform.localScale.x / 2;
 		float zOffset = transform.localScale.z / 2;
 		 
-		return new Vector3(Random.Range(-xOffset, xOffset), 0.0f, Random.Range(-zOffset, zOffset)) + transform.position;
+		Vector3 ret = new Vector3(Random.Range(-xOffset, xOffset), 0.0f, Random.Range(-zOffset, zOffset)) + transform.position;
+		return ret;
 	}
 
 	// Update is called once per frame

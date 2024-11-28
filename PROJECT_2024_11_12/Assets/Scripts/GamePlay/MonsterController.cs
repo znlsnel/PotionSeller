@@ -8,7 +8,9 @@ using UnityEngine.Events;
 
 public class MonsterController : HealthEntity
 {
+	[Space(10)]
 	[SerializeField] float _attackRange = 1.0f;
+	[SerializeField] GameObject _dropItem;
 	  
 	Animator _anim;
         Rigidbody _rigid;
@@ -120,6 +122,9 @@ public class MonsterController : HealthEntity
 
 	public void AE_Die()
 	{
+		GameObject go =Instantiate<GameObject>(_dropItem);
+		go.transform.position = transform.position;
+
 		_onRelase?.Invoke();
 	}
 }
