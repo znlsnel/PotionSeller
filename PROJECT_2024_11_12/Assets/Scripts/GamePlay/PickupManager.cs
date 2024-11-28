@@ -15,16 +15,17 @@ public class PickupManager : MonoBehaviour
 	[SerializeField] float _yOffset = 0;
 
 	[Space(10)]
-	Stack<GameObject> _heldItems = new Stack<GameObject>();
+	Stack<GameObject> _items = new Stack<GameObject>();
 
 	public int _maxCarrySize = 8;
-	public bool isReceivingItem = false;
+	bool isReceivingItem = false;
 
-	public int _carryCap { get { return _maxCarrySize - _heldItems.Count; } }
+	public int _carryCap { get { return _maxCarrySize - _items.Count; } }
+	public Stack<GameObject> GetItemStack() { return _items; }
 
 	public void InitPickupManager(Stack<GameObject> stack)
 	{
-		_heldItems = stack;
+		_items = stack;
 	}
 
 	public void PickUpItem(GameObject go)
@@ -40,12 +41,12 @@ public class PickupManager : MonoBehaviour
 		go.transform.rotation = _handPos.rotation;
 		Vector3 pos = Vector3.zero;
 
-		Renderer renderer = _heldItems.Count == 0 ? null : _heldItems.Peek().GetComponent<Renderer>();
+		Renderer renderer = _items.Count == 0 ? null : _items.Peek().GetComponent<Renderer>();
 		if (renderer != null)
 		{
-			int yIdx = _heldItems.Count / (_maxCarrySizeX * _maxCarrySizeZ);
-			int zIdx = _heldItems.Count % (_maxCarrySizeX * _maxCarrySizeZ) / _maxCarrySizeX;
-			int xIdx = _heldItems.Count % (_maxCarrySizeX * _maxCarrySizeZ) % _maxCarrySizeX;
+			int yIdx = _items.Count / (_maxCarrySizeX * _maxCarrySizeZ);
+			int zIdx = _items.Count % (_maxCarrySizeX * _maxCarrySizeZ) / _maxCarrySizeX;
+			int xIdx = _items.Count % (_maxCarrySizeX * _maxCarrySizeZ) % _maxCarrySizeX;
 
 			pos.y += yIdx * (renderer.bounds.size.y + _yOffset);
 			pos.z -= zIdx * (renderer.bounds.size.z + _zOffset);
@@ -54,7 +55,7 @@ public class PickupManager : MonoBehaviour
 
 		go.transform.SetParent(_handPos);
 		StartCoroutine(MoveInParabola(go, go.transform.position, pos));
-		_heldItems.Push(go);
+		_items.Push(go);
 
 	}
 

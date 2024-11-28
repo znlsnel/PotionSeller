@@ -121,8 +121,8 @@ public class MonsterController : HealthEntity
 	}
 
 	public void AE_Die()
-	{
-		GameObject go =Instantiate<GameObject>(_dropItem);
+	{ 
+		GameObject go = ItemSpawner.instance.GetItem(_dropItem);
 		go.transform.position = transform.position;
 
 		_onRelase?.Invoke();

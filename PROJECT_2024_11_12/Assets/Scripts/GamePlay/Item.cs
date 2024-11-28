@@ -2,8 +2,10 @@ using UnityEngine;
 
 public class Item : MonoBehaviour
 {
-	SphereCollider _collider;
+	[SerializeField] public EItemType _itemType;
 
+	SphereCollider _collider;
+	
 	void Awake()
 	{
 		_collider = GetComponent<SphereCollider>();
