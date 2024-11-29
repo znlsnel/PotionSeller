@@ -46,10 +46,9 @@ public class PlayerCombatController : MonoBehaviour
 		MonsterController mc = monster.GetComponent<MonsterController>();
 		if (mc != null)
 		{
-
 			_monsters.Add(mc);
 			mc._onDead.AddListener(() => RemoveMonster(mc));
-
+			 
 			if (_monsters.Count == 1)
 				_lookTarget = monster;
 		}
@@ -59,10 +58,9 @@ public class PlayerCombatController : MonoBehaviour
 	{
 		MonsterController mc = monster.GetComponent<MonsterController>();
 		if (mc != null)
-		{
 			RemoveMonster(mc);
-		} 
-	}
+
+	} 
 
 	void RemoveMonster(MonsterController mc)
 	{

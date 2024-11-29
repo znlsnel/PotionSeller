@@ -99,7 +99,7 @@ public class MonsterController : HealthEntity
 
 	public override void OnDead()
 	{
-		_agent.isStopped = true;
+		_agent.isStopped = true; 
 		_target = null;
 
 		_onDead?.Invoke();
