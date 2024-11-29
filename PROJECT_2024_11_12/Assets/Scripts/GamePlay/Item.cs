@@ -1,11 +1,12 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Item : MonoBehaviour
 {
 	[SerializeField] public EItemType _itemType;
 
 	SphereCollider _collider;
-	
+	public UnityEvent _onRelease = new UnityEvent();
 	void Awake()
 	{
 		_collider = GetComponent<SphereCollider>();

@@ -5,6 +5,7 @@ using UnityEngine;
 public class PickupManager : MonoBehaviour
 {
 	[SerializeField] Transform _handPos;
+	[SerializeField] EItemType _itemType;
 
 	[SerializeField] int _maxCarrySizeX = 1;
 	[SerializeField] int _maxCarrySizeZ = 1;
@@ -28,14 +29,28 @@ public class PickupManager : MonoBehaviour
 		_items = stack;
 	}
 
+	public bool CheckItemType(EItemType type)
+	{
+		if (_itemType != EItemType.ALL)
+			return type == _itemType;
+
+		else if (_items.Count == 0)
+			return true;
+
+		return _items.Peek().GetComponent<Item>()._itemType == type;
+	}
+
 	public void PickUpItem(GameObject go)
 	{
-		if (_carryCap == 0)
-			return; 
+		Item item = go.GetComponent<Item>();
+		if (_carryCap == 0 || !CheckItemType(item._itemType))
+			return;
+
+		
 
 		isReceivingItem = true;
-		 
-		go.GetComponent<Item>()?.OnHand();
+
+		item.OnHand();
 
 		go.transform.SetParent(null);
 		go.transform.rotation = _handPos.rotation;
@@ -50,7 +65,7 @@ public class PickupManager : MonoBehaviour
 
 			pos.y += yIdx * (renderer.bounds.size.y + _yOffset);
 			pos.z -= zIdx * (renderer.bounds.size.z + _zOffset);
-			pos.x += xIdx * (renderer.bounds.size.x + _xOffset);
+			pos.x -= xIdx * (renderer.bounds.size.x + _xOffset);
 		}
 
 		go.transform.SetParent(_handPos);

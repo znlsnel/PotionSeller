@@ -11,6 +11,7 @@ public class MonsterController : HealthEntity
 	[Space(10)]
 	[SerializeField] float _attackRange = 1.0f;
 	[SerializeField] GameObject _dropItem;
+	[SerializeField] int _damage = 10;
 	  
 	Animator _anim;
         Rigidbody _rigid;
@@ -106,7 +107,7 @@ public class MonsterController : HealthEntity
 		_anim.SetBool("die", true);
 	}
 
-	public void AE_Attack()
+	public void AE_Attack() 
 	{
 		if (_target == null)
 			return;
@@ -115,16 +116,19 @@ public class MonsterController : HealthEntity
 		float dist = dir.magnitude;
 
 		if (dist < _attackRange)
-		{
-			_target.GetComponent<HealthEntity>().OnDamage(gameObject, 1);
-		}
+			_target.GetComponent<HealthEntity>().OnDamage(gameObject, _damage);
 	}
-
+	 
 	public void AE_Die()
 	{ 
 		GameObject go = ItemSpawner.instance.GetItem(_dropItem);
-		go.transform.position = transform.position;
 
+		Item item = go.GetComponent<Item>();
+		item._onRelease.RemoveAllListeners();
+		item._onRelease.AddListener(()=>ItemSpawner.instance.RelaseItem(_dropItem, go));
+
+		go.transform.position = transform.position;
+		  
 		_onRelase?.Invoke();
 	}
 }

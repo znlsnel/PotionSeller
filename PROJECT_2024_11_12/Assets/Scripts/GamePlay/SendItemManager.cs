@@ -6,14 +6,13 @@ using UnityEngine;
 public class SendItemManager : MonoBehaviour
 {
 	PickupManager _pickupManager;
-	[SerializeField] EItemType _pickupItemType;
 	[SerializeField] float _sendTime = 1.0f;
 
-	Stack<GameObject> _item;
+	Stack<GameObject> _items;
 	private void Start()
 	{
 		_pickupManager = GetComponent<PickupManager>();
-		_item = _pickupManager.GetItemStack();
+		_items = _pickupManager.GetItemStack();
 	}
 
 	Coroutine sendCT = null;
@@ -32,9 +31,9 @@ public class SendItemManager : MonoBehaviour
 	}
 
 	IEnumerator Send(PickupManager target)
-	{
+	{ 
 		int size = _pickupManager.GetItemStack().Count;
-		if (size == 0 || _pickupManager.GetItemStack().Peek().GetComponent<Item>()._itemType != _pickupItemType)
+		if (size == 0 || !target.CheckItemType(_items.Peek().GetComponent<Item>()._itemType))
 			yield break;
 
 		float t = _sendTime / size;
@@ -45,6 +44,5 @@ public class SendItemManager : MonoBehaviour
 
 			yield return new WaitForSeconds(t);
 		}
-
 	}
 }

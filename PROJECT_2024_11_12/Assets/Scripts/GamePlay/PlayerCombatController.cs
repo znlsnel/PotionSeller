@@ -1,37 +1,44 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Cinemachine;
 using Unity.VisualScripting;
+using UnityEditor.Animations;
 using UnityEngine;
 
 public class PlayerCombatController : MonoBehaviour
 {
+	[SerializeField] int _damage = 100;
+
 	HashSet<MonsterController> _monsters = new HashSet<MonsterController>();
 	PlayerController _playerCtrl;
+
 	Animator _anim;
 
-	int _upperBodyIdx = -1;
+	int _lowerBodyIdx = -1;
 
 	GameObject _lookTarget;
 	public bool _isAttacking { get { return _monsters.Count > 0; }}
-	public bool isInHuntZone = false;
+	[NonSerialized] public bool isInHuntZone = false;
 
 	private void Start()
 	{
 		_anim = GetComponent<Animator>();
-		_upperBodyIdx = _anim.GetLayerIndex("Upper Body");
+
+		_lowerBodyIdx = _anim.GetLayerIndex("Lower Body");
+
+
 		_playerCtrl = GetComponent<PlayerController>();
 		StartCoroutine(LookAtMonster());
 		StartCoroutine(AttackCheck()); 
 	}
 
+	bool prev = false;
 	public void SetActiveUpperBody(bool on)
 	{
-		if (on)
-			_anim.SetLayerWeight(_upperBodyIdx, 1.0f);
-		else
-			_anim.SetLayerWeight(_upperBodyIdx, 0.0f);
-
+		_anim.SetBool("attack", on);
+		_anim.SetLayerWeight(_lowerBodyIdx, on ? 1.0f : 0.0f);
+		prev = on; 
 	}
 
 	public void EnterMonster(GameObject monster)
@@ -77,13 +84,18 @@ public class PlayerCombatController : MonoBehaviour
 
 	}
 
-	public void AE_Attack()
+	public void AE_Attack(int rate)
 	{
 		foreach(MonsterController mc in _monsters)
-		{
-			mc.OnDamage(gameObject, 1);  
+		{ 
+			mc.OnDamage(gameObject, (_damage * rate) / 100);  
 		}
 	}
+
+	public void AE_SetLowerBody(int active)
+	{
+		_anim.SetLayerWeight(_lowerBodyIdx, active == 1 ? 1.0f : 0.0f);
+	} 
 
 	IEnumerator LookAtMonster()
 	{
@@ -125,7 +137,6 @@ public class PlayerCombatController : MonoBehaviour
 		while (true)
 		{
 			SetActiveUpperBody(_monsters.Count > 0 && isInHuntZone && _playerCtrl.isDead == false);
-			_anim.SetBool("attacking", _monsters.Count > 0 && isInHuntZone);
 			yield return new WaitForSeconds(0.3f); 
 		} 
 	}

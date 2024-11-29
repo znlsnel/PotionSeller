@@ -6,9 +6,16 @@ using UnityEngine.Pool;
 public enum EItemType
 {
 	ALL,
-	NGREDIENT_POSTION,
+	INGREDIENT_POSTION,
 	POSTION,
 }
+
+public enum EItem
+{
+	POSTION_INGREDIENT,
+	POSTION
+}
+
 public class ItemSpawner : Singleton<ItemSpawner>
 {
 	[SerializeField] List<GameObject> _items = new List<GameObject>();
@@ -23,10 +30,10 @@ public class ItemSpawner : Singleton<ItemSpawner>
 				createFunc: ()=>Instantiate<GameObject>(item),
 				defaultCapacity: 0
 			); 
-
+			 
 			_itemPools[item] = op;
 		}
-	} 
+	}  
 
 	public GameObject GetItem(GameObject itemPrefab)
 	{
