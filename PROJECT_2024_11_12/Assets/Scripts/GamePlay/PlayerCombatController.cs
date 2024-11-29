@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Cinemachine;
 using Unity.VisualScripting;
-using UnityEditor.Animations;
+
 using UnityEngine;
 
 public class PlayerCombatController : MonoBehaviour
@@ -47,6 +47,7 @@ public class PlayerCombatController : MonoBehaviour
 		if (mc != null)
 		{
 			_monsters.Add(mc);
+			mc._hpBar.GetComponent<HpBar>().SetHpBar(true);
 			mc._onDead.AddListener(() => RemoveMonster(mc));
 			 
 			if (_monsters.Count == 1)
@@ -65,6 +66,8 @@ public class PlayerCombatController : MonoBehaviour
 	void RemoveMonster(MonsterController mc)
 	{
 		_monsters.Remove(mc);
+		mc._hpBar.GetComponent<HpBar>().SetHpBar(false);
+
 		if (_monsters.Count == 0)
 		{
 			_lookTarget = null;

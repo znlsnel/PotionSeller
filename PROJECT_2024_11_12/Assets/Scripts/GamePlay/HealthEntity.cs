@@ -11,7 +11,7 @@ public abstract class HealthEntity : MonoBehaviour
 
 	[NonSerialized] public UnityEvent _onChangedHp = new UnityEvent();
 
-	GameObject _hpBar;
+	public GameObject _hpBar;
 
 	public int HP { get { return _curHp; } set { _curHp = Mathf.Max(Mathf.Min(value, _initHp), 0); _onChangedHp?.Invoke(); } }
 	public float HpRate { get { return (float)_curHp / _initHp; } }

@@ -106,9 +106,8 @@ public class PickupManager : MonoBehaviour
 		_onGetItem?.Invoke();
 
 		if (destoryItem)
-		{
 			go.GetComponent<Item>()?.Relase(); 
-		}
+		
 
 		yield return new WaitForSeconds(1.0f);
 		if (Time.time > moveEndTime)

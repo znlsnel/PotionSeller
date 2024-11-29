@@ -124,6 +124,7 @@ public class MonsterController : HealthEntity
 		GameObject go = ItemSpawner.instance.GetItem(_dropItem);
 
 		Item item = go.GetComponent<Item>();
+		item.InitItem();
 		item._onRelease.RemoveAllListeners();
 		item._onRelease.AddListener(()=>ItemSpawner.instance.RelaseItem(_dropItem, go));
 
