@@ -9,7 +9,7 @@ public class SendItemManager : MonoBehaviour
 	[SerializeField] float _sendTime = 1.0f;
 
 	Stack<GameObject> _items;
-	private void Start()
+	private void Awake()
 	{
 		_pickupManager = GetComponent<PickupManager>();
 		_items = _pickupManager.GetItemStack();
@@ -33,6 +33,7 @@ public class SendItemManager : MonoBehaviour
 	IEnumerator Send(PickupManager target)
 	{ 
 		int size = _pickupManager.GetItemStack().Count;
+
 		if (size == 0 || !target.CheckItemType(_items.Peek().GetComponent<Item>()._itemType))
 			yield break;
 

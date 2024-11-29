@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PickupManager : MonoBehaviour
 {
@@ -19,10 +21,15 @@ public class PickupManager : MonoBehaviour
 	Stack<GameObject> _items = new Stack<GameObject>();
 
 	public int _maxCarrySize = 8;
-	bool isReceivingItem = false;
+	[NonSerialized] public bool isReceivingItem = false;
+
+	public bool destoryItem = false;
+	public UnityAction _onGetItem;
+
 
 	public int _carryCap { get { return _maxCarrySize - _items.Count; } }
 	public Stack<GameObject> GetItemStack() { return _items; }
+
 
 	public void InitPickupManager(Stack<GameObject> stack)
 	{
@@ -46,8 +53,6 @@ public class PickupManager : MonoBehaviour
 		if (_carryCap == 0 || !CheckItemType(item._itemType))
 			return;
 
-		
-
 		isReceivingItem = true;
 
 		item.OnHand();
@@ -70,7 +75,9 @@ public class PickupManager : MonoBehaviour
 
 		go.transform.SetParent(_handPos);
 		StartCoroutine(MoveInParabola(go, go.transform.position, pos));
-		_items.Push(go);
+
+		if (destoryItem == false)
+			_items.Push(go);
 
 	}
 
@@ -96,6 +103,12 @@ public class PickupManager : MonoBehaviour
 
 		Vector3 end =  _handPos.position;
 		go.transform.position = end + offset;
+		_onGetItem?.Invoke();
+
+		if (destoryItem)
+		{
+			go.GetComponent<Item>()?.Relase(); 
+		}
 
 		yield return new WaitForSeconds(1.0f);
 		if (Time.time > moveEndTime)

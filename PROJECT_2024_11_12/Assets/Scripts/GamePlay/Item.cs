@@ -26,4 +26,10 @@ public class Item : MonoBehaviour
 	{
 		_collider.enabled = false;
 	}
+
+	public void Relase()
+	{
+		_collider.enabled = true;
+		_onRelease?.Invoke();
+	}
 }
