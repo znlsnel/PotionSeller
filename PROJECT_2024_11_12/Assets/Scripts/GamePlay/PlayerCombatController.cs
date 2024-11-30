@@ -11,25 +11,28 @@ public class PlayerCombatController : MonoBehaviour
 	[SerializeField] int _damage = 100;
 
 	HashSet<MonsterController> _monsters = new HashSet<MonsterController>();
-	PlayerController _playerCtrl;
 
+	PlayerController _playerCtrl;
 	Animator _anim;
+	Rigidbody _rigid;
+
+	GameObject _lookTarget;
 
 	int _lowerBodyIdx = -1;
 
-	GameObject _lookTarget;
 	public bool _isAttacking { get { return _monsters.Count > 0; }}
 	[NonSerialized] public bool isInHuntZone = false;
+
 
 	private void Start()
 	{
 		_anim = GetComponent<Animator>();
-
+		_rigid = GetComponent<Rigidbody>();
 		_lowerBodyIdx = _anim.GetLayerIndex("Lower Body");
 
 
 		_playerCtrl = GetComponent<PlayerController>();
-		StartCoroutine(LookAtMonster());
+		StartCoroutine(FindCloseMonster());
 		StartCoroutine(AttackCheck()); 
 	}
 
@@ -74,16 +77,17 @@ public class PlayerCombatController : MonoBehaviour
 		}
 	}
 
+
 	private void FixedUpdate()
 	{
 		if (_isAttacking && _playerCtrl.isDead == false)
 		{
-			if ((_lookTarget.transform.position - transform.position).magnitude > 0.1)
-				transform.LookAt(_lookTarget.transform);
-			 
+			float dist = (_lookTarget.transform.position - transform.position).magnitude;
+			if (dist > 0.1)
+				_playerCtrl.LookAt(_lookTarget.transform.position);
 		}
-
-	}
+	} 
+	 
 
 	public void AE_Attack(int rate)
 	{
@@ -98,7 +102,7 @@ public class PlayerCombatController : MonoBehaviour
 		_anim.SetLayerWeight(_lowerBodyIdx, active == 1 ? 1.0f : 0.0f);
 	} 
 
-	IEnumerator LookAtMonster()
+	IEnumerator FindCloseMonster()
 	{
 		while (true)
 		{ 
@@ -106,8 +110,6 @@ public class PlayerCombatController : MonoBehaviour
 			float dist = -1f;
 			foreach (MonsterController mc in _monsters)
 			{
-			//	if (mc == null)
-			///		continue; 
 
 				if (target == null)
 				{
@@ -127,7 +129,9 @@ public class PlayerCombatController : MonoBehaviour
 			}
 
 			if (target != null)
+			{	
 				_lookTarget = target.gameObject;
+			}
 
 			yield return new WaitForSeconds(0.3f);
 		}

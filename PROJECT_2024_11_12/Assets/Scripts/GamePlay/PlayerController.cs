@@ -1,7 +1,10 @@
 using System;
+using System.Collections;
 using System.Security.Cryptography;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class PlayerController : HealthEntity
@@ -18,8 +21,10 @@ public class PlayerController : HealthEntity
 	[SerializeField] float _moveSpeed = 5.0f;
 
         Vector2 _touchStartPos;
-	 
 	public bool isDead { get{ return HP == 0; } }
+
+	Vector3 _lookTarget;
+	float _lookTime;
 
 	void Start()
         {
@@ -52,7 +57,19 @@ public class PlayerController : HealthEntity
 		_joystick.UpdateJoystick(_touchStartPos, touchPos); 
 		
 		if (!_combatCtrl._isAttacking) 
-			transform.LookAt(movePos);
+			LookAt(movePos);
+	}
+	 
+	public void LookAt(Vector3 target, float speed = 360)
+	{
+		Quaternion targetRotation = Quaternion.LookRotation(target - transform.position);
+
+		// 현재 회전에서 목표 회전으로 부드럽게 회전
+		transform.rotation = Quaternion.RotateTowards(
+		    transform.rotation,
+		    targetRotation,
+		    speed * Time.deltaTime
+		);
 	}
 
 	void StartTouch(InputAction.CallbackContext context)
@@ -67,25 +84,13 @@ public class PlayerController : HealthEntity
 		_joystick.DisableJoystickUI();
 	}
 
-	public void LookAt(Vector3 target, float rotSpeed = 0.1f)
-	{
-		Quaternion targetRot = Quaternion.LookRotation((target - transform.position).normalized);
-
-		Quaternion rot = Quaternion.Lerp(
-			_rigid.rotation,
-			targetRot,
-			rotSpeed * Time.fixedDeltaTime
-		);
-
-		_rigid.MoveRotation(rot);
-	}
-
 	void InitPlayer()
 	{
 		_anim.SetBool("die", false);
 		HP = _initHp;
 		transform.position = _genPos.position;
 	}
+
 	public override void OnDead()
 	{ 
 		_anim.SetBool("die", true);
@@ -93,9 +98,6 @@ public class PlayerController : HealthEntity
 
 		Utils.instance.SetTimer(() => {
 			InitPlayer();
-			
-			
-
 		}, 2.0f); 
 	}
 
