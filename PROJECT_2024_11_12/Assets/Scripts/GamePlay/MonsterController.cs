@@ -123,11 +123,10 @@ public class MonsterController : HealthEntity
 	{ 
 		GameObject go = ItemSpawner.instance.GetItem(_dropItem);
 
-		Item item = go.GetComponent<Item>();
+		IngredientItem item = go.GetComponent<IngredientItem>();
 		item.InitItem();
-		item._onRelease.RemoveAllListeners();
-		item._onRelease.AddListener(()=>ItemSpawner.instance.RelaseItem(_dropItem, go));
-
+		item.AddReleaseAction(()=>ItemSpawner.instance.RelaseItem(_dropItem, go));
+		 
 		go.transform.position = transform.position;
 		  
 		_onRelase?.Invoke();

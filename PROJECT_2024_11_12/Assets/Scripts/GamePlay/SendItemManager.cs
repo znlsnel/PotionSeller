@@ -8,17 +8,19 @@ public class SendItemManager : MonoBehaviour
 	PickupManager _pickupManager;
 	[SerializeField] float _sendTime = 1.0f;
 
-	Stack<GameObject> _items;
+	Stack<GameObject> _items; 
 	private void Awake()
 	{
 		_pickupManager = GetComponent<PickupManager>();
 		_items = _pickupManager.GetItemStack();
 	}
 
+	public bool isEmpty { get { return _items.Count == 0; } }
+
 	Coroutine sendCT = null;
-	public void SendItem(PickupManager target)
+	public void SendItem(PickupManager target, int cnt = 99999)
 	{
-		sendCT = StartCoroutine(Send(target));
+		sendCT = StartCoroutine(Send(target, cnt));
 	}
 
 	public void CancelSend()
@@ -29,16 +31,18 @@ public class SendItemManager : MonoBehaviour
 			sendCT = null;
 		}
 	}
-
-	IEnumerator Send(PickupManager target)
+	 
+	IEnumerator Send(PickupManager target, int cnt)
 	{ 
-		int size = _pickupManager.GetItemStack().Count;
-
-		if (size == 0 || !target.CheckItemType(_items.Peek().GetComponent<Item>()._itemType))
+		int size = Mathf.Min(_pickupManager.GetItemStack().Count, cnt);
+		if (size == 0 || !target.CheckItemType(_items.Peek().GetComponent<IngredientItem>()._itemType))
 			yield break;
 
-		float t = _sendTime / size;
-		while (_pickupManager.GetItemStack().Count > 0)
+		while (_pickupManager.isReceivingItem)
+			yield return new WaitForSeconds(0.3f); 
+
+		float t = _sendTime / size; 
+		while (cnt-- > 0 && _pickupManager.GetItemStack().Count > 0)
 		{
 			target.PickUpItem(_pickupManager.GetItemStack().Peek());
 			_pickupManager.GetItemStack().Pop();

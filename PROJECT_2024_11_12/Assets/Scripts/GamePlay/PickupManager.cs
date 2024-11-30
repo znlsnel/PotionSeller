@@ -43,7 +43,7 @@ public class PickupManager : MonoBehaviour
 
 		else if (_items.Count == 0)
 			return true;
-
+		 
 		return _items.Peek().GetComponent<Item>()._itemType == type;
 	}
 
@@ -55,8 +55,8 @@ public class PickupManager : MonoBehaviour
 
 		isReceivingItem = true;
 
-		item.OnHand();
-
+		go.GetComponent<IngredientItem>()?.OnHand();
+		 
 		go.transform.SetParent(null);
 		go.transform.rotation = _handPos.rotation;
 		Vector3 pos = Vector3.zero;
