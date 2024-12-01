@@ -36,7 +36,7 @@ public class PotionJar : MonoBehaviour
 	{
 		while (true) 
 		{
-			if (!_ingredientSpot.isEmpty)
+			if (_ingredientSpot.itemCnt > 0)
 			{
 				_ingredientSpot.SendItem(_pickup, 1);
 

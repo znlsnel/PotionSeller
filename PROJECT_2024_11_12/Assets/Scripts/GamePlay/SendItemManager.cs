@@ -15,7 +15,7 @@ public class SendItemManager : MonoBehaviour
 		_items = _pickupManager.GetItemStack();
 	}
 
-	public bool isEmpty { get { return _items.Count == 0; } }
+	public int itemCnt { get { return _items.Count; } }
 
 	Coroutine sendCT = null;
 	public void SendItem(PickupManager target, int cnt = 99999)

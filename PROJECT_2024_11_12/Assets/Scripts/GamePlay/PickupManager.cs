@@ -113,4 +113,10 @@ public class PickupManager : MonoBehaviour
 		if (Time.time > moveEndTime)
 			isReceivingItem = false;
 	}
+
+	public void ClearItem()
+	{
+		foreach (var item in _items)
+			item.GetComponent<Item>()?.Relase();
+	}
 }
