@@ -11,12 +11,13 @@ public class Counter : MonoBehaviour
         [SerializeField] float _waitingInterval = 1.0f;
 
 	SendItemManager _itemSend;
-
+	PickupManager _pickup;
         Queue<Customer> _customers = new Queue<Customer>();
 
 	private void Awake()
 	{
 		_itemSend = GetComponent<SendItemManager>();
+		_pickup = GetComponent<PickupManager>();
 	}
 	private void Start()
 	{
@@ -53,4 +54,22 @@ public class Counter : MonoBehaviour
 		return _waitingStartPos.position +
 			(_waitingInterval * (idx == -1 ? _customers.Count : idx) * (_waitingEndPos.position - _waitingStartPos.position).normalized);
 	}
+
+	private void OnTriggerEnter(Collider other)
+	{
+		PlayerController pc = other.GetComponent<PlayerController>();
+		if (pc == null) return;
+
+		other.GetComponent<SendItemManager>()?.SendItem(_pickup);
+	}
+
+	private void OnTriggerExit(Collider other)
+	{
+		PlayerController pc = other.GetComponent<PlayerController>();
+		if (pc == null) return;
+		other.GetComponent<SendItemManager>()?.CancelSend();
+
+	}
+
+
 }

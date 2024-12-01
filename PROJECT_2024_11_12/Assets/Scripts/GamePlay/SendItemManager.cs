@@ -35,7 +35,7 @@ public class SendItemManager : MonoBehaviour
 	IEnumerator Send(PickupManager target, int cnt)
 	{ 
 		int size = Mathf.Min(_pickupManager.GetItemStack().Count, cnt);
-		if (size == 0 || !target.CheckItemType(_items.Peek().GetComponent<IngredientItem>()._itemType))
+		if (size == 0 || !target.CheckItemType(_items.Peek().GetComponent<Item>()._itemType))
 			yield break;
 
 		while (_pickupManager.isReceivingItem)

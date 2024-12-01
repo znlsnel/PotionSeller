@@ -10,6 +10,7 @@ public class CustomerSpawner : MonoBehaviour
         [SerializeField] Transform _spawnPos;
         [SerializeField] Transform _endPos;
 
+        [SerializeField] int _maxCustomer = 10;
         ObjectPool<GameObject> _customerPool;
 
 	private void Awake()
@@ -23,18 +24,16 @@ public class CustomerSpawner : MonoBehaviour
 		);
 	}
 	void Start()
-        {
-                
-
+        { 
                 StartCoroutine(SpawnCustomer());
-                 
 	}
 
         IEnumerator SpawnCustomer()
         {
                 while (true)
                 {
-                        _customerPool.Get();
+                        if (_customerPool.CountActive < _maxCustomer)
+                                _customerPool.Get(); 
 
 			yield return new WaitForSeconds(Random.Range(2, 5));
                 }
