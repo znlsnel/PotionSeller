@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.Properties;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,6 +22,12 @@ public class HpBar : MonoBehaviour
 	{
 		_slider = GetComponentInChildren<Slider>();
 		gameObject.SetActive(false);
+		_rectTransform.localPosition = new Vector3(-100000, -100000, -100000);
+	}
+	private void Start()
+	{
+		StartCoroutine(UpdateActivation());
+
 	}
 
 	public void InitHpBar(HealthEntity parent, Transform uipos)
@@ -30,9 +37,8 @@ public class HpBar : MonoBehaviour
 		_hpUIRootPos = uipos;
 
 		parent._onChangedHp.AddListener(() => UpdateRate());
-		MoveUI();
-		if (isMonster == false)
-			gameObject.SetActive(true); 
+		if (isMonster == false) 
+			gameObject.SetActive(true);   
 	}
 
 	public void UpdateRate()
@@ -41,9 +47,8 @@ public class HpBar : MonoBehaviour
 	}
 
 	private void FixedUpdate()
-	{
-		MoveUI();
-		gameObject.SetActive(_uiActive && _slider.value > 0); 
+	{ 
+		MoveUI(); 
 	}
 
 	void MoveUI()
@@ -57,10 +62,15 @@ public class HpBar : MonoBehaviour
 
 	public void SetHpBar(bool on)
 	{
-		_uiActive = on;
+		MoveUI();
+		_uiActive = on; 
 		gameObject.SetActive(_slider.value > 0 && on); 
 	}
 
-
+	IEnumerator UpdateActivation()
+	{
+		yield return new WaitForSeconds(0.3f);
+		gameObject.SetActive(_slider.value > 0 && _uiActive);  
+	}
 
 } 
