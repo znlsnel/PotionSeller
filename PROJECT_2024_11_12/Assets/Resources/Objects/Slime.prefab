@@ -680,6 +680,7 @@ MonoBehaviour:
   _initHp: 500
   _attackRange: 1
   _dropItem: {fileID: 5366707112403216439, guid: 80477c503071ecb44b1ff39923c0f827, type: 3}
+  _damage: 10
   _onDead:
     m_PersistentCalls:
       m_Calls: []

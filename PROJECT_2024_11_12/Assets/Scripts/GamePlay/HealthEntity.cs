@@ -14,14 +14,16 @@ public abstract class HealthEntity : MonoBehaviour
 	[NonSerialized] public GameObject _hpBar;
 
 	public int HP { get { return _curHp; } set { _curHp = Mathf.Max(Mathf.Min(value, _initHp), 0); _onChangedHp?.Invoke(); } }
-	public float HpRate { get { return (float)_curHp / _initHp; } }
+	public int MaxHP { get { return _initHp; } }
 
 	protected virtual void Awake()
 	{
 		if (_hpBarPrefab != null)
 		{
 			_hpBar = Instantiate<GameObject>(_hpBarPrefab);
-			_hpBar.GetComponent<HpBar>().InitHpBar(this, _hpPos); 
+			_hpBar.GetComponent<HpBar>().SetParent(this);
+			(_hpBar.GetComponent<HpBar>() as MonsterHpUI)?.SetParentTransform(_hpPos);
+
 		}
 		_curHp = _initHp;
 	}

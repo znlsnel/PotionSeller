@@ -2828,11 +2828,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23a304ab9cf750540a46f1f14bf87b82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _hpBarPrefab: {fileID: 4902472496073307143, guid: 480bfdbc71569004289df7a244961dc0, type: 3}
+  _hpBarPrefab: {fileID: 8922588198468465729, guid: 447648af43691c949bf172467f37ced1, type: 3}
   _hpPos: {fileID: 8439807217597944582}
   _initHp: 3
   _genPos: {fileID: 0}
   _moveSpeed: 5
+  _onDead:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!54 &943173443597136093
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2895,7 +2898,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dd39effc545fb142a3c6611e11a2a9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isInHuntZone: 0
+  _damage: 100
 --- !u!114 &4009444298347018020
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2909,13 +2912,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _handPos: {fileID: 3386484703133796722}
+  _handEndPos: {fileID: 0}
+  _itemType: 0
   _maxCarrySizeX: 1
   _maxCarrySizeZ: 1
   _xOffset: 0
   _zOffset: 0
   _yOffset: 0
   _maxCarrySize: 8
-  isReceivingItem: 0
+  destoryItem: 0
 --- !u!1 &8584869015542944295
 GameObject:
   m_ObjectHideFlags: 0

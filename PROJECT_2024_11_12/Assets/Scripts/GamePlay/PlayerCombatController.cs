@@ -50,7 +50,7 @@ public class PlayerCombatController : MonoBehaviour
 		if (mc != null)
 		{
 			_monsters.Add(mc);
-			mc._hpBar.GetComponent<HpBar>().SetHpBar(true);
+			mc._hpBar.GetComponent<MonsterHpUI>().SetHpBar(true);
 			mc._onDead.AddListener(() => RemoveMonster(mc));
 			 
 			if (_monsters.Count == 1)
@@ -69,7 +69,7 @@ public class PlayerCombatController : MonoBehaviour
 	void RemoveMonster(MonsterController mc)
 	{
 		_monsters.Remove(mc);
-		mc._hpBar.GetComponent<HpBar>().SetHpBar(false);
+		mc._hpBar.GetComponent<MonsterHpUI>().SetHpBar(false);
 
 		if (_monsters.Count == 0)
 		{

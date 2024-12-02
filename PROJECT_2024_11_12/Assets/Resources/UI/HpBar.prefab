@@ -288,7 +288,7 @@ GameObject:
   - component: {fileID: 7324723262171563520}
   - component: {fileID: 2288135135508679283}
   - component: {fileID: 1027977478837320988}
-  - component: {fileID: 3361502442371839440}
+  - component: {fileID: 52498607547929435}
   m_Layer: 5
   m_Name: HpBar
   m_TagString: Untagged
@@ -379,7 +379,7 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &3361502442371839440
+--- !u!114 &52498607547929435
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -388,7 +388,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4902472496073307143}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 87b5d8ece5d7c8d44ba33242df1baa61, type: 3}
+  m_Script: {fileID: 11500000, guid: da9fa3932989d3e4890f6632eb1d0fa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _rectTransform: {fileID: 5111374255289938385}
