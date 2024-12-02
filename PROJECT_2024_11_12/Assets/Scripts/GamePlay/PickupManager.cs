@@ -13,6 +13,7 @@ public interface IItemReceiver
 public class PickupManager : MonoBehaviour, IItemReceiver
 {
 	[SerializeField] Transform _handPos;
+	[SerializeField] Transform _handEndPos;
 	[SerializeField] EItemType _itemType;
 
 	[SerializeField] int _maxCarrySizeX = 1;
@@ -36,7 +37,17 @@ public class PickupManager : MonoBehaviour, IItemReceiver
 	public int _carryCap { get { return _maxCarrySize - _items.Count; } }
 	public Stack<GameObject> GetItemStack() { return _items; }
 
-
+	int _dirX = 1;
+	int _dirZ = 1;
+	private void Start()
+	{
+		if (_handEndPos != null)
+		{
+			Vector3 d = _handEndPos.position - _handPos.position;
+			_dirX = d.x > 0 ? 1 : -1;
+			_dirZ = d.z > 0 ? 1 : -1;
+		} 
+	}
 	public void InitPickupManager(Stack<GameObject> stack)
 	{
 		_items = stack;
@@ -75,8 +86,8 @@ public class PickupManager : MonoBehaviour, IItemReceiver
 			int xIdx = _items.Count % (_maxCarrySizeX * _maxCarrySizeZ) % _maxCarrySizeX;
 
 			pos.y += yIdx * (renderer.bounds.size.y + _yOffset);
-			pos.z -= zIdx * (renderer.bounds.size.z + _zOffset);
-			pos.x -= xIdx * (renderer.bounds.size.x + _xOffset);
+			pos.z +=_dirZ *  zIdx * (renderer.bounds.size.z + _zOffset);
+			pos.x += _dirX * xIdx * (renderer.bounds.size.x + _xOffset);
 		}
 
 		go.transform.SetParent(_handPos);
