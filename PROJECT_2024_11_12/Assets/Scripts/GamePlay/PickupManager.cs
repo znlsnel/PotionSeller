@@ -4,7 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class PickupManager : MonoBehaviour
+public interface IItemReceiver
+{
+	public void ReceiveItem(GameObject item);
+	public bool CheckItemType(EItemType type);
+}
+
+public class PickupManager : MonoBehaviour, IItemReceiver
 {
 	[SerializeField] Transform _handPos;
 	[SerializeField] EItemType _itemType;
@@ -47,7 +53,7 @@ public class PickupManager : MonoBehaviour
 		return _items.Peek().GetComponent<Item>()._itemType == type;
 	}
 
-	public void PickUpItem(GameObject go)
+	public void ReceiveItem(GameObject go)
 	{
 		Item item = go.GetComponent<Item>();
 		if (_carryCap == 0 || !CheckItemType(item._itemType))

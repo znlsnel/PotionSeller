@@ -1,13 +1,15 @@
 using UnityEngine;
 using UnityEngine.Events;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
-public class IngredientItem : Item
-{ 
+public class IngredientItem : Item, IPlayerSensor
+{
+	IItemReceiver _playerItemReceiver;
 	SphereCollider _collider;
 	void Awake() 
 	{
 		_collider = GetComponent<SphereCollider>();
-		 
+		
 	}
 
 	private void OnTriggerEnter(Collider other)
@@ -16,7 +18,10 @@ public class IngredientItem : Item
 		if (pc == null)
 			return;
 
-		other.GetComponent<PickupManager>().PickUpItem(gameObject);
+		if (_playerItemReceiver == null)
+			_playerItemReceiver = other.GetComponent<PickupManager>();
+
+		EnterPlayer();
 	}
 
 	public void OnHand() 
@@ -29,5 +34,14 @@ public class IngredientItem : Item
 
 	}
 
+	public void EnterPlayer()
+	{
+		
 
+		_playerItemReceiver.ReceiveItem(gameObject);
+	}
+
+	public void ExitPlayer()
+	{
+	}
 }

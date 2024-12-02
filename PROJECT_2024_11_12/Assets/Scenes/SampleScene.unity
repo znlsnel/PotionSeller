@@ -1527,7 +1527,7 @@ MonoBehaviour:
   _customerPrefab: {fileID: 792370378026291511, guid: 8e3569180196a354bbf069e844357e60, type: 3}
   _spawnPos: {fileID: 164554231}
   _endPos: {fileID: 460129970}
-  _maxCustomer: 0
+  _maxCustomer: 10
 --- !u!4 &164554231
 Transform:
   m_ObjectHideFlags: 0
@@ -6680,6 +6680,7 @@ Transform:
   - {fileID: 360617343}
   - {fileID: 1564867648}
   - {fileID: 2133090357}
+  - {fileID: 1671802252}
   - {fileID: 1615760993}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -7256,31 +7257,31 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1615760993}
+    m_TransformParent: {fileID: 620499877}
     m_Modifications:
     - target: {fileID: -4216859302048453862, guid: 40dd640681fc38c468924428988a03da, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.6000001
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 40dd640681fc38c468924428988a03da, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 40dd640681fc38c468924428988a03da, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.30000004
+      value: 1.5000002
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 40dd640681fc38c468924428988a03da, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.204
+      value: -0.18963575
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 40dd640681fc38c468924428988a03da, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -1.6382431
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 40dd640681fc38c468924428988a03da, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.011399842
+      value: -0.47450638
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 40dd640681fc38c468924428988a03da, type: 3}
       propertyPath: m_LocalRotation.w
@@ -8782,6 +8783,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2d2e71d64d2ba0438e5fffc72938753, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _player: {fileID: 967474444}
   _waitingStartPos: {fileID: 132548966}
   _waitingEndPos: {fileID: 1571584244}
   _waitingInterval: 1
@@ -15819,6 +15821,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1dd67a64f14346b4eaf600cc3ebd611f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _player: {fileID: 967474444}
 --- !u!114 &1564867656
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16470,7 +16473,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -927199367670048503, guid: b05d032af55a5f449a1605e3f0bf6d91, type: 3}
       propertyPath: m_Name
-      value: PotionTable
+      value: PotionJar
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -16481,9 +16484,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -4216859302048453862, guid: b05d032af55a5f449a1605e3f0bf6d91, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1549651219}
-    - targetCorrespondingSourceObject: {fileID: -4216859302048453862, guid: b05d032af55a5f449a1605e3f0bf6d91, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1671802252}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: -927199367670048503, guid: b05d032af55a5f449a1605e3f0bf6d91, type: 3}
       insertIndex: -1
@@ -16536,8 +16536,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _itemPrefab: {fileID: 3192101457453561909, guid: 8810e010193520d4894d9973ff409e06, type: 3}
-  _ingredientSpot: {fileID: 1564867656}
-  _postionTable: {fileID: 1671802255}
+  _ingredientSpot: {fileID: 1564867647}
+  _potionTable: {fileID: 1298323934}
   _potionPos: {fileID: 1211619701}
   _potionSpawnPos: {fileID: 360617343}
   _createSpeed: 2
@@ -17362,6 +17362,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 191b29126ea98e743b3c68ec2336c566, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _player: {fileID: 967474444}
 --- !u!114 &1671802259
 MonoBehaviour:
   m_ObjectHideFlags: 0

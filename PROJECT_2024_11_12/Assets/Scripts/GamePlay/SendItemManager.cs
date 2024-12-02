@@ -3,7 +3,14 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class SendItemManager : MonoBehaviour
+public interface IItemSender
+{
+	public void SendItem(IItemReceiver receiver, int cnt = 99999);
+	public void CancelSend();
+	public int GetItemCount();
+}
+
+public class SendItemManager : MonoBehaviour, IItemSender
 {
 	PickupManager _pickupManager;
 	[SerializeField] float _sendTime = 1.0f;
@@ -15,12 +22,15 @@ public class SendItemManager : MonoBehaviour
 		_items = _pickupManager.GetItemStack();
 	}
 
-	public int itemCnt { get { return _items.Count; } }
+	public int GetItemCount()
+	{
+		return _items.Count; ;
+	}
 
 	Coroutine sendCT = null;
-	public void SendItem(PickupManager target, int cnt = 99999)
+	public void SendItem(IItemReceiver receiver, int cnt = 99999)
 	{
-		sendCT = StartCoroutine(Send(target, cnt));
+		sendCT = StartCoroutine(Send(receiver, cnt));
 	}
 
 	public void CancelSend()
@@ -32,19 +42,19 @@ public class SendItemManager : MonoBehaviour
 		}
 	}
 	 
-	IEnumerator Send(PickupManager target, int cnt)
+	IEnumerator Send(IItemReceiver receiver, int cnt)
 	{ 
 		int size = Mathf.Min(_pickupManager.GetItemStack().Count, cnt);
-		if (size == 0 || !target.CheckItemType(_items.Peek().GetComponent<Item>()._itemType))
+		if (size == 0 || !receiver.CheckItemType(_items.Peek().GetComponent<Item>()._itemType))
 			yield break;
 
 		while (_pickupManager.isReceivingItem)
-			yield return new WaitForSeconds(0.3f); 
+			yield return new WaitForSeconds(0.3f);  
 
 		float t = _sendTime / size; 
 		while (cnt-- > 0 && _pickupManager.GetItemStack().Count > 0)
 		{
-			target.PickUpItem(_pickupManager.GetItemStack().Peek());
+			receiver.ReceiveItem(_pickupManager.GetItemStack().Peek());
 			_pickupManager.GetItemStack().Pop();
 
 			yield return new WaitForSeconds(t);
