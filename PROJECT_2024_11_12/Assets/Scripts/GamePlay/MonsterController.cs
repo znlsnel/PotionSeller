@@ -32,9 +32,14 @@ public class MonsterController : HealthEntity
 
         void FixedUpdate()
         {
-		if (_ms.isPlayerIn &&  _target != null)
+		if (DungeonDoorway.instance.isPlayerInDungeon() &&  _target != null)
 		        AttackMove();
 		
+	}
+
+	public void InitHp()
+	{
+		HP = _initHp;
 	}
 
 	public void InitMonster(MonsterSpawner ms, Vector3 pos, Action relaseListener)
@@ -67,7 +72,7 @@ public class MonsterController : HealthEntity
 		if (!attack)
 			_agent.SetDestination(_target.transform.position);
 
-		if (_ms.isPlayerIn == false || _target.GetComponent<PlayerController>().isDead)
+		if (DungeonDoorway.instance.isPlayerInDungeon() == false || _target.GetComponent<PlayerController>().isDead)
 		{
 			_target = null;
 			_anim.SetBool("move", false);

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -8,17 +9,23 @@ public class MonsterSpawner : MonoBehaviour
 {
         [SerializeField] List<GameObject> _monsterPrefab;
         ObjectPool<GameObject> _pool;
-
+	HashSet<MonsterController> _activeMonster = new HashSet<MonsterController>();
 	[SerializeField] int _maxCount = 20;
 
-	public bool isPlayerIn = true;
+	//public bool isPlayerIn = true;
 
 	private void Awake()
 	{
 		_pool = new ObjectPool<GameObject>(
 			createFunc: () => Instantiate<GameObject>(_monsterPrefab[Random.Range(0, _monsterPrefab.Count)]),
-			actionOnGet: (obj) => obj.GetComponent<MonsterController>().InitMonster(this, GetSpawnPos(), () => { _pool.Release(obj); }),
-			actionOnRelease: (obj) => { obj.SetActive(false); },
+			actionOnGet: (obj) => {
+				obj.GetComponent<MonsterController>().InitMonster(this, GetSpawnPos(), () => { _pool.Release(obj); });
+				_activeMonster.Add(obj.GetComponent<MonsterController>());
+				},
+			actionOnRelease: (obj) => {
+				_activeMonster.Remove(obj.GetComponent<MonsterController>());
+				obj.SetActive(false); 
+			},
 			actionOnDestroy: (obj) => Destroy(obj), 
 			defaultCapacity: 2,
 			maxSize: 10
@@ -39,6 +46,7 @@ public class MonsterSpawner : MonoBehaviour
 	private void Start()
 	{
 		StartCoroutine(SpawnMonster());
+
 	}
 
 	IEnumerator SpawnMonster()
@@ -57,24 +65,32 @@ public class MonsterSpawner : MonoBehaviour
 		}
 	}
 
-
-	private void OnTriggerEnter(Collider other)
+	public void InitMonsters()
 	{
-		PlayerCombatController pc = other.GetComponent<PlayerCombatController>();
-		if (pc != null)
-		{
-			isPlayerIn = true;
-			pc.isInHuntZone = true;
-		}
+		foreach (MonsterController monster in  _activeMonster)
+			monster.InitHp();
+		
 	}
 
-	private void OnTriggerExit(Collider other)
-	{
-		PlayerCombatController pc = other.GetComponent<PlayerCombatController>();
-		if (pc != null)
-		{
-			isPlayerIn = false;
-			pc.isInHuntZone = false; 
-		}
-	}
+	//private void OnTriggerEnter(Collider other)
+	//{
+	//	PlayerCombatController pc = other.GetComponent<PlayerCombatController>();
+	//	if (pc != null)
+	//	{
+	//	//	isPlayerIn = true;
+	//		pc.isInHuntZone = true;
+	//	}
+	//}
+
+	//private void OnTriggerExit(Collider other)
+	//{
+	//	PlayerCombatController pc = other.GetComponent<PlayerCombatController>();
+	//	if (pc != null)
+	//	{
+	//	//	isPlayerIn = false; 
+	//		pc.isInHuntZone = false; 
+	//	}
+	//}
+
+
 }

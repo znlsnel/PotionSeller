@@ -9,6 +9,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : HealthEntity
 {
+	PickupManager _pickupManager;
 	PlayerCombatController _combatCtrl;
         JoystickController _joystick;
         Rigidbody _rigid;
@@ -26,12 +27,14 @@ public class PlayerController : HealthEntity
 	Vector3 _lookTarget;
 	float _lookTime;
 
+	public UnityEvent _onDead = new UnityEvent();
+
 	void Start()
         {
 		_rigid = GetComponent<Rigidbody>();
 		_anim = GetComponent<Animator>();
 		_combatCtrl = GetComponent<PlayerCombatController>();
-
+		_pickupManager = GetComponent<PickupManager>();
 		_touch = InputManager.instance.Touch;
 		_touchMove = InputManager.instance.TouchMove;
 		_joystick = UIHandler.instance._joystick;
@@ -92,9 +95,11 @@ public class PlayerController : HealthEntity
 	}
 
 	public override void OnDead()
-	{ 
+	{
+		_onDead?.Invoke();
 		_anim.SetBool("die", true);
 		_combatCtrl.SetActiveUpperBody(false);
+		_pickupManager.ClearItem();
 
 		Utils.instance.SetTimer(() => {
 			InitPlayer();

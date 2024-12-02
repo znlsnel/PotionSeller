@@ -34,6 +34,11 @@ public class IngredientItem : Item, IPlayerSensor
 
 	}
 
+	public void InitDungeon()
+	{
+		if (_collider.enabled == true) 
+			Relase();
+	}
 	public void EnterPlayer()
 	{
 		
