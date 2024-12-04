@@ -25,7 +25,7 @@ public abstract class HealthEntity : MonoBehaviour
 			(_hpBar.GetComponent<HpBar>() as MonsterHpUI)?.SetParentTransform(_hpPos);
 
 		}
-		_curHp = _initHp;
+		HP = _initHp; 
 	}
 
 	public void OnDamage(GameObject target, int damage)

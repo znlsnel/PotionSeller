@@ -36,7 +36,7 @@ public class PickupManager : MonoBehaviour, IItemReceiver
 
 	public int _carryCap { get { return _maxCarrySize - _items.Count; } }
 	public Stack<GameObject> GetItemStack() { return _items; }
-
+	public int GetItemCount() { return _items.Count; }
 	int _dirX = 1;
 	int _dirZ = 1;
 	private void Start()
@@ -135,5 +135,7 @@ public class PickupManager : MonoBehaviour, IItemReceiver
 	{
 		foreach (var item in _items)
 			item.GetComponent<Item>()?.Relase();
+		_items.Clear();
+		
 	}
 }

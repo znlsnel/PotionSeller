@@ -15,7 +15,6 @@ public class HpBar : MonoBehaviour
 	public virtual void Awake()
 	{ 
 		_slider = gameObject.GetComponentInChildren<Slider>();
-
 	}
 
 	public virtual void UpdateRate()

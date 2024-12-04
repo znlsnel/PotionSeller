@@ -30,6 +30,7 @@ public class IngredientItem : Item, IPlayerSensor
 	}
 	public void InitItem()
 	{
+		transform.SetParent(null);
 		_collider.enabled = true;
 
 	}

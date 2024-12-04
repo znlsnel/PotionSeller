@@ -32,31 +32,35 @@ public class Customer : MonoBehaviour
         [Space(10)]
 	#endregion
 	
-
-
 	[NonSerialized] public PickupManager _pickup;
-        [NonSerialized] public int _requireItem = 0;
+        [NonSerialized] public int _requireItem = 1;
 	[NonSerialized] public UnityEvent _onRelase = new UnityEvent();
 
 	Counter _counter;
 	Transform _endPos;
-
+        Animator _anim;
 	NavMeshAgent _agent;
 
         private ECustomerState _state;
-
+        int _lowerBodyIdx = -1;
 
 	private void Awake()
 	{ 
 		_agent = GetComponent<NavMeshAgent>();
 		_pickup = GetComponent<PickupManager>();
+		_anim = GetComponent<Animator>();
 	}
 	private void Start()
 	{
                 SetCustomerStyle();
 	}
-
-        public void SetState(ECustomerState next)
+	private void Update()
+	{
+                _anim.SetBool("move", _agent.remainingDistance > 0.01f);
+                _anim.SetBool("carry", _pickup.GetItemCount() > 0);
+	}
+         
+	public void SetState(ECustomerState next)
 	{
                 _state = next;
 		switch (_state)
@@ -90,9 +94,9 @@ public class Customer : MonoBehaviour
         public void InitCustomer(Counter counter, Transform endPos, UnityAction relaseAction)
         { 
                 _onRelase.RemoveAllListeners();
-                _onRelase.AddListener(relaseAction); 
-
-                _counter = counter;
+                _onRelase.AddListener(relaseAction);
+                _requireItem = Random.Range(1, 3);
+		_counter = counter;
                 _endPos = endPos;
 
                 SetState(ECustomerState.MovingToStore);
