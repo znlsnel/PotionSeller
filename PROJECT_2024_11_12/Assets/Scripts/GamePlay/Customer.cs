@@ -58,6 +58,17 @@ public class Customer : MonoBehaviour
 	{
                 _anim.SetBool("move", _agent.remainingDistance > 0.01f);
                 _anim.SetBool("carry", _pickup.GetItemCount() > 0);
+
+                if (_state == ECustomerState.MovingToStore)
+                {
+                        Vector3 t = _counter.transform.position;
+                        t.y = 0;
+                        Vector3 c = transform.position;
+                        c.y = 0;
+
+			transform.LookAt(transform.position + (t - c).normalized * 10); 
+
+		}
 	}
          
 	public void SetState(ECustomerState next)
@@ -88,7 +99,7 @@ public class Customer : MonoBehaviour
         void CompletedState()
         {
                 _agent.SetDestination(_endPos.position);
-                Utils.instance.SetTimer(()=>StartCoroutine(CheckArrival()), 3.0f);
+                Utils.instance.SetTimer(()=>StartCoroutine(CheckArrival()), 1.0f); 
 	}
 
         public void InitCustomer(Counter counter, Transform endPos, UnityAction relaseAction)
