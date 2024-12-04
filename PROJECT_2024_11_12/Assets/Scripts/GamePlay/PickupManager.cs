@@ -27,18 +27,26 @@ public class PickupManager : MonoBehaviour, IItemReceiver
 	[Space(10)]
 	Stack<GameObject> _items = new Stack<GameObject>();
 
-	public int _maxCarrySize = 8;
 	[NonSerialized] public bool isReceivingItem = false;
+	public int _maxCarrySize = 8;
 
 	public bool destoryItem = false;
 	public UnityAction _onGetItem;
 
+	bool isEnable = true;
+
+	public void SetActive(bool act)
+	{
+		isEnable = act;
+	}
 
 	public int _carryCap { get { return _maxCarrySize - _items.Count; } }
 	public Stack<GameObject> GetItemStack() { return _items; }
 	public int GetItemCount() { return _items.Count; }
+
 	int _dirX = 1;
 	int _dirZ = 1;
+
 	private void Start()
 	{
 		if (_handEndPos != null)
@@ -67,7 +75,7 @@ public class PickupManager : MonoBehaviour, IItemReceiver
 	public void ReceiveItem(GameObject go)
 	{
 		Item item = go.GetComponent<Item>();
-		if (_carryCap == 0 || !CheckItemType(item._itemType))
+		if (isEnable == false || _carryCap == 0 || !CheckItemType(item._itemType))
 			return;
 
 		isReceivingItem = true;

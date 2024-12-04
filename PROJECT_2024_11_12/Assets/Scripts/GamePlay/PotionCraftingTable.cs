@@ -6,11 +6,11 @@ public class PotionCraftingTable : MonoBehaviour, IPlayerSensor
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	[SerializeField] GameObject _player;
 	IItemReceiver _playerItemReceiver;
-        IItemSender _itemSender;
+	SendItemManager _itemSender;
 
 	public void EnterPlayer()
 	{
-		_itemSender.SendItem(_playerItemReceiver);
+		_itemSender.SendItem(_player, _playerItemReceiver);
 	}
 
 	public void ExitPlayer()
@@ -25,15 +25,16 @@ public class PotionCraftingTable : MonoBehaviour, IPlayerSensor
 	}
 	private void OnTriggerEnter(Collider other)
 	{
-		PlayerController pc = other.GetComponent<PlayerController>();
-		if (pc == null) return;
-
+		LayerMask findLayerMask = LayerMask.GetMask("Player"); // 비트마스크 값 생성
+		if ((findLayerMask.value & (1 << other.gameObject.layer)) == 0)
+			return;
 		EnterPlayer();
 	}
 	private void OnTriggerExit(Collider other)
 	{
-		PlayerController pc = other.GetComponent<PlayerController>();
-		if (pc == null) return;
+		LayerMask findLayerMask = LayerMask.GetMask("Player"); // 비트마스크 값 생성
+		if ((findLayerMask.value & (1 << other.gameObject.layer)) == 0)
+			return;
 		ExitPlayer();
 	}
 }

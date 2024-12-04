@@ -30,6 +30,8 @@ public class PotionJar : MonoBehaviour
 
 		_itemPool = new ObjectPool<GameObject>(
 			createFunc: () => Instantiate<GameObject>(_itemPrefab),
+			actionOnGet: (obj) => { obj.SetActive(true); },
+			actionOnRelease: (obj) => { obj.SetActive(false); },
 			defaultCapacity: 0
 			);
 		 

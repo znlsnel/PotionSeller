@@ -92,10 +92,12 @@ public class PlayerController : HealthEntity
 		_anim.SetBool("die", false);
 		HP = _initHp;
 		transform.position = _genPos.position;
+		_pickupManager.SetActive(true);
 	}
 
 	public override void OnDead()
 	{
+		_pickupManager.SetActive(false);
 		_onDead?.Invoke();
 		_anim.SetBool("die", true);
 		_combatCtrl.SetActiveUpperBody(false);

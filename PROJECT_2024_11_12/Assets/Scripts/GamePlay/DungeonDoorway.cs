@@ -20,11 +20,19 @@ public class DungeonDoorway : Singleton<DungeonDoorway>
           
         void EnterDungeon(GameObject go)
 	{
+		LayerMask findLayerMask = LayerMask.GetMask("Player");
+		if ((findLayerMask.value & (1 << go.gameObject.layer)) == 0)
+			return;
 		_playerCombat.isInHuntZone = true;
+
+		
 	}
 
 	void ExitDungeon(GameObject go)
 	{
+		LayerMask findLayerMask = LayerMask.GetMask("Player");
+		if ((findLayerMask.value & (1 << go.gameObject.layer)) == 0)
+			return;
 
 		_playerCombat.isInHuntZone = false;
 		MonsterSpawner[] mss = FindObjectsByType<MonsterSpawner>(FindObjectsSortMode.None);

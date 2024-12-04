@@ -88,7 +88,7 @@ public class Customer : MonoBehaviour
         void CompletedState()
         {
                 _agent.SetDestination(_endPos.position);
-                StartCoroutine(CheckArrival());
+                Utils.instance.SetTimer(()=>StartCoroutine(CheckArrival()), 3.0f);
 	}
 
         public void InitCustomer(Counter counter, Transform endPos, UnityAction relaseAction)
@@ -104,18 +104,23 @@ public class Customer : MonoBehaviour
 
         IEnumerator CheckArrival()
         {
-                if (_agent.remainingDistance == 0)
+                while (true)
                 {
-                        Utils.instance.SetTimer(()=>RelaseCustomer(), 1.0f);
-                        yield break;
-                }
-                yield return new WaitForSeconds(0.3f);
+			if (_agent.remainingDistance < 0.1f)
+			{
+				Utils.instance.SetTimer(() => RelaseCustomer(), 1.0f);
+				yield break;
+			}
+			yield return new WaitForSeconds(0.3f);
+		}
+               
         }
 
         public void RelaseCustomer()
         {
                 _pickup.ClearItem(); 
 		_onRelase?.Invoke();
+
         }
 	public void SetCustomerStyle()
         {

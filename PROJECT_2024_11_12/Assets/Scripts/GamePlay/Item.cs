@@ -13,6 +13,8 @@ public class Item : MonoBehaviour
 	}
 	public void Relase()
 	{
+		transform.SetParent(null);
+		gameObject.SetActive(false);
 		_onRelease?.Invoke();
 		_onRelease.RemoveAllListeners();
 	}

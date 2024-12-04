@@ -15,13 +15,20 @@ public class CustomerSpawner : MonoBehaviour
 
 	private void Awake()
 	{
-		_customerPool = new ObjectPool<GameObject>(
-		createFunc: () => Instantiate<GameObject>(_customerPrefab),
-			actionOnGet: (obj) => { 
+                _customerPool = new ObjectPool<GameObject>(
+                createFunc: () => Instantiate<GameObject>(_customerPrefab),
+                        actionOnGet: (obj) =>
+                        {
+                                obj.SetActive(true);
                                 obj.transform.position = _spawnPos.position;
-                                obj.GetComponent<Customer>()?.InitCustomer(_counter, _endPos, () => { _customerPool.Release(obj); 
-                                }); }
-		);
+                                obj.GetComponent<Customer>()?.InitCustomer(_counter, _endPos, () =>
+                                {
+                                        _customerPool.Release(obj);
+                                });
+                        },
+                        actionOnRelease: (obj) => { obj.SetActive(false); }
+
+                ) ;
 	}
 	void Start()
         { 

@@ -15,7 +15,8 @@ public class SendItemManager : MonoBehaviour, IItemSender
 	PickupManager _pickupManager;
 	[SerializeField] float _sendTime = 1.0f;
 
-	Stack<GameObject> _items; 
+	Stack<GameObject> _items;
+	GameObject _target;
 	private void Awake()
 	{
 		_pickupManager = GetComponent<PickupManager>();
@@ -28,9 +29,16 @@ public class SendItemManager : MonoBehaviour, IItemSender
 	}
 
 	Coroutine sendCT = null;
+	public void SendItem(GameObject target, IItemReceiver receiver, int cnt = 99999)
+	{
+		sendCT = StartCoroutine(Send(receiver, cnt));
+		_target = target;
+	}
+
 	public void SendItem(IItemReceiver receiver, int cnt = 99999)
 	{
 		sendCT = StartCoroutine(Send(receiver, cnt));
+
 	}
 
 	public void CancelSend()
@@ -40,24 +48,42 @@ public class SendItemManager : MonoBehaviour, IItemSender
 			StopCoroutine(sendCT);
 			sendCT = null;
 		}
+		_target = null;
 	}
 	 
 	IEnumerator Send(IItemReceiver receiver, int cnt)
 	{ 
-		int size = Mathf.Min(_pickupManager.GetItemStack().Count, cnt);
-		if (size == 0 || !receiver.CheckItemType(_items.Peek().GetComponent<Item>()._itemType))
-			yield break;
-
-		while (_pickupManager.isReceivingItem)
-			yield return new WaitForSeconds(0.3f);  
-
-		float t = _sendTime / size; 
-		while (cnt-- > 0 && _pickupManager.GetItemStack().Count > 0)
+		while (true)
 		{
-			receiver.ReceiveItem(_pickupManager.GetItemStack().Peek());
-			_pickupManager.GetItemStack().Pop();
+			int size = Mathf.Min(_pickupManager.GetItemStack().Count, cnt);
+			if (size == 0 || !receiver.CheckItemType(_items.Peek().GetComponent<Item>()._itemType))
+			{
+				if (_target == null)
+					yield break;
+				else
+				{
+					yield return new WaitForSeconds(0.3f);
+					continue;
+				}
+			}
 
-			yield return new WaitForSeconds(t);
+			while (_pickupManager.isReceivingItem)
+				yield return new WaitForSeconds(0.3f);
+
+			float t = _sendTime / size;
+			while (cnt-- > 0 && _pickupManager.GetItemStack().Count > 0)
+			{
+				receiver.ReceiveItem(_pickupManager.GetItemStack().Peek());
+				_pickupManager.GetItemStack().Pop();
+
+				yield return new WaitForSeconds(t);
+			}
+
+			if (_target != null)
+				yield return new WaitForSeconds(0.3f);
+			else
+				yield break;
 		}
+
 	}
 }

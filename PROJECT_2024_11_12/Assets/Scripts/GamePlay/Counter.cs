@@ -40,8 +40,13 @@ public class Counter : MonoBehaviour, IPlayerSensor
 			if (_customers.Count > 0 && _itemSender.GetItemCount() > _customers.Peek()._requireItem)
                         {
 				_itemSender.SendItem(_customers.Peek()._pickup, _customers.Peek()._requireItem);
-                                _customers.Peek().SetState(ECustomerState.Completed);
-                                _customers.Dequeue();
+
+				Utils.instance.SetTimer(() =>
+				{
+					_customers.Peek().SetState(ECustomerState.Completed);
+					_customers.Dequeue();
+				}, 2.0f);
+                               
 
                                 int idx = 0;
                                 foreach (Customer customer in _customers)
