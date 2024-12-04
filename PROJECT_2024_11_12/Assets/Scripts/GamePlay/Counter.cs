@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -32,25 +33,36 @@ public class Counter : MonoBehaviour, IPlayerSensor
                 customer.MoveToTarget(GetWaitingPos());
 		_customers.Enqueue(customer);
 	}
+	bool CheckCounterArrival(GameObject go)
+	{
+		Vector3 pos = go.transform.position;
+		pos.y = _waitingStartPos.position.y; 
+		return (pos - _waitingStartPos.position).magnitude < 0.1f;
+	}
 
-        IEnumerator Checkout()  
+	IEnumerator Checkout()  
         {
                 while (true)
                 {
 			if (_customers.Count > 0 && _itemSender.GetItemCount() > _customers.Peek()._requireItem)
                         {
+				while(CheckCounterArrival(_customers.Peek().gameObject) == false)
+					yield return new WaitForSeconds(1.0f);
+
 				_itemSender.SendItem(_customers.Peek()._pickup, _customers.Peek()._requireItem);
 
 				Utils.instance.SetTimer(() =>
 				{
 					_customers.Peek().SetState(ECustomerState.Completed);
 					_customers.Dequeue();
-				}, 2.0f);
+
+					int idx = 0;
+					foreach (Customer customer in _customers)
+						customer.MoveToTarget(GetWaitingPos(idx++));
+				}, 1.0f);
                                
 
-                                int idx = 0;
-                                foreach (Customer customer in _customers)
-                                        customer.MoveToTarget(GetWaitingPos(idx++));
+                                
 			}
 			
 			yield return new WaitForSeconds(2.0f);

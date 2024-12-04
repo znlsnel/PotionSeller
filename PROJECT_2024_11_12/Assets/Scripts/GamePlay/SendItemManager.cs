@@ -62,15 +62,15 @@ public class SendItemManager : MonoBehaviour, IItemSender
 					yield break;
 				else
 				{
-					yield return new WaitForSeconds(0.3f);
-					continue;
+					yield return new WaitForSeconds(0.1f);
+					continue; 
 				}
 			}
 
 			while (_pickupManager.isReceivingItem)
 				yield return new WaitForSeconds(0.3f);
 
-			float t = _sendTime / size;
+			float t = Mathf.Min(_sendTime / size, 0.2f); 
 			while (cnt-- > 0 && _pickupManager.GetItemStack().Count > 0)
 			{
 				receiver.ReceiveItem(_pickupManager.GetItemStack().Peek());
@@ -79,8 +79,8 @@ public class SendItemManager : MonoBehaviour, IItemSender
 				yield return new WaitForSeconds(t);
 			}
 
-			if (_target != null)
-				yield return new WaitForSeconds(0.3f);
+			if (_target != null) 
+				yield return new WaitForSeconds(0.1f);
 			else
 				yield break;
 		}

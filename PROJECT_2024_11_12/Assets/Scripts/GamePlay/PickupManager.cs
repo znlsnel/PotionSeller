@@ -134,7 +134,7 @@ public class PickupManager : MonoBehaviour, IItemReceiver
 			go.GetComponent<Item>()?.Relase(); 
 		
 
-		yield return new WaitForSeconds(1.0f);
+		yield return new WaitForSeconds(duration);
 		if (Time.time > moveEndTime)
 			isReceivingItem = false;
 	}
