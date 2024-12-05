@@ -8,21 +8,24 @@ public interface IItemReceiver
 {
 	public void ReceiveItem(GameObject item);
 	public bool CheckItemType(EItemType type);
+
+	public bool isReceivable();
 }
 
 public class PickupManager : MonoBehaviour, IItemReceiver
 {
 	[SerializeField] Transform _handPos;
-	[SerializeField] Transform _handEndPos;
 	[SerializeField] EItemType _itemType;
 
-	[SerializeField] int _maxCarrySizeX = 1;
-	[SerializeField] int _maxCarrySizeZ = 1;
+	[SerializeField] int _carrySizeX = 1;
+	[SerializeField] int _carrySizeZ = 1;
 
 	[Space(10)]
 	[SerializeField] float _xOffset = 0;
 	[SerializeField] float _zOffset = 0;
 	[SerializeField] float _yOffset = 0;
+
+	[SerializeField] Vector2 _sortDir = new Vector2(1,1);
 
 	[Space(10)]
 	Stack<GameObject> _items = new Stack<GameObject>();
@@ -40,22 +43,15 @@ public class PickupManager : MonoBehaviour, IItemReceiver
 		isEnable = act;
 	}
 
+	public bool isReceivable()
+	{
+		return _items.Count < _maxCarrySize;
+	}
 	public int _carryCap { get { return _maxCarrySize - _items.Count; } }
 	public Stack<GameObject> GetItemStack() { return _items; }
 	public int GetItemCount() { return _items.Count; }
 
-	int _dirX = 1;
-	int _dirZ = 1;
 
-	private void Start()
-	{
-		if (_handEndPos != null)
-		{
-			Vector3 d = _handEndPos.position - _handPos.position;
-			_dirX = d.x > 0 ? 1 : -1;
-			_dirZ = d.z > 0 ? 1 : -1;
-		} 
-	}
 	public void InitPickupManager(Stack<GameObject> stack)
 	{
 		_items = stack;
@@ -89,13 +85,13 @@ public class PickupManager : MonoBehaviour, IItemReceiver
 		Renderer renderer = _items.Count == 0 ? null : _items.Peek().GetComponent<Renderer>();
 		if (renderer != null)
 		{
-			int yIdx = _items.Count / (_maxCarrySizeX * _maxCarrySizeZ);
-			int zIdx = _items.Count % (_maxCarrySizeX * _maxCarrySizeZ) / _maxCarrySizeX;
-			int xIdx = _items.Count % (_maxCarrySizeX * _maxCarrySizeZ) % _maxCarrySizeX;
+			int yIdx = _items.Count / (_carrySizeX * _carrySizeZ);
+			int zIdx = _items.Count % (_carrySizeX * _carrySizeZ) / _carrySizeX;
+			int xIdx = _items.Count % (_carrySizeX * _carrySizeZ) % _carrySizeX;
 
 			pos.y += yIdx * (renderer.bounds.size.y + _yOffset);
-			pos.z +=_dirZ *  zIdx * (renderer.bounds.size.z + _zOffset);
-			pos.x += _dirX * xIdx * (renderer.bounds.size.x + _xOffset);
+			pos.z += _sortDir.y *  zIdx * (renderer.bounds.size.z + _zOffset);
+			pos.x += _sortDir.x * xIdx * (renderer.bounds.size.x + _xOffset);
 		}
 
 		go.transform.SetParent(_handPos);

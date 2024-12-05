@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class Counter : MonoBehaviour, IPlayerSensor
 {
 
-	[SerializeField] GameObject _player;
+	[SerializeField] GameObject _porter;
 	IItemSender _playerSender;
         [SerializeField] Transform _waitingStartPos;
         [SerializeField] Transform _waitingEndPos;
@@ -21,7 +22,7 @@ public class Counter : MonoBehaviour, IPlayerSensor
 	{
 		_itemSender = GetComponent<SendItemManager>();
 		_itemReceiver = GetComponent<PickupManager>();
-		_playerSender = _player.GetComponent<SendItemManager>();
+		_playerSender = _porter.GetComponent<SendItemManager>();
 	}
 	private void Start()
 	{

@@ -4,13 +4,13 @@ using UnityEngine;
 public class PotionCraftingTable : MonoBehaviour, IPlayerSensor
 {
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
-	[SerializeField] GameObject _player;
+	[SerializeField] GameObject _porter;
 	IItemReceiver _playerItemReceiver;
 	SendItemManager _itemSender;
 
 	public void EnterPlayer()
 	{
-		_itemSender.SendItem(_player, _playerItemReceiver);
+		_itemSender.SendItem(_porter, _playerItemReceiver);
 	}
 
 	public void ExitPlayer()
@@ -21,7 +21,7 @@ public class PotionCraftingTable : MonoBehaviour, IPlayerSensor
 	private void Awake()
 	{
 		_itemSender = GetComponent<SendItemManager>();
-		_playerItemReceiver = _player.GetComponent<IItemReceiver>();
+		_playerItemReceiver = _porter.GetComponent<IItemReceiver>();
 	}
 	private void OnTriggerEnter(Collider other)
 	{

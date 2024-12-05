@@ -19,7 +19,7 @@ public class IngredientItem : Item, IPlayerSensor
 			return;
 
 		if (_playerItemReceiver == null)
-			_playerItemReceiver = other.GetComponent<PickupManager>();
+			_playerItemReceiver = pc.GetPickupManager();
 
 		EnterPlayer();
 	}

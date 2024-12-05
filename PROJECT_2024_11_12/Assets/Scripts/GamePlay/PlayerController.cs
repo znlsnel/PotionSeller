@@ -10,6 +10,8 @@ using UnityEngine.InputSystem;
 public class PlayerController : HealthEntity
 {
 	PickupManager _pickupManager;
+	SendItemManager _sendItemManager;
+
 	PlayerCombatController _combatCtrl;
         JoystickController _joystick;
         Rigidbody _rigid;
@@ -18,6 +20,7 @@ public class PlayerController : HealthEntity
 	InputAction _touchMove;
 	InputAction _touch;
 
+	[SerializeField] GameObject _porter; 
 	[SerializeField] Transform _genPos; 
 	[SerializeField] float _moveSpeed = 5.0f;
 
@@ -29,12 +32,17 @@ public class PlayerController : HealthEntity
 
 	public UnityEvent _onDead = new UnityEvent();
 
-	void Start()
-        {
+	protected override void Awake()
+	{
+		base.Awake ();	
 		_rigid = GetComponent<Rigidbody>();
 		_anim = GetComponent<Animator>();
 		_combatCtrl = GetComponent<PlayerCombatController>();
-		_pickupManager = GetComponent<PickupManager>();
+		_pickupManager = _porter.GetComponent<PickupManager>();
+		_sendItemManager = _porter.GetComponent<SendItemManager>();
+	}
+	void Start()
+        {
 		_touch = InputManager.instance.Touch;
 		_touchMove = InputManager.instance.TouchMove;
 		_joystick = UIHandler.instance._joystick;
@@ -116,6 +124,16 @@ public class PlayerController : HealthEntity
 	public override void TargetExit(GameObject go)
 	{
 		_combatCtrl.ExitMonster(go);
+	}
+
+	public PickupManager GetPickupManager()
+	{
+		return _pickupManager;
+	}
+
+	public SendItemManager GetSendItemManager()
+	{
+		return _sendItemManager;
 	}
 } 
  

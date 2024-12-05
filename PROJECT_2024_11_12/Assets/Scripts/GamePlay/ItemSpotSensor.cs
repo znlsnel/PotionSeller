@@ -8,13 +8,13 @@ public interface IPlayerSensor
 }
 public class ItemSpotSensor : MonoBehaviour, IPlayerSensor
 {
-	[SerializeField] GameObject _player;
+	[SerializeField] GameObject _porter;
 	IItemSender _playerItemSender;
 	IItemReceiver _itemReceiver;
 	private void Start()
 	{
 		_itemReceiver = GetComponent<PickupManager>();
-		_playerItemSender = _player.GetComponent<SendItemManager>();
+		_playerItemSender = _porter.GetComponent<IItemSender>();
 	}
 	public void EnterPlayer()
 	{

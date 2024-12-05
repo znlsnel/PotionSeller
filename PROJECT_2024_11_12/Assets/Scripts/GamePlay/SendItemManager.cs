@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 
 public interface IItemSender
@@ -71,11 +72,11 @@ public class SendItemManager : MonoBehaviour, IItemSender
 				yield return new WaitForSeconds(0.3f);
 
 			float t = Mathf.Min(_sendTime / size, 0.2f); 
-			while (cnt-- > 0 && _pickupManager.GetItemStack().Count > 0)
+			while (cnt> 0 && _pickupManager.GetItemStack().Count > 0 && receiver.isReceivable())
 			{
 				receiver.ReceiveItem(_pickupManager.GetItemStack().Peek());
 				_pickupManager.GetItemStack().Pop();
-
+				cnt--;
 				yield return new WaitForSeconds(t);
 			}
 
