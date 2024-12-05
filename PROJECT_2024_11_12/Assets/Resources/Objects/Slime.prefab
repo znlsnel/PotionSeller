@@ -675,7 +675,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca8665f7151097e42929e2965af6d3d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _hpBarPrefab: {fileID: 4902472496073307143, guid: 480bfdbc71569004289df7a244961dc0, type: 3}
+  _hpBarPrefab: {fileID: 6001980894604165015, guid: 61e1ed7b41cb15e488ad73e319d1b6e3, type: 3}
   _hpPos: {fileID: 3188094155950123576}
   _initHp: 500
   _attackRange: 1
