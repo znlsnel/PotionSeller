@@ -130,10 +130,11 @@ public class MonsterController : HealthEntity
 
 		IngredientItem item = go.GetComponent<IngredientItem>();
 		item.InitItem();
-		item.AddReleaseAction(()=>ItemSpawner.instance.RelaseItem(_dropItem, go));
-		 
+		item.AddReleaseAction(() => ItemSpawner.instance.RelaseItem(_dropItem, go));
+
 		go.transform.position = transform.position;
-		  
+		
+
 		_onRelase?.Invoke();
 	}
 }

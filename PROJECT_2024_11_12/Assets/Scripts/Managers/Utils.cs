@@ -18,4 +18,5 @@ public class Utils : Singleton<Utils>
 			yield return new WaitForSeconds(time);
 		action.Invoke();
 	}
+
 } 

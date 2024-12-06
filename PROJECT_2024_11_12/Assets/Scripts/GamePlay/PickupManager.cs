@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 public interface IItemReceiver
 {
-	public void ReceiveItem(GameObject item);
+	public void ReceiveItem(GameObject item, bool destroy = false);
 	public bool CheckItemType(EItemType type);
 
 	public bool isReceivable();
@@ -68,7 +68,7 @@ public class PickupManager : MonoBehaviour, IItemReceiver
 		return _items.Peek().GetComponent<Item>()._itemType == type;
 	}
 
-	public void ReceiveItem(GameObject go)
+	public void ReceiveItem(GameObject go, bool destroy = false)
 	{
 		Item item = go.GetComponent<Item>();
 		if (isEnable == false || _carryCap == 0 || !CheckItemType(item._itemType))
@@ -95,7 +95,7 @@ public class PickupManager : MonoBehaviour, IItemReceiver
 		}
 
 		go.transform.SetParent(_handPos);
-		StartCoroutine(MoveInParabola(go, go.transform.position, pos));
+		StartCoroutine(MoveInParabola(go, go.transform.position, pos, destroy));
 
 		if (destoryItem == false)
 			_items.Push(go);
@@ -104,7 +104,7 @@ public class PickupManager : MonoBehaviour, IItemReceiver
 
 	float moveEndTime = 0.0f;
 
-	IEnumerator MoveInParabola(GameObject go, Vector3 start, Vector3 offset, float height = 2.0f, float duration = 0.2f)
+	IEnumerator MoveInParabola(GameObject go, Vector3 start, Vector3 offset, bool destory, float height = 2.0f, float duration = 0.2f)
 	{
 		moveEndTime = Time.deltaTime + duration;
 		float elapsedTime = 0f;
@@ -126,8 +126,8 @@ public class PickupManager : MonoBehaviour, IItemReceiver
 		go.transform.position = end + offset;
 		_onGetItem?.Invoke();
 
-		if (destoryItem)
-			go.GetComponent<Item>()?.Relase(); 
+		if (destoryItem || destory)
+			go.GetComponent<Item>()?.Relase();  
 		
 
 		yield return new WaitForSeconds(duration);

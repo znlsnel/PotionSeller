@@ -8,6 +8,7 @@ public enum EItemType
 	ALL,
 	INGREDIENT_POSTION,
 	POSTION,
+	COIN,
 }
 
 public enum EItem

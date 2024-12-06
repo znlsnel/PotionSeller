@@ -2762,7 +2762,7 @@ GameObject:
   - component: {fileID: 943173443597136093}
   - component: {fileID: 7955405405267672777}
   - component: {fileID: 1205339188376044282}
-  - component: {fileID: 4009444298347018020}
+  - component: {fileID: 7109792433876921816}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -2830,7 +2830,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _hpBarPrefab: {fileID: 8922588198468465729, guid: 447648af43691c949bf172467f37ced1, type: 3}
   _hpPos: {fileID: 8439807217597944582}
-  _initHp: 3
+  _initHp: 100
+  _porter: {fileID: 0}
   _genPos: {fileID: 0}
   _moveSpeed: 5
   _onDead:
@@ -2898,8 +2899,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dd39effc545fb142a3c6611e11a2a9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _damage: 100
---- !u!114 &4009444298347018020
+  _damage: 1000
+--- !u!114 &7109792433876921816
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2911,14 +2912,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6661775e511ff594ea69bded40dc7a30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _handPos: {fileID: 3386484703133796722}
-  _handEndPos: {fileID: 0}
-  _itemType: 0
-  _maxCarrySizeX: 1
-  _maxCarrySizeZ: 1
+  _handPos: {fileID: 0}
+  _itemType: 3
+  _carrySizeX: 1
+  _carrySizeZ: 1
   _xOffset: 0
   _zOffset: 0
   _yOffset: 0
+  _sortDir: {x: 1, y: 1}
   _maxCarrySize: 8
   destoryItem: 0
 --- !u!1 &8584869015542944295

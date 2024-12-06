@@ -9,11 +9,12 @@ public class Counter : MonoBehaviour, IPlayerSensor
 {
 
 	[SerializeField] GameObject _porter;
-	IItemSender _playerSender;
+	[SerializeField] CoinSpawner _coinSpawner;
         [SerializeField] Transform _waitingStartPos;
         [SerializeField] Transform _waitingEndPos;
         [SerializeField] float _waitingInterval = 1.0f;
 
+	IItemSender _playerSender;
 	IItemSender _itemSender;
 	IItemReceiver _itemReceiver;
         Queue<Customer> _customers = new Queue<Customer>();
@@ -54,9 +55,9 @@ public class Counter : MonoBehaviour, IPlayerSensor
 
 				Utils.instance.SetTimer(() =>
 				{
+					_coinSpawner.AddCoin(_customers.Peek()._requireItem * 5);
 					_customers.Peek().SetState(ECustomerState.Completed);
 					_customers.Dequeue();
-
 					int idx = 0;
 					foreach (Customer customer in _customers)
 						customer.MoveToTarget(GetWaitingPos(idx++));
