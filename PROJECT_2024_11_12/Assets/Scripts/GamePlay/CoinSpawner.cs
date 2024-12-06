@@ -22,7 +22,12 @@ public class CoinSpawner : MonoBehaviour
 		_spotLight.SetActive(false);
 		_pool = new ObjectPool<GameObject>(
 			createFunc: () => Instantiate<GameObject>(_coinPrefab),
-			actionOnGet: (obj) => SetCoinTransform(obj)
+			actionOnGet: (obj) => {
+				
+				SetCoinTransform(obj);
+				obj.SetActive(true);
+				obj.GetComponent<Item>().AddReleaseAction(() => { _pool.Release(obj); });
+			}
 			) ;
 	}
 	public void AddCoin(int cnt)
@@ -35,7 +40,7 @@ public class CoinSpawner : MonoBehaviour
 		{
 			Utils.instance.SetTimer(() =>
 			{
-				_sendCoin = StartCoroutine(SendCoin(_player.GetComponent<PlayerController>().GetPickupManager()));
+				_sendCoin = StartCoroutine(SendCoin(_player.GetComponent<PickupManager>()));
 			}, 0.5f);
 		}
 
@@ -86,8 +91,8 @@ public class CoinSpawner : MonoBehaviour
 		{
 			StopCoroutine(_sendCoin);
 			_sendCoin = null;
-			_player = null ;
-		}
+		} 
+		_player = null ;
 	}
 
 	IEnumerator SendCoin(IItemReceiver receiver)

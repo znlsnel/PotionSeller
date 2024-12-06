@@ -12,7 +12,7 @@ public abstract class HealthEntity : MonoBehaviour
 	[NonSerialized] public UnityEvent _onChangedHp = new UnityEvent();
 
 	[NonSerialized] public GameObject _hpBar;
-
+	[SerializeField] DamageUI _damageUI;
 	public int HP { get { return _curHp; } set { _curHp = Mathf.Max(Mathf.Min(value, _initHp), 0); _onChangedHp?.Invoke(); } }
 	public int MaxHP { get { return _initHp; } }
 
@@ -33,6 +33,7 @@ public abstract class HealthEntity : MonoBehaviour
 		if (HP == 0)
 			return;
 
+		_damageUI.SetDamage(damage); 
 
 		HP = HP - damage;
 		if (HP == 0) 
