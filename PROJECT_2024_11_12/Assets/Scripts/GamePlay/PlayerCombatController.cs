@@ -84,7 +84,7 @@ public class PlayerCombatController : MonoBehaviour
 		{
 			Vector3 dir = _lookTarget.transform.position - transform.position;
 			float dist = dir.magnitude;
-			ScreenDebug.instance.DebugText($"monster To Player Distance : {dist}");
+		//	ScreenDebug.instance.DebugText($"monster To Player Distance : {dist}");
 
 			dir.y = 0;
 			_playerCtrl.LookAt(transform.position + dir * 100);

@@ -102,6 +102,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _itemType: 1
+  _pointLight: {fileID: 5562774997400755683}
 --- !u!135 &3414908958124766083
 SphereCollider:
   m_ObjectHideFlags: 0
