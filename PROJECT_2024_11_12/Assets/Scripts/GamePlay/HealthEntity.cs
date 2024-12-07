@@ -13,7 +13,7 @@ public abstract class HealthEntity : MonoBehaviour
 
 	[NonSerialized] public GameObject _hpBar;
 	[SerializeField] DamageUI _damageUI;
-	public int HP { get { return _curHp; } set { _curHp = Mathf.Max(Mathf.Min(value, _initHp), 0); _onChangedHp?.Invoke(); } }
+	public int HP { get { return _curHp; } set { if (value == HP) return;  _curHp = Mathf.Max(Mathf.Min(value, _initHp), 0); _onChangedHp?.Invoke(); } }
 	public int MaxHP { get { return _initHp; } }
 
 	protected virtual void Awake()
@@ -36,9 +36,13 @@ public abstract class HealthEntity : MonoBehaviour
 		_damageUI.SetDamage(damage); 
 
 		HP = HP - damage;
-		if (HP == 0) 
-			Utils.instance.SetTimer(()=>OnDead());
-		
+		if (HP == 0)
+		{
+			Utils.instance.SetTimer(() => OnDead());
+			Utils.instance.SetTimer(() => _damageUI.CloseUI(), 1.0f);
+
+		}
+
 	}
 	 
 	public abstract void OnDead();

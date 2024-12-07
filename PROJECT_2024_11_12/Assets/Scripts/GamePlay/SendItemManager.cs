@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.Android.Gradle.Manifest;
+//using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 
-public interface IItemSender
+public interface IItemSender 
 {
 	public void SendItem(IItemReceiver receiver, int cnt = 99999);
 	public void CancelSend();

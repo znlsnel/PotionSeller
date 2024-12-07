@@ -19,9 +19,11 @@ public class MonsterSpawner : MonoBehaviour
 		_pool = new ObjectPool<GameObject>(
 			createFunc: () => Instantiate<GameObject>(_monsterPrefab[Random.Range(0, _monsterPrefab.Count)]),
 			actionOnGet: (obj) => {
+				obj.SetActive(false);
 				obj.GetComponent<MonsterController>().InitMonster(this, GetSpawnPos(), () => { _pool.Release(obj); });
 				_activeMonster.Add(obj.GetComponent<MonsterController>());
 				},
+
 			actionOnRelease: (obj) => {
 				_activeMonster.Remove(obj.GetComponent<MonsterController>());
 				obj.SetActive(false); 

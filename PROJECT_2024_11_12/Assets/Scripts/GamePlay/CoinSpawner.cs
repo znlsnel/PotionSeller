@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Pool;
-using static UnityEditor.PlayerSettings;
+//using static UnityEditor.PlayerSettings;
 
 public class CoinSpawner : MonoBehaviour
 {
@@ -26,6 +26,7 @@ public class CoinSpawner : MonoBehaviour
 				
 				SetCoinTransform(obj);
 				obj.SetActive(true);
+				obj.transform.SetParent(null);
 				obj.GetComponent<Item>().AddReleaseAction(() => { _pool.Release(obj); });
 			}
 			) ;
@@ -48,7 +49,9 @@ public class CoinSpawner : MonoBehaviour
 
 	void SetCoinTransform(GameObject coin)
 	{
+		coin.transform.SetParent(null);
 		coin.transform.position = _coinPosition.position;
+		coin.transform.rotation = _coinPosition.rotation;
 		int size_X = 3;
 		int size_Z= 3;
 
@@ -60,10 +63,15 @@ public class CoinSpawner : MonoBehaviour
 			int zIdx = _coins.Count % (size_X * size_Z) / size_X;
 			int xIdx = _coins.Count % (size_X * size_Z) % size_X;
 
-			Vector3 pos = coin.transform.position;
+			Vector3 pos = _coinPosition.position;
 			pos.y += yIdx * (renderer.bounds.size.y + _coinOffset.y);
 			pos.z +=  -zIdx * (renderer.bounds.size.z + _coinOffset.z);
 			pos.x += xIdx * (renderer.bounds.size.x + _coinOffset.x);
+
+			Debug.Log($"Start Pos : [{_coinPosition.position.x}, {_coinPosition.position.y}, {_coinPosition.position.z}]");
+			Debug.Log($"bounding size : [{renderer.bounds.size.x}, {renderer.bounds.size.y}, {renderer.bounds.size.z}]");
+			Debug.Log($"coinOffset size : [{_coinOffset.x}, {_coinOffset.y}, {_coinOffset.z}]");
+			Debug.Log($"XYZ IDX  : [{xIdx}, {yIdx}, {zIdx}]"); 
 
 			coin.transform.position = pos;
 		}

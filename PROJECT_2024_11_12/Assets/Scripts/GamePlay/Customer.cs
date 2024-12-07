@@ -2,7 +2,7 @@ using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Notifications.iOS;
+//using Unity.Notifications.iOS;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
@@ -42,7 +42,7 @@ public class Customer : MonoBehaviour
 	NavMeshAgent _agent;
 
         private ECustomerState _state;
-        int _lowerBodyIdx = -1;
+      //  int _lowerBodyIdx = -1;
 
 	private void Awake()
 	{ 

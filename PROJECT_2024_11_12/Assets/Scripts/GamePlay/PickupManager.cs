@@ -92,13 +92,17 @@ public class PickupManager : MonoBehaviour, IItemReceiver
 			pos.y += yIdx * (renderer.bounds.size.y + _yOffset);
 			pos.z += _sortDir.y *  zIdx * (renderer.bounds.size.z + _zOffset);
 			pos.x += _sortDir.x * xIdx * (renderer.bounds.size.x + _xOffset);
+
 		}
 
-		go.transform.SetParent(_handPos);
 		StartCoroutine(MoveInParabola(go, go.transform.position, pos, destroy));
 
 		if (destoryItem == false)
+		{
+			go.transform.SetParent(_handPos);
 			_items.Push(go);
+			 
+		}
 
 	}
 

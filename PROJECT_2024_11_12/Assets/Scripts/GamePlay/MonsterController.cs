@@ -44,16 +44,22 @@ public class MonsterController : HealthEntity
 
 	public void InitMonster(MonsterSpawner ms, Vector3 pos, Action relaseListener)
 	{
+		transform.position = pos;
+		_rigid.MovePosition(pos);
+
 		_ms = ms;
 		HP = _initHp;
-		if (_onRelase != null) 
+		if (_onRelase != null)
 			_onRelase.RemoveAllListeners();
 
-		_onRelase.AddListener(()=>relaseListener.Invoke()); 
+		_onRelase.AddListener(() => relaseListener.Invoke());
 
 		_anim.SetBool("die", false);
-		gameObject.SetActive(true);
-		transform.position = pos;
+		Utils.instance.SetTimer(() =>
+		{
+			gameObject.SetActive(true);
+
+		}, 1.0f);
 	}
 
         void AttackMove()
@@ -126,13 +132,17 @@ public class MonsterController : HealthEntity
 	 
 	public void AE_Die()
 	{ 
-		GameObject go = ItemSpawner.instance.GetItem(_dropItem);
+		for (int i = 0; i < 5; i++)
+		{
+			GameObject go = ItemSpawner.instance.GetItem(_dropItem);
 
-		IngredientItem item = go.GetComponent<IngredientItem>();
-		item.InitItem();
-		item.AddReleaseAction(() => ItemSpawner.instance.RelaseItem(_dropItem, go));
+			IngredientItem item = go.GetComponent<IngredientItem>();
+			item.InitItem();
+			item.AddReleaseAction(() => ItemSpawner.instance.RelaseItem(_dropItem, go));
 
-		go.transform.position = transform.position;
+			go.transform.position = transform.position;
+		}
+
 		
 
 		_onRelase?.Invoke();

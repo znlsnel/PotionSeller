@@ -11,14 +11,20 @@ public class DamageUI : MonoBehaviour
         [SerializeField] RectTransform _rect;
 	[SerializeField] List<TextMeshProUGUI> _texts = new List<TextMeshProUGUI>();
 	int idx = 0;
+	private void Start()
+	{
+		gameObject.SetActive(false);
+	}
 	private void OnEnable()
 	{
-		foreach (var text in _texts)
-			text.gameObject.SetActive(false);
-	}
 
+		//foreach (var text in _texts)
+		//	text.gameObject.SetActive(false);
+	}
+	
 	public void SetDamage(int damage)
 	{
+		gameObject.SetActive(true);
 		String str =  damage.ToString();
 		if (decimal.TryParse(str, out decimal number))
 		{
@@ -27,14 +33,21 @@ public class DamageUI : MonoBehaviour
 			_texts[idx].text = formattedNumber;
 		}
 		_texts[idx].gameObject.SetActive(true);
-		_texts[idx].GetComponent<Animator>().Play("Base Layer", 0, 0.0f);
-
+		_texts[idx].GetComponent<Animator>().Rebind();
+		//_texts[idx].GetComponent<Animator>().p
+		idx = (idx + 1) % _texts.Count; 
 	}
 
-    // Update is called once per frame
-	void FixedUpdate()
+	public void CloseUI()
 	{
-		Vector2 pos = Camera.main.WorldToScreenPoint(_uiPos.position);
-		_rect.localPosition = _rect.parent.InverseTransformPoint(pos); 
+		gameObject.SetActive(false);
+
+	}
+	// Update is called once per frame
+	void FixedUpdate() 
+	{ 
+		Vector2 targetPos = Camera.main.WorldToScreenPoint(_uiPos.position);
+		_rect.localPosition = _rect.parent.InverseTransformPoint(targetPos); 
 	} 
 }
+ 

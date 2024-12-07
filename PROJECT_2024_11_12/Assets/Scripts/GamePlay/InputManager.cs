@@ -9,11 +9,11 @@ public class InputManager : Singleton<InputManager>
 	InputAction _touch;
 	public InputAction TouchMove { get { return _touchMove; } private set { _touchMove = value; } }
 	public InputAction Touch { get { return _touch; } private set { _touch = value; } }
-	 
+
 	public override void Awake()  
 	{
 		//base.Awake();
-
+		Application.targetFrameRate = 30;
 		var inputSystem = Resources.Load<InputActionAsset>("Inputs/InputSystem");
 		_gamePlayMap = inputSystem.FindActionMap("GamePlay");
 		_touchMove = _gamePlayMap["TouchMove"];
@@ -21,6 +21,20 @@ public class InputManager : Singleton<InputManager>
 
 		_touchMove.Enable();
 		_touch.Enable();
-	} 
+	}
 
+	//float time = 0.0f;
+	//int cnt = 0;
+	private void Update()
+	{
+		//time += Time.deltaTime;
+		//cnt++;
+		//if (time >= 1.0f)
+		//{
+		//	Debug.Log($"FPS : {cnt}");
+		//	cnt = 0;
+		//	time = 0.0f;
+		//}
+
+	}
 }
