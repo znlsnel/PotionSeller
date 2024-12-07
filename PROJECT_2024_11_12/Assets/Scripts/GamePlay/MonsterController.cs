@@ -30,11 +30,10 @@ public class MonsterController : HealthEntity
 		_agent = GetComponent<NavMeshAgent>();
 	}
 
-        void FixedUpdate()
+        void Update()
         {
-		if (DungeonDoorway.instance.isPlayerInDungeon() &&  _target != null)
-		        AttackMove();
-		
+		if (DungeonDoorway.instance.isPlayerInDungeon() && _target != null)
+			AttackMove();
 	}
 
 	public void InitHp()
@@ -62,6 +61,7 @@ public class MonsterController : HealthEntity
 		}, 1.0f);
 	}
 
+
         void AttackMove()
         {
                 transform.LookAt(_target.transform.position); 
@@ -70,13 +70,15 @@ public class MonsterController : HealthEntity
 		float dist = dir.magnitude;
 
 		bool attack = dist < _attackRange;
+
 		_anim.SetBool("move", !attack);
 		_anim.SetBool("attack", attack);
 
 		_agent.isStopped = attack; 
 
-		if (!attack)
+		if (!attack)  
 			_agent.SetDestination(_target.transform.position);
+
 
 		if (DungeonDoorway.instance.isPlayerInDungeon() == false || _target.GetComponent<PlayerController>().isDead)
 		{
@@ -86,7 +88,7 @@ public class MonsterController : HealthEntity
 		}
 	}
 
-
+	Coroutine goingToTarget;
 	public override void TargetEnter(GameObject go)
 	{
 		PlayerController pc = go.GetComponent<PlayerController>();
@@ -94,6 +96,7 @@ public class MonsterController : HealthEntity
                         return;
 
 		_target = go;
+		//goingToTarget = StartCoroutine(GoingToTarget()); 
 	}
 
 	public override void TargetExit(GameObject go)
@@ -103,11 +106,24 @@ public class MonsterController : HealthEntity
 			return;
 		_target = null;
 		_agent.isStopped = true;
-
+		if (goingToTarget != null)
+		{
+			StopCoroutine(goingToTarget);
+			goingToTarget = null;
+		}
 		_anim.SetBool("attack", false);
 		_anim.SetBool("move", false); 
 	}
+	IEnumerator GoingToTarget()
+	{ 
 
+		while(true)
+		{
+			if (DungeonDoorway.instance.isPlayerInDungeon() && _target != null)
+				AttackMove(); 
+			yield return null;
+		}
+	}
 	public override void OnDead()
 	{
 		_agent.isStopped = true; 

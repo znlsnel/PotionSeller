@@ -39,9 +39,10 @@ public class CoinSpawner : MonoBehaviour
 
 		if (_player != null && _sendCoin == null)
 		{
-			Utils.instance.SetTimer(() =>
+			GameObject player = _player;
+			Utils.instance.SetTimer(() => 
 			{
-				_sendCoin = StartCoroutine(SendCoin(_player.GetComponent<PickupManager>()));
+				_sendCoin = StartCoroutine(SendCoin(player.GetComponent<PickupManager>()));
 			}, 0.5f);
 		}
 

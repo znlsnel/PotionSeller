@@ -67,11 +67,11 @@ public class PlayerController : HealthEntity
 		_rigid.MovePosition(movePos);
 		_joystick.UpdateJoystick(_touchStartPos, touchPos); 
 		
-		if (!_combatCtrl._isAttacking) 
+		if (!_combatCtrl._isAttacking && isDead == false) 
 			LookAt(movePos);
 	}
 	 
-	public void LookAt(Vector3 target, float speed = 360)
+	public void LookAt(Vector3 target, float speed = 720)
 	{
 		Quaternion targetRotation = Quaternion.LookRotation(target - transform.position);
 

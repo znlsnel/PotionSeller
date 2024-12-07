@@ -82,9 +82,13 @@ public class PlayerCombatController : MonoBehaviour
 	{
 		if (_isAttacking && _playerCtrl.isDead == false)
 		{
-			float dist = (_lookTarget.transform.position - transform.position).magnitude; 
-			if (dist > 0.1)
-				_playerCtrl.LookAt(_lookTarget.transform.position);
+			Vector3 dir = _lookTarget.transform.position - transform.position;
+			float dist = dir.magnitude;
+			ScreenDebug.instance.DebugText($"monster To Player Distance : {dist}");
+
+			dir.y = 0;
+			_playerCtrl.LookAt(transform.position + dir * 100);
+
 		}
 	} 
 	 

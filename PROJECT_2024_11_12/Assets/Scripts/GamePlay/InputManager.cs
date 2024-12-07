@@ -21,6 +21,8 @@ public class InputManager : Singleton<InputManager>
 
 		_touchMove.Enable();
 		_touch.Enable();
+
+		
 	}
 
 	//float time = 0.0f;
