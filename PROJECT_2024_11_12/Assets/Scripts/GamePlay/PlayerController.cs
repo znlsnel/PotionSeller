@@ -35,11 +35,14 @@ public class PlayerController : HealthEntity
 	protected override void Awake()
 	{
 		base.Awake ();	
+
 		_rigid = GetComponent<Rigidbody>();
 		_anim = GetComponent<Animator>();
 		_combatCtrl = GetComponent<PlayerCombatController>();
 		_pickupManager = _porter.GetComponent<PickupManager>();
 		_sendItemManager = _porter.GetComponent<SendItemManager>();
+
+		HP = _initHp * DataBase.instance._hp.GetValue() / 100;
 	}
 	void Start()
         {
@@ -62,7 +65,9 @@ public class PlayerController : HealthEntity
         {
 		Vector2 touchPos = _touchMove.ReadValue<Vector2>();
 		Vector2 dir = (touchPos - _touchStartPos).normalized;
-		Vector3 movePos = _rigid.position + new Vector3(dir.x, 0.0f, dir.y) * Time.fixedDeltaTime * _moveSpeed;
+
+		float speed = _moveSpeed * DataBase.instance._speed.GetValue() / 100; 
+		Vector3 movePos = _rigid.position + new Vector3(dir.x, 0.0f, dir.y) * Time.fixedDeltaTime * speed;
 
 		_rigid.MovePosition(movePos);
 		_joystick.UpdateJoystick(_touchStartPos, touchPos); 
@@ -98,9 +103,9 @@ public class PlayerController : HealthEntity
 	void InitPlayer()
 	{
 		_anim.SetBool("die", false);
-		HP = _initHp;
+		HP = _initHp * DataBase.instance._hp.GetValue() / 100;
 		transform.position = _genPos.position;
-		_pickupManager.SetActive(true);
+		_pickupManager.SetActive(true); 
 	}
 
 	public override void OnDead()

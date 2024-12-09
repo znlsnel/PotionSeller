@@ -147,20 +147,24 @@ public class MonsterController : HealthEntity
 	}
 	 
 	public void AE_Die()
-	{ 
-		for (int i = 0; i < 5; i++)
+	{
+		int rate = DataBase.instance._itemDropRate.GetValue();
+		while (rate > 0)
 		{
-			GameObject go = ItemSpawner.instance.GetItem(_dropItem);
+			int R = UnityEngine.Random.Range(1, 100);
+			if (R < rate)
+			{
+				GameObject go = ItemSpawner.instance.GetItem(_dropItem);
 
-			IngredientItem item = go.GetComponent<IngredientItem>();
-			item.InitItem();
-			item.AddReleaseAction(() => ItemSpawner.instance.RelaseItem(_dropItem, go));
+				Vector3 pos = gameObject.transform.position;
+				go.transform.position = new Vector3(pos.x + UnityEngine.Random.Range(-0.3f, 0.3f), pos.y, pos.z + UnityEngine.Random.Range(-0.3f, 0.3f));
 
-			go.transform.position = transform.position;
-		}
-
-		
-
+				IngredientItem item = go.GetComponent<IngredientItem>();
+				item.InitItem();
+				item.AddReleaseAction(() => ItemSpawner.instance.RelaseItem(_dropItem, go));
+			}
+			rate -= 100;
+		} 
 		_onRelase?.Invoke();
 	}
 }

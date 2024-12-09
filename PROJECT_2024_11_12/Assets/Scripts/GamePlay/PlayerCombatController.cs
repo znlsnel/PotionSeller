@@ -96,8 +96,9 @@ public class PlayerCombatController : MonoBehaviour
 	public void AE_Attack(int rate)
 	{
 		foreach(MonsterController mc in _monsters)
-		{ 
-			mc.OnDamage(gameObject, (_damage * rate) / 100);  
+		{
+			int DAMAVE = _damage * DataBase.instance._attack.GetValue() / 100;
+			mc.OnDamage(gameObject, (DAMAVE * rate) / 100);   
 		}
 	}
 

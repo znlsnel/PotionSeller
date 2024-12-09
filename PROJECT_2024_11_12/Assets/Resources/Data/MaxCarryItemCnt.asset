@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9320924bde3ee0445b572870438484a1, type: 3}
+  m_Name: MaxCarryItemCnt
+  m_EditorClassIdentifier: 
+  effect: 0a0000000f00000014000000190000001e00000023000000280000002d00000032000000370000003c000000
+  level: 0
+  _onChangedLevel:
+    m_PersistentCalls:
+      m_Calls: []

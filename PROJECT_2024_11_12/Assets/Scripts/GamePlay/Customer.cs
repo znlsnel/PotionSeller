@@ -106,7 +106,9 @@ public class Customer : MonoBehaviour
         { 
                 _onRelase.RemoveAllListeners();
                 _onRelase.AddListener(relaseAction);
-                _requireItem = Random.Range(1, 3);
+                int cnt = DataBase.instance._customerPurchaseCnt.GetValue();
+
+		_requireItem = Random.Range(cnt - 2, cnt);
 		_counter = counter;
                 _endPos = endPos;
 

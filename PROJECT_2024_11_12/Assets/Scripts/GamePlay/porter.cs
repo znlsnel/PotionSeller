@@ -6,13 +6,18 @@ public class porter : MonoBehaviour
 {
         [SerializeField] GameObject _player;
         NavMeshAgent _agent;
-    void Start()
-    {
+        void Start()
+        {
+                GetComponent<PickupManager>().SetCarrySize(DataBase.instance._maxCarryItemCnt.GetValue());
+                DataBase.instance._maxCarryItemCnt._onChangedLevel.AddListener(() =>
+                {
+			GetComponent<PickupManager>().SetCarrySize(DataBase.instance._maxCarryItemCnt.GetValue());
+		});
 		_agent = GetComponent<NavMeshAgent>();
                 StartCoroutine(GointToPlayer());
-    }
+        }
 
-    // Update is called once per frame
+        
         IEnumerator GointToPlayer()
         {
                 while( true)

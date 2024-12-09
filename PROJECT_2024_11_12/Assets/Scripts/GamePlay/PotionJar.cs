@@ -43,23 +43,24 @@ public class PotionJar : MonoBehaviour
 	// Update is called once per frame
 	IEnumerator MoveToMagicJar()
 	{
+		float speed = (_createSpeed / DataBase.instance._potionSpawnSpeed.GetValue()) * 100; 
 		while (true) 
 		{
 			if (_IGItemSender.GetItemCount() > 0)
 			{
 				_IGItemSender.SendItem(_pickup, 1);
 
-				yield return new WaitForSeconds(_createSpeed / 2);
+				yield return new WaitForSeconds(speed / 2);
 
 				GameObject item = _itemPool.Get();
 				item.transform.position = _potionSpawnPos.position;
 				item.GetComponent<Item>().AddReleaseAction(() => { _itemPool.Release(item); });
 				_tableItemReceiver.ReceiveItem(item);
 
-				yield return new WaitForSeconds(_createSpeed / 2);
+				yield return new WaitForSeconds(speed / 2);
 			}
 			else
-				yield return new WaitForSeconds(_createSpeed);
+				yield return new WaitForSeconds(speed);
 		}
 	}
 }

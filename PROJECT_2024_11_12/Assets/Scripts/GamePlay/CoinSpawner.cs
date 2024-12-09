@@ -10,6 +10,7 @@ public class CoinSpawner : MonoBehaviour
 	[SerializeField] GameObject _coinPrefab;
 	[SerializeField] GameObject _spotLight;
 	[SerializeField] Transform _coinPosition;
+
 	ObjectPool<GameObject> _pool;
 
 	[SerializeField] Vector3 _coinOffset;
@@ -37,15 +38,18 @@ public class CoinSpawner : MonoBehaviour
 		while (cnt-- > 0)
 			_pool.Get();
 
+		Vector3 pos = _spotLight.transform.position;
+		pos.y = _coins.Peek().transform.position.y + 5.0f;  
+		_spotLight.transform.position = pos;
+		 
 		if (_player != null && _sendCoin == null)
-		{
-			GameObject player = _player;
+		{	
 			Utils.instance.SetTimer(() => 
-			{
-				_sendCoin = StartCoroutine(SendCoin(player.GetComponent<PickupManager>()));
-			}, 0.5f);
+			{ 
+				if (_player != null)
+					_sendCoin = StartCoroutine(SendCoin(_player.GetComponent<PickupManager>()));
+			}, 0.3f); 
 		}
-
 	}
 
 	void SetCoinTransform(GameObject coin)

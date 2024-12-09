@@ -31,7 +31,7 @@ public class PickupManager : MonoBehaviour, IItemReceiver
 	Stack<GameObject> _items = new Stack<GameObject>();
 
 	[NonSerialized] public bool isReceivingItem = false;
-	public int _maxCarrySize = 8;
+	[SerializeField] int _maxCarrySize = 8;
 
 	public bool destoryItem = false;
 	public UnityAction _onGetItem;
@@ -41,6 +41,11 @@ public class PickupManager : MonoBehaviour, IItemReceiver
 	public void SetActive(bool act)
 	{
 		isEnable = act;
+	}
+
+	public void SetCarrySize(int size)
+	{
+		_maxCarrySize = size;
 	}
 
 	public bool isReceivable()
