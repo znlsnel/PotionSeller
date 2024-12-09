@@ -24,8 +24,9 @@ public class DataBase : Singleton<DataBase>
 	}
 
 	[System.Serializable]
-	public class SkillLevels
+	public class SaveDatas
 	{
+		public long coin = 0;
 		public List<SkillLevelEntry> levels = new List<SkillLevelEntry>();
 	}
 	private void Start()
@@ -35,38 +36,42 @@ public class DataBase : Singleton<DataBase>
 	}
 	public void SaveData()
         {
-		var skillLevels = new SkillLevels();
+		var saveDatas = new SaveDatas();
 
-		skillLevels.levels.Add(new SkillLevelEntry { key = nameof(_speed), value = _speed.GetLevel() });
-		skillLevels.levels.Add(new SkillLevelEntry { key = nameof(_hp), value = _hp.GetLevel() });
-		skillLevels.levels.Add(new SkillLevelEntry { key = nameof(_attack), value = _attack.GetLevel() });
-		skillLevels.levels.Add(new SkillLevelEntry { key = nameof(_potionSpawnSpeed), value = _potionSpawnSpeed.GetLevel() });
-		skillLevels.levels.Add(new SkillLevelEntry { key = nameof(_potionPrice), value = _potionPrice.GetLevel() });
-		skillLevels.levels.Add(new SkillLevelEntry { key = nameof(_customerPurchaseCnt), value = _customerPurchaseCnt.GetLevel() });
-		skillLevels.levels.Add(new SkillLevelEntry { key = nameof(_itemDropRate), value = _itemDropRate.GetLevel() });
-		skillLevels.levels.Add(new SkillLevelEntry { key = nameof(_maxCarryItemCnt), value = _maxCarryItemCnt.GetLevel() });
+		saveDatas.coin = CoinUI.instance.GetCoin();
+		saveDatas.levels.Add(new SkillLevelEntry { key = nameof(_speed), value = _speed.GetLevel() });
+		saveDatas.levels.Add(new SkillLevelEntry { key = nameof(_hp), value = _hp.GetLevel() });
+		saveDatas.levels.Add(new SkillLevelEntry { key = nameof(_attack), value = _attack.GetLevel() });
+		saveDatas.levels.Add(new SkillLevelEntry { key = nameof(_potionSpawnSpeed), value = _potionSpawnSpeed.GetLevel() });
+		saveDatas.levels.Add(new SkillLevelEntry { key = nameof(_potionPrice), value = _potionPrice.GetLevel() });
+		saveDatas.levels.Add(new SkillLevelEntry { key = nameof(_customerPurchaseCnt), value = _customerPurchaseCnt.GetLevel() });
+		saveDatas.levels.Add(new SkillLevelEntry { key = nameof(_itemDropRate), value = _itemDropRate.GetLevel() });
+		saveDatas.levels.Add(new SkillLevelEntry { key = nameof(_maxCarryItemCnt), value = _maxCarryItemCnt.GetLevel() });
 
-		string json = JsonUtility.ToJson(skillLevels, true);
+		string json = JsonUtility.ToJson(saveDatas, true);
 		File.WriteAllText(saveFilePath, json);
 	}
 
-        public void LoadData()
+        public void LoadData() 
         {
 		if (!File.Exists(saveFilePath))
 			return;
 
 		string json = File.ReadAllText(saveFilePath);
-		var skills = JsonUtility.FromJson<SkillLevels>(json);
-		Dictionary<string, int> skillLevels = new Dictionary<string, int>();
-		foreach (var entry in skills.levels)
+		var saves = JsonUtility.FromJson<SaveDatas>(json);
+
+		Dictionary<string, int> datas = new Dictionary<string, int>();
+		foreach (var entry in saves.levels)
 		{
-			skillLevels.Add(entry.key, entry.value);
+			datas.Add(entry.key, entry.value);
 		}
+
+		CoinUI.instance.AddCoin(-CoinUI.instance.GetCoin() + saves.coin);
 
 		void LoadSkill(SkillUpgradeSO skillSO, string key)
 		{
-			if (skillLevels.ContainsKey(key))
-				skillSO.SetLevel(skillLevels[key]);
+			if (datas.ContainsKey(key))
+				skillSO.SetLevel(datas[key]);
 		}
 
 		LoadSkill(_speed, nameof(_speed));

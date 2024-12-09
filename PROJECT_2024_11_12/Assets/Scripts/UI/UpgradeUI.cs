@@ -19,7 +19,7 @@ public class UpgradeUI : MonoBehaviour
 	public void UpgradeSkill()
         {
 		int price = (int)Mathf.Pow(4, _skill.GetLevel()+1); 
-		if (_skill.GetLevel() == 10 || price > CoinUI.instance.GetCoint())
+		if (_skill.GetLevel() == 10 || price > CoinUI.instance.GetCoin())
 			return;
 
 		CoinUI.instance.AddCoin(-price);

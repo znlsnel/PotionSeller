@@ -16,7 +16,7 @@ public class porter : MonoBehaviour
 		_agent = GetComponent<NavMeshAgent>();
                 StartCoroutine(GointToPlayer());
         }
-
+         
         
         IEnumerator GointToPlayer()
         {

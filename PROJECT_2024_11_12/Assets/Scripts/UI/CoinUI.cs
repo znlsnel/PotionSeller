@@ -10,11 +10,11 @@ public class CoinUI : Singleton<CoinUI>
 	{
 		UpdateCoinText(); 
 	}
-	public long GetCoint()
+	public long GetCoin()
 	{
 		return _coin;
 	}
-	public void AddCoin(int coin)
+	public void AddCoin(long coin)
         { 
                 _coin += coin;
 
