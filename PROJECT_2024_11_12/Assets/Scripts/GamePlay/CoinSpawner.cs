@@ -111,15 +111,20 @@ public class CoinSpawner : MonoBehaviour
 	IEnumerator SendCoin(IItemReceiver receiver)
 	{
 		float time = 1.0f;
+		int sendCnt = Mathf.Max(1, _coins.Count / 30);
+
 		while (_coins.Count > 0) 
 		{
-			float t = time / _coins.Count;
+			float t = time / (_coins.Count / sendCnt); 
 			time -= Time.deltaTime;
-			receiver.ReceiveItem(_coins.Peek());
-			_coins.Pop();
-			CoinUI.instance.AddCoin(1); 
+			for (int i = 0; i < sendCnt && _coins.Count > 0; i++)
+			{ 
+				receiver.ReceiveItem(_coins.Peek());
+				_coins.Pop();
+				CoinUI.instance.AddCoin(1);
+			}
 			yield return new WaitForSeconds(t);
-		} 
+		}
 		_sendCoin = null;
 		_spotLight.SetActive(false);
 	}
