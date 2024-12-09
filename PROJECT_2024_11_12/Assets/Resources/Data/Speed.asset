@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Speed
   m_EditorClassIdentifier: 
   effect: 640000006e00000078000000820000008c00000096000000a0000000aa000000b4000000be000000c8000000
-  level: 10
+  level: 0
   _onChangedLevel:
     m_PersistentCalls:
       m_Calls: []

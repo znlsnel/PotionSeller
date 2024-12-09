@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: CustomerPuchaseCnt
   m_EditorClassIdentifier: 
   effect: 030000000400000005000000060000000700000008000000090000000a0000000b0000000c0000000d000000
-  level: 7
+  level: 0
   _onChangedLevel:
     m_PersistentCalls:
       m_Calls: []

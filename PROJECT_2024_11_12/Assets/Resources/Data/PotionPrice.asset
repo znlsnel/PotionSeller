@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PotionPrice
   m_EditorClassIdentifier: 
   effect: 05000000060000000700000008000000040000000a0000000c0000000e000000100000001200000014000000
-  level: 10
+  level: 0
   _onChangedLevel:
     m_PersistentCalls:
       m_Calls: []

@@ -10,6 +10,7 @@ public interface IItemReceiver
 	public bool CheckItemType(EItemType type);
 
 	public bool isReceivable();
+	public bool isReceiving();
 }
 
 public class PickupManager : MonoBehaviour, IItemReceiver
@@ -51,6 +52,10 @@ public class PickupManager : MonoBehaviour, IItemReceiver
 	public bool isReceivable()
 	{
 		return _items.Count < _maxCarrySize;
+	}
+	public bool isReceiving()
+	{
+		return isReceivingItem;
 	}
 	public int _carryCap { get { return _maxCarrySize - _items.Count; } }
 	public Stack<GameObject> GetItemStack() { return _items; }
@@ -139,7 +144,7 @@ public class PickupManager : MonoBehaviour, IItemReceiver
 			go.GetComponent<Item>()?.Relase();  
 		
 
-		yield return new WaitForSeconds(duration);
+		yield return new WaitForSeconds(duration * 2);
 		if (Time.time > moveEndTime)
 			isReceivingItem = false;
 	}

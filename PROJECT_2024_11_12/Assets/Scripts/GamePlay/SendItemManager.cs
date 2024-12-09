@@ -9,6 +9,8 @@ public interface IItemSender
 	public void SendItem(IItemReceiver receiver, int cnt = 99999);
 	public void CancelSend();
 	public int GetItemCount();
+
+	public bool isSending();
 }
 
 public class SendItemManager : MonoBehaviour, IItemSender
@@ -40,6 +42,10 @@ public class SendItemManager : MonoBehaviour, IItemSender
 	{
 		sendCT = StartCoroutine(Send(receiver, cnt));
 
+	}
+	public bool isSending()
+	{
+		return sendCT != null;
 	}
 
 	public void CancelSend()
