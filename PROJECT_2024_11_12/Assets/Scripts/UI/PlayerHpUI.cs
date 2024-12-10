@@ -11,6 +11,6 @@ public class PlayerHpUI : HpBar
 	public override void UpdateRate()
 	{
 		base.UpdateRate();
-		_text.text = $"{_hpEntity.HP} / {_hpEntity.MaxHP}";
+		_text.text = $"{_hpEntity.HP} / {_hpEntity.MaxHP()}";
 	}
 }

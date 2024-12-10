@@ -32,6 +32,10 @@ public class PlayerController : HealthEntity
 
 	public UnityEvent _onDead = new UnityEvent();
 
+	public override int MaxHP()
+	{
+		return _initHp * DataBase.instance._hp.GetValue() / 100;
+	}
 	protected override void Awake()
 	{
 		base.Awake ();	
@@ -42,7 +46,11 @@ public class PlayerController : HealthEntity
 		_pickupManager = _porter.GetComponent<PickupManager>();
 		_sendItemManager = _porter.GetComponent<SendItemManager>();
 
-		HP = _initHp * DataBase.instance._hp.GetValue() / 100;
+		HP = MaxHP();
+		DataBase.instance._hp._onChangedLevel.AddListener(() =>
+		{
+			HP = MaxHP(); 
+		});
 	}
 	void Start()
         {

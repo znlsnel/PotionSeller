@@ -19,7 +19,7 @@ public class HpBar : MonoBehaviour
 
 	public virtual void UpdateRate()
 	{ 
-		_slider.value = (float)_hpEntity.HP / _hpEntity.MaxHP;
+		_slider.value = (float)_hpEntity.HP / _hpEntity.MaxHP();
 	}
 
 	public void SetParent(HealthEntity hpEntity)

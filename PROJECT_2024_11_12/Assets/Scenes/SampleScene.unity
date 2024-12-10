@@ -27798,7 +27798,7 @@ PrefabInstance:
       objectReference: {fileID: 847088675}
     - target: {fileID: 1770102983809130451, guid: eff482cf896daf64f8d8b714024ce741, type: 3}
       propertyPath: _initHp
-      value: 100000
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 1770102983809130451, guid: eff482cf896daf64f8d8b714024ce741, type: 3}
       propertyPath: _porter
