@@ -9,12 +9,13 @@ public class MainMenuUI : MonoBehaviour
 	[SerializeField] GameObject _closeBt; 
 	[SerializeField] GameObject _menu;
 
-	private void Start()
+	private void Awake()
 	{
 		_closeBt.SetActive(false);
-		_menu.SetActive(false); 
+		_menu.SetActive(false);
 
 	}
+
 	public void BT_OpenUI()
 	{
 		_closeBt.SetActive(true); 
@@ -27,5 +28,8 @@ public class MainMenuUI : MonoBehaviour
 		_menu.SetActive(false);
 
 	}
-
+	public bool isOpen()
+	{
+		return _menu.activeSelf;
+	}
 }

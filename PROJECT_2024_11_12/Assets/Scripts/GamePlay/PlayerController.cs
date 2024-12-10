@@ -69,8 +69,11 @@ public class PlayerController : HealthEntity
 		//_anim.SetBool("moving", _rigid.linearVelocity.magnitude > 0.1f);
 	}
 
-	void OnMove()
+	void OnMove() 
         {
+		if (UIHandler.instance._isOpenMainMenu)
+			return;
+
 		Vector2 touchPos = _touchMove.ReadValue<Vector2>();
 		Vector2 dir = (touchPos - _touchStartPos).normalized;
 

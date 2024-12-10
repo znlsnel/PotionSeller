@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Hp
   m_EditorClassIdentifier: 
   effect: 64000000780000008c000000a0000000b4000000c8000000dc000000f000000004010000180100002c010000
-  level: 0
+  level: 4
   _onChangedLevel:
     m_PersistentCalls:
       m_Calls: []
