@@ -4,8 +4,8 @@ using UnityEngine;
 public class CoinUI : Singleton<CoinUI>
 {
        [SerializeField] TextMeshProUGUI _text;
-        long _coin = 0;
-	 
+        long _coin = 1000;
+	  
 	private void Start()
 	{
 		UpdateCoinText(); 

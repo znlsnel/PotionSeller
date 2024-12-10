@@ -14,6 +14,12 @@ public class UpgradeUI : MonoBehaviour
 	{
 		UpdatePrice();
 		UpdateColor();
+
+		_skill._onChangedLevel.AddListener(() =>
+		{
+			UpdatePrice();
+			UpdateColor();
+		});
 	}
 
 	public void UpgradeSkill()
@@ -23,10 +29,7 @@ public class UpgradeUI : MonoBehaviour
 			return;
 
 		CoinUI.instance.AddCoin(-price);
-		_skill.SetLevel(_skill.GetLevel() + 1);
-		UpdatePrice();
-		UpdateColor();
-
+		_skill.SetLevel(_skill.GetLevel() + 1); 
 	}
 
 	void UpdatePrice()
@@ -46,8 +49,6 @@ public class UpgradeUI : MonoBehaviour
 				_state[i - 1].color = Color.green;
 			else
 				_state[i - 1].color = Color.white;
-
-
 		}
 	}
 }

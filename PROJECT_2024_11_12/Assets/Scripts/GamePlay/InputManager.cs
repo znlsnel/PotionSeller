@@ -25,20 +25,20 @@ public class InputManager : Singleton<InputManager>
 		
 	}
 
-	float time = 0.0f;
-	int cnt = 0;
-	int tCnt = 1;
-	private void Update()
-	{
-		time += Time.deltaTime;
-		cnt++;
-		if (time >= 1.0f)
-		{
-			ScreenDebug.instance.DebugText($"[{tCnt++}] FPS : {cnt}");
+	//float time = 0.0f;
+	//int cnt = 0;
+	//int tCnt = 1;
+	//private void Update()
+	//{
+	//	time += Time.deltaTime;
+	//	cnt++;
+	//	if (time >= 1.0f)
+	//	{
+	//		ScreenDebug.instance.DebugText($"[{tCnt++}] FPS : {cnt}");
 
-			cnt = 0;
-			time = 0.0f;
-		}
+	//		cnt = 0;
+	//		time = 0.0f;
+	//	}
 
-	}
+	//}
 }

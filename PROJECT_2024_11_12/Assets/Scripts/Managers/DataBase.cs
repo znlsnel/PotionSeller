@@ -2,6 +2,13 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using GooglePlayGames;
+using GooglePlayGames.BasicApi;
+using GooglePlayGames.BasicApi.SavedGame;
+using System.Runtime.Serialization.Json;
+using System.Text;
+using static UnityEngine.EventSystems.EventTrigger;
+using static DataBase;
 
 public class DataBase : Singleton<DataBase>
 {
@@ -15,8 +22,10 @@ public class DataBase : Singleton<DataBase>
 	[SerializeField] public SkillUpgradeSO _maxCarryItemCnt;
 
 	private string saveFilePath => Path.Combine(Application.persistentDataPath, "PotionSellerSaveData.json");
+	private string fileName = "SaveData.dat";
+	SaveDatas saveDatas = new SaveDatas();
 
-	[System.Serializable]
+	[System.Serializable] 
 	public class SkillLevelEntry
 	{
 		public string key;
@@ -31,13 +40,11 @@ public class DataBase : Singleton<DataBase>
 	}
 	private void Start()
 	{
-		SaveData();
-		LoadData();
+		 
 	}
 	public void SaveData()
         {
-		var saveDatas = new SaveDatas();
-
+		saveDatas = new SaveDatas();
 		saveDatas.coin = CoinUI.instance.GetCoin();
 		saveDatas.levels.Add(new SkillLevelEntry { key = nameof(_speed), value = _speed.GetLevel() });
 		saveDatas.levels.Add(new SkillLevelEntry { key = nameof(_hp), value = _hp.GetLevel() });
@@ -48,25 +55,110 @@ public class DataBase : Singleton<DataBase>
 		saveDatas.levels.Add(new SkillLevelEntry { key = nameof(_itemDropRate), value = _itemDropRate.GetLevel() });
 		saveDatas.levels.Add(new SkillLevelEntry { key = nameof(_maxCarryItemCnt), value = _maxCarryItemCnt.GetLevel() });
 
-		string json = JsonUtility.ToJson(saveDatas, true);
-		File.WriteAllText(saveFilePath, json);
+		ScreenDebug.instance.DebugText($"COIN : {saveDatas.coin} "); 
+
+		foreach (var data in saveDatas.levels)
+		{
+			ScreenDebug.instance.DebugText($"KEY : {data.key}, Value : {data.value} "); 
+
+		}
+
+		ISavedGameClient savedGameClient = PlayGamesPlatform.Instance.SavedGame;
+		savedGameClient.OpenWithAutomaticConflictResolution(fileName, DataSource.ReadCacheOrNetwork,
+			ConflictResolutionStrategy.UseLastKnownGood,
+			OnSavedGameOpened); 
+
+		//string json = JsonUtility.ToJson(saveDatas, true);
+		//File.WriteAllText(saveFilePath, json);
 	}
 
-        public void LoadData() 
-        {
-		if (!File.Exists(saveFilePath))
-			return;
+	void OnSavedGameOpened(SavedGameRequestStatus status, ISavedGameMetadata game)
+	{
+		ISavedGameClient savedGameClient = PlayGamesPlatform.Instance.SavedGame;
 
-		string json = File.ReadAllText(saveFilePath);
-		var saves = JsonUtility.FromJson<SaveDatas>(json);
-
-		Dictionary<string, int> datas = new Dictionary<string, int>();
-		foreach (var entry in saves.levels)
+		if (status == SavedGameRequestStatus.Success)
 		{
+			ScreenDebug.instance.DebugText("Save Success");
+		//	Debug.Log("저장 성공");
+			var update = new SavedGameMetadataUpdate.Builder().Build();
+
+			var json = JsonUtility.ToJson(saveDatas);
+			byte[] bytes = Encoding.UTF8.GetBytes(json);
+
+		//	Debug.Log("저장 데이터 : " + bytes);
+			savedGameClient.CommitUpdate(game, update, bytes, OnSavedGameWritten);
+		}
+		else
+			ScreenDebug.instance.DebugText("Save Failed");
+			//Debug.Log("저장 실패");
+
+	}
+
+	void OnSavedGameWritten(SavedGameRequestStatus status, ISavedGameMetadata game)
+	{
+		if (status == SavedGameRequestStatus.Success)
+		{
+			ScreenDebug.instance.DebugText("Data Save Success");
+	//		Debug.Log("저장 성공");
+		}
+		else
+			ScreenDebug.instance.DebugText("Data Save Failed");
+		//	Debug.Log("저장 실패");
+	}
+
+	 
+	
+	public void LoadData()
+	{
+		ISavedGameClient savedGameClient = PlayGamesPlatform.Instance.SavedGame;
+		savedGameClient.OpenWithAutomaticConflictResolution(fileName, DataSource.ReadCacheOrNetwork,
+			ConflictResolutionStrategy.UseLastKnownGood, LoadGameData);
+	}
+
+	void LoadGameData(SavedGameRequestStatus status, ISavedGameMetadata data)
+	{
+		ISavedGameClient savedGameClient = PlayGamesPlatform.Instance.SavedGame;
+
+		if (status == SavedGameRequestStatus.Success)
+		{
+			ScreenDebug.instance.DebugText("Load Success");
+		//	Debug.Log("로드 성공");
+			savedGameClient.ReadBinaryData(data, OnSavedGameDataRead);
+		}
+		else
+			ScreenDebug.instance.DebugText("Load Failed");
+		//	Debug.Log("로드 실패");
+	}
+
+	void OnSavedGameDataRead(SavedGameRequestStatus status, byte[] loadedData)
+	{
+		string data = System.Text.Encoding.UTF8.GetString(loadedData);
+		if (data == "")
+		{
+			ScreenDebug.instance.DebugText("There's No Data - Failed Load Game - Save Current Datas");
+		//	Debug.Log("데이터 없음 초기 데이터 저장");
+		//	SaveData();
+		}
+		else
+		{
+			ScreenDebug.instance.DebugText("Game Data Load Success ");
+			saveDatas = new SaveDatas(); 
+			saveDatas = JsonUtility.FromJson<SaveDatas>(data);
+			OpenLoadGame(); 
+		}
+	}
+	 void OpenLoadGame()
+	{
+		Dictionary<string, int> datas = new Dictionary<string, int>();
+
+		ScreenDebug.instance.DebugText($"COIN : {saveDatas.coin} "); 
+		foreach (var entry in saveDatas.levels)
+		{
+			ScreenDebug.instance.DebugText($"KEY : {entry.key}, Value : {entry.value} ");
 			datas.Add(entry.key, entry.value);
 		}
 
-		CoinUI.instance.AddCoin(-CoinUI.instance.GetCoin() + saves.coin);
+		CoinUI.instance.AddCoin(-CoinUI.instance.GetCoin() + saveDatas.coin);
 
 		void LoadSkill(SkillUpgradeSO skillSO, string key)
 		{
@@ -83,4 +175,5 @@ public class DataBase : Singleton<DataBase>
 		LoadSkill(_itemDropRate, nameof(_itemDropRate));
 		LoadSkill(_maxCarryItemCnt, nameof(_maxCarryItemCnt));
 	}
+
 }

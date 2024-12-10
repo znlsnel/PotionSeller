@@ -7,7 +7,7 @@ public class ScreenDebug : Singleton<ScreenDebug>
 {
         [SerializeField] GameObject _parent;    
         [SerializeField] GameObject _textPrefab;
-        int _maxSize = 5; 
+        int _maxSize = 20; 
 
         Queue<GameObject> _texts = new Queue<GameObject>();
         GameObject _waitObj = null;
