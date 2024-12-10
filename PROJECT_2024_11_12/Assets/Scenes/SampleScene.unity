@@ -1326,7 +1326,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 0}
+  m_NavMeshData: {fileID: 23800000, guid: f3240298cef3ec1489f8d9c983eded21, type: 2}
   m_BuildHeightMesh: 0
 --- !u!64 &115495466
 MeshCollider:
@@ -8752,7 +8752,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 40dd640681fc38c468924428988a03da, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.6382431
+      value: -1.47
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 40dd640681fc38c468924428988a03da, type: 3}
       propertyPath: m_LocalPosition.z
@@ -8815,6 +8815,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -927199367670048503, guid: 40dd640681fc38c468924428988a03da, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1671802263}
+    - targetCorrespondingSourceObject: {fileID: -927199367670048503, guid: 40dd640681fc38c468924428988a03da, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1671802266}
   m_SourcePrefab: {fileID: 100100000, guid: 40dd640681fc38c468924428988a03da, type: 3}
 --- !u!1001 &694615984
 PrefabInstance:
@@ -12452,7 +12455,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 0}
+  m_NavMeshData: {fileID: 23800000, guid: d6cc5de1f2a984b44aa31792df8b8148, type: 2}
   m_BuildHeightMesh: 0
 --- !u!64 &1035359786
 MeshCollider:
@@ -20965,7 +20968,7 @@ BoxCollider:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 4294967295
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -20974,8 +20977,24 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.8235269, y: 0.6996217, z: 0.790083}
+  m_Size: {x: 0.8235269, y: 3.56, z: 0.790083}
   m_Center: {x: -0.02273572, y: 0.3401577, z: -0.019461472}
+--- !u!208 &1671802266
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1298323934}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.695, y: 0.35000002, z: 0.395}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: -0.28, y: 0.34, z: -0.019000001}
+  m_TimeToStationary: 0.5
 --- !u!1001 &1672250544
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -24426,7 +24445,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4482777406982560441, guid: 4655f3c4ac75be247b21220ee3d69203, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -7
+      value: -6.94
       objectReference: {fileID: 0}
     - target: {fileID: 4482777406982560441, guid: 4655f3c4ac75be247b21220ee3d69203, type: 3}
       propertyPath: m_LocalPosition.z
