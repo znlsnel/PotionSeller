@@ -12,7 +12,8 @@ public class MonsterController : HealthEntity
 	[SerializeField] float _attackRange = 1.0f;
 	[SerializeField] GameObject _dropItem;
 	[SerializeField] int _damage = 10;
-	  
+	[SerializeField] int _dropRate = 100;
+	   
 	Animator _anim;
         Rigidbody _rigid;
 	NavMeshAgent _agent;
@@ -22,6 +23,8 @@ public class MonsterController : HealthEntity
 
 	UnityEvent _onRelase = new UnityEvent();
 	public UnityEvent _onDead = new UnityEvent();
+
+
         protected override void Awake()
         {
 		base.Awake();
@@ -32,7 +35,7 @@ public class MonsterController : HealthEntity
 
         void Update()
         {
-		if (DungeonDoorway.instance.isPlayerInDungeon() && _target != null)
+		if (DungeonDoorway.instance.isPlayerInDungeon() && _target != null && isDead == false)
 			AttackMove();
 	}
 
@@ -76,8 +79,10 @@ public class MonsterController : HealthEntity
 
 		_agent.isStopped = attack; 
 
-		if (!attack)  
+		if (!attack)
+		{
 			_agent.SetDestination(_target.transform.position);
+		}
 
 
 		if (DungeonDoorway.instance.isPlayerInDungeon() == false || _target.GetComponent<PlayerController>().isDead)
@@ -114,16 +119,7 @@ public class MonsterController : HealthEntity
 		_anim.SetBool("attack", false);
 		_anim.SetBool("move", false); 
 	}
-	IEnumerator GoingToTarget()
-	{ 
 
-		while(true)
-		{
-			if (DungeonDoorway.instance.isPlayerInDungeon() && _target != null)
-				AttackMove(); 
-			yield return null;
-		}
-	}
 	public override void OnDead()
 	{
 		_agent.isStopped = true; 
@@ -148,7 +144,7 @@ public class MonsterController : HealthEntity
 	 
 	public void AE_Die()
 	{
-		int rate = DataBase.instance._itemDropRate.GetValue();
+		int rate = _dropRate * DataBase.instance._itemDropRate.GetValue() / 100; 
 		while (rate > 0)
 		{
 			int R = UnityEngine.Random.Range(1, 100);

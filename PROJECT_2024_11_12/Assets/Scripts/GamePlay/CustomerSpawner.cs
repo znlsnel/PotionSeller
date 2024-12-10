@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Pool;
 //using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
 
@@ -19,9 +20,10 @@ public class CustomerSpawner : MonoBehaviour
                 createFunc: () => Instantiate<GameObject>(_customerPrefab),
                         actionOnGet: (obj) =>
                         {
-                                obj.SetActive(true);
                                 obj.transform.position = _spawnPos.position;
-                                obj.GetComponent<Customer>()?.InitCustomer(_counter, _endPos, () =>
+                                obj.SetActive(true); 
+
+				obj.GetComponent<Customer>()?.InitCustomer(_counter, _endPos, () =>
                                 {
                                         _customerPool.Release(obj);
                                 });

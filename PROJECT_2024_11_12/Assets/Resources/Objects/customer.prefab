@@ -876,13 +876,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _handPos: {fileID: 7414451791348694140}
-  _handEndPos: {fileID: 0}
   _itemType: 2
-  _maxCarrySizeX: 1
-  _maxCarrySizeZ: 1
+  _carrySizeX: 1
+  _carrySizeZ: 1
   _xOffset: 0
   _zOffset: 0
   _yOffset: 0
+  _sortDir: {x: 1, y: 1}
   _maxCarrySize: 8
   destoryItem: 0
 --- !u!195 &2351271159595835302

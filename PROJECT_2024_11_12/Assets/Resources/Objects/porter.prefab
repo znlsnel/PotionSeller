@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1350778822868309086
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 18053451839030027}
+  m_Layer: 0
+  m_Name: maxUIPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &18053451839030027
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1350778822868309086}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 4.49, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3352658287791256309}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6397136634411076614
 GameObject:
   m_ObjectHideFlags: 0
@@ -39,6 +70,7 @@ Transform:
   - {fileID: 7929133379517874040}
   - {fileID: 6865875980566717364}
   - {fileID: 1808744098461205392}
+  - {fileID: 18053451839030027}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8662753078004575995
@@ -61,7 +93,7 @@ MonoBehaviour:
   _zOffset: 0
   _yOffset: 0
   _sortDir: {x: 1, y: 1}
-  _maxCarrySize: 8
+  _maxCarrySize: 10000
   destoryItem: 0
 --- !u!114 &5427734597917373776
 MonoBehaviour:
@@ -96,7 +128,7 @@ NavMeshAgent:
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
-  m_WalkableMask: 4294967295
+  m_WalkableMask: 1
   m_ObstacleAvoidanceType: 4
 --- !u!114 &7121418737243711843
 MonoBehaviour:
@@ -110,6 +142,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75082f1767da0694da2a502b471af6af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _max: {fileID: 0}
+  _maxUIPos: {fileID: 18053451839030027}
   _player: {fileID: 0}
 --- !u!1 &8180558144171068361
 GameObject:

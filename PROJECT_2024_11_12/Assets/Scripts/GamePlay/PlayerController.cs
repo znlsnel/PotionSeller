@@ -1,8 +1,10 @@
+using GooglePlayGames.BasicApi;
 using System;
 using System.Collections;
 using System.Security.Cryptography;
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -25,7 +27,6 @@ public class PlayerController : HealthEntity
 	[SerializeField] float _moveSpeed = 5.0f;
 
         Vector2 _touchStartPos;
-	public bool isDead { get{ return HP == 0; } }
 
 	Vector3 _lookTarget;
 	float _lookTime;
@@ -67,6 +68,8 @@ public class PlayerController : HealthEntity
 		if (isDead == false &&  _touch.ReadValue<float>() != 0) 
                         OnMove();
 		//_anim.SetBool("moving", _rigid.linearVelocity.magnitude > 0.1f);
+
+
 	}
 
 	void OnMove() 
