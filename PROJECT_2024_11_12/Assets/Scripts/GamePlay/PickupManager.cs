@@ -57,7 +57,7 @@ public class PickupManager : MonoBehaviour, IItemReceiver
 	{
 		return isReceivingItem;
 	}
-	public int _carryCap { get { return _maxCarrySize - _items.Count; } }
+	public int _leftCarryCap { get { return _maxCarrySize - _items.Count; } }
 	public Stack<GameObject> GetItemStack() { return _items; }
 	public int GetItemCount() { return _items.Count; }
 
@@ -81,7 +81,7 @@ public class PickupManager : MonoBehaviour, IItemReceiver
 	public void ReceiveItem(GameObject go, bool destroy = false)
 	{
 		Item item = go.GetComponent<Item>();
-		if (isEnable == false || _carryCap == 0 || !CheckItemType(item._itemType))
+		if (isEnable == false || _leftCarryCap == 0 || !CheckItemType(item._itemType))
 			return;
 
 		isReceivingItem = true;
