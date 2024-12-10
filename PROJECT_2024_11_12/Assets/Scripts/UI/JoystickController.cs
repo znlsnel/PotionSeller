@@ -21,6 +21,9 @@ public class JoystickController : MonoBehaviour
 		Vector3 dir = (_dirUI.parent.InverseTransformPoint(touchPos) - Vector3.zero).normalized;
 
 		_dirUI.localPosition = dir * 30;
+
+		if (gameObject.activeSelf == false)
+			gameObject.SetActive(true); 
 	}
 
 	public void DisableJoystickUI()

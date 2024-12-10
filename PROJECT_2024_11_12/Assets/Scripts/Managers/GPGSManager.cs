@@ -34,6 +34,7 @@ public class GPGSManager : MonoBehaviour
 			string userID = PlayGamesPlatform.Instance.GetUserId();
 
 			_logText.text = "Login Success :  " + displayName + " / " + userID;
+		//	DataBase.instance.LoadData();
 		}
 		else 
 		{

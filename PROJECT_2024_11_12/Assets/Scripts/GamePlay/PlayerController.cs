@@ -92,7 +92,7 @@ public class PlayerController : HealthEntity
 	{
 		_anim.SetBool("moving", true); 
 		Debug.Log("Á¶ÀÌ½ºÆ½ ¿Â");
-		_joystick.EnableJoystickUI();
+		//_joystick.EnableJoystickUI();
 		_touchStartPos = _touchMove.ReadValue<Vector2>();
 	}
 	void EndtTouch(InputAction.CallbackContext context)

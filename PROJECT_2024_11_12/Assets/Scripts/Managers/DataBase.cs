@@ -40,7 +40,8 @@ public class DataBase : Singleton<DataBase>
 	}
 	private void Start()
 	{
-		 
+		ScreenDebug.instance.DebugText("Call Load Data Function"); 
+		LoadData();
 	}
 	public void SaveData()
         {
@@ -136,8 +137,8 @@ public class DataBase : Singleton<DataBase>
 		if (data == "")
 		{
 			ScreenDebug.instance.DebugText("There's No Data - Failed Load Game - Save Current Datas");
-		//	Debug.Log("데이터 없음 초기 데이터 저장");
-		//	SaveData();
+			SaveData(); 
+			OpenLoadGame();
 		}
 		else
 		{
