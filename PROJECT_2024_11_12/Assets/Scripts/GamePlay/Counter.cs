@@ -19,6 +19,7 @@ public class Counter : MonoBehaviour, IPlayerSensor
 	IItemReceiver _itemReceiver;
         Queue<Customer> _customers = new Queue<Customer>();
 
+	public bool isActive = false;
 	private void Awake()
 	{
 		_itemSender = GetComponent<SendItemManager>();
@@ -48,7 +49,8 @@ public class Counter : MonoBehaviour, IPlayerSensor
                 {
 			if (_customers.Count > 0 && _itemSender.GetItemCount() > _customers.Peek()._requireItem)
                         {
-				while(CheckCounterArrival(_customers.Peek().gameObject) == false)
+				isActive = true;
+				while (CheckCounterArrival(_customers.Peek().gameObject) == false)
 					yield return new WaitForSeconds(1.0f);
 
 				_itemSender.SendItem(_customers.Peek()._pickup, _customers.Peek()._requireItem);
@@ -66,7 +68,9 @@ public class Counter : MonoBehaviour, IPlayerSensor
 
                                 
 			}
-			
+			else
+				isActive = false;
+
 			yield return new WaitForSeconds(2.0f);
 		}
                 

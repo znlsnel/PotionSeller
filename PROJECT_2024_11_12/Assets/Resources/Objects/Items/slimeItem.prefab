@@ -101,7 +101,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f21f11ada70bd9041b8a3b71dcd80fd5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _itemType: 1
+  _itemType: 2
   _pointLight: {fileID: 5562774997400755683}
 --- !u!135 &3414908958124766083
 SphereCollider:

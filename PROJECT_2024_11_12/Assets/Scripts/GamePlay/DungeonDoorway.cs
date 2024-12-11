@@ -9,7 +9,7 @@ public class DungeonDoorway : Singleton<DungeonDoorway>
         [SerializeField] GameObject _exit;
 
 	PlayerCombatController _playerCombat;
-        void Start()
+        void Awake()
         {
                 _enter.GetComponent<DelegateColliderBinder>()._triggerEnter.AddListener((GameObject go) => EnterDungeon(go));
 	        _exit.GetComponent<DelegateColliderBinder>()._triggerEnter.AddListener((GameObject go) => ExitDungeon(go));

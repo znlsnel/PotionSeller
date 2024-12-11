@@ -5,9 +5,10 @@ using UnityEngine.Pool;
 
 public enum EItemType
 {
+	None,
 	ALL,
-	INGREDIENT_POSTION,
-	POSTION,
+	INGREDIENT_POTION,
+	POTION,
 	COIN,
 }
 

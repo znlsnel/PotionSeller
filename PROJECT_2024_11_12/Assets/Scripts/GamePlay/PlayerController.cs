@@ -105,14 +105,12 @@ public class PlayerController : HealthEntity
 	void StartTouch(InputAction.CallbackContext context)
 	{
 		_anim.SetBool("moving", true); 
-		Debug.Log("조이스틱 온");
 		//_joystick.EnableJoystickUI();
 		_touchStartPos = _touchMove.ReadValue<Vector2>();
 	}
 	void EndtTouch(InputAction.CallbackContext context)
 	{
 		_anim.SetBool("moving", false); 
-		Debug.Log("조이스틱 오프");
 		_joystick.DisableJoystickUI();
 	}
 

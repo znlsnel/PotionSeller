@@ -57,6 +57,12 @@ public class PickupManager : MonoBehaviour, IItemReceiver
 	{
 		return isReceivingItem;
 	}
+	public EItemType GetItemType()
+	{
+		if (_items.Count == 0)
+			return EItemType.None;
+		return _items.Peek().GetComponent<Item>()._itemType;
+	}
 	public int _leftCarryCap { get { return _maxCarrySize - _items.Count; } }
 	public Stack<GameObject> GetItemStack() { return _items; }
 	public int GetItemCount() { return _items.Count; }

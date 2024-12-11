@@ -876,7 +876,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _handPos: {fileID: 7414451791348694140}
-  _itemType: 2
+  _itemType: 3
   _carrySizeX: 1
   _carrySizeZ: 1
   _xOffset: 0

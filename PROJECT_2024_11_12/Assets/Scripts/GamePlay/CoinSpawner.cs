@@ -17,7 +17,10 @@ public class CoinSpawner : MonoBehaviour
 	Stack<GameObject> _coins = new Stack<GameObject>();
 
 	GameObject _player;
-
+	public int GetCoinCnt()
+	{
+		return _coins.Count;
+	}
 	private void Start()
 	{
 		_spotLight.SetActive(false);
