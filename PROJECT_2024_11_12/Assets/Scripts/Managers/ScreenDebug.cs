@@ -14,6 +14,8 @@ public class ScreenDebug : Singleton<ScreenDebug>
 
         public void DebugText(string text)
         {
+
+        #if UNITY_EDITOR 
 		GameObject go = _waitObj != null ? _waitObj : Instantiate<GameObject>(_textPrefab);
 
 
@@ -30,5 +32,7 @@ public class ScreenDebug : Singleton<ScreenDebug>
                         _waitObj.transform.SetParent(null);
                         _waitObj.SetActive(false);
 		}
+        #else
+        #endif
 	}
 }

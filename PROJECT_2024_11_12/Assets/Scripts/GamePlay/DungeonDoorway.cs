@@ -34,6 +34,9 @@ public class DungeonDoorway : Singleton<DungeonDoorway>
 		if ((findLayerMask.value & (1 << go.gameObject.layer)) == 0)
 			return;
 
+		var pc = go.GetComponent<PlayerController>();
+		pc.HP = pc.MaxHP();
+
 		_playerCombat.isInHuntZone = false;
 		MonsterSpawner[] mss = FindObjectsByType<MonsterSpawner>(FindObjectsSortMode.None);
 		foreach (MonsterSpawner monster in mss)

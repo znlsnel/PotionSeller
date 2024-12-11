@@ -133,22 +133,23 @@ public class TaskNavigatorUI : MonoBehaviour
 	}
 
 	bool IsRectTransformInView(RectTransform rect)
-	{
+	{ 
+		return (_target.transform.position - transform.position).magnitude < 5.0f;
 
 		// 화면 경계를 구함
-		Vector2 screenMax = new Vector2(Screen.width, Screen.height)/2;
-		Vector2 screenMin =  -screenMax; // (0, 0) 
+		//Vector2 screenMax = new Vector2(Screen.width, Screen.height)/2;
+		//Vector2 screenMin =  -screenMax; // (0, 0) 
 
-		// 모든 코너가 화면 경계 내에 있는지 확인
-		Debug.Log(_rect.localPosition);
+		//// 모든 코너가 화면 경계 내에 있는지 확인
+		//Debug.Log(_rect.localPosition);
 
-		if (_rect.localPosition.x > screenMin.x && _rect.localPosition.x < screenMax.x &&
-			_rect.localPosition.y > screenMin.y && _rect.localPosition.y <  screenMax.y)
-		{
-			return true; 
-		} 
+		//if (_rect.localPosition.x > screenMin.x && _rect.localPosition.x < screenMax.x &&
+		//	_rect.localPosition.y > screenMin.y && _rect.localPosition.y <  screenMax.y)
+		//{
+		//	return true; 
+		//} 
 		
 
-		return false; 
+		//return false; 
 	}
 }

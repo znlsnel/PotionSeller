@@ -33,12 +33,12 @@ public class GPGSManager : MonoBehaviour
 			string displayName = PlayGamesPlatform.Instance.GetUserDisplayName();
 			string userID = PlayGamesPlatform.Instance.GetUserId();
 
-			_logText.text = "Login Success :  " + displayName + " / " + userID;
+		//	_logText.text = "Login Success :  " + displayName + " / " + userID;
 		//	DataBase.instance.LoadData();
 		}
 		else 
 		{
-			_logText.text = "Login Failed";
+		//	_logText.text = "Login Failed";
 		}
 	}
 

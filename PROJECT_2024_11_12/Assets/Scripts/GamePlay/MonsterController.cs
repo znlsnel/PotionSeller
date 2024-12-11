@@ -145,7 +145,7 @@ public class MonsterController : HealthEntity
 	public void AE_Die()
 	{
 		int rate = _dropRate * DataBase.instance._itemDropRate.GetValue() / 100; 
-		while (rate > 0)
+		while ( DungeonDoorway.instance.isPlayerInDungeon() &&  rate > 0)
 		{
 			int R = UnityEngine.Random.Range(1, 100);
 			if (R < rate)

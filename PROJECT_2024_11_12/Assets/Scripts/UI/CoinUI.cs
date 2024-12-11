@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 
@@ -5,10 +6,11 @@ public class CoinUI : Singleton<CoinUI>
 {
        [SerializeField] TextMeshProUGUI _text;
         long _coin = 1000;
-	  
+
 	private void Start()
 	{
 		UpdateCoinText(); 
+
 	}
 	public long GetCoin()
 	{
@@ -18,7 +20,9 @@ public class CoinUI : Singleton<CoinUI>
         { 
                 _coin += coin;
 
-		UpdateCoinText();
+		DataBase.instance.RegisterSave();
+
+		UpdateCoinText(); 
 
 	}
 
@@ -26,4 +30,6 @@ public class CoinUI : Singleton<CoinUI>
 	{
 		_text.text = Utils.instance.ConvertToCoin(_coin);
 	}
+
+
 }

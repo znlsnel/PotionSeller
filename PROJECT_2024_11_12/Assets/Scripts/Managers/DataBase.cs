@@ -9,6 +9,7 @@ using System.Runtime.Serialization.Json;
 using System.Text;
 using static UnityEngine.EventSystems.EventTrigger;
 using static DataBase;
+using System.Collections;
 
 public class DataBase : Singleton<DataBase>
 {
@@ -24,7 +25,6 @@ public class DataBase : Singleton<DataBase>
 	private string saveFilePath => Path.Combine(Application.persistentDataPath, "PotionSellerSaveData.json");
 	private string fileName = "SaveData.dat";
 	SaveDatas saveDatas = new SaveDatas();
-
 	[System.Serializable] 
 	public class SkillLevelEntry
 	{
@@ -43,7 +43,22 @@ public class DataBase : Singleton<DataBase>
 		ScreenDebug.instance.DebugText("Call Load Data Function"); 
 		LoadData();
 	}
-	public void SaveData()
+
+	Coroutine save;
+	public void RegisterSave()
+	{
+		if (save == null)
+			save = StartCoroutine(Save());
+	}
+	 
+	IEnumerator Save() 
+	{
+		yield return 1.0f;
+		SaveData();
+		save = null;
+	}
+
+	void SaveData()
         {
 		saveDatas = new SaveDatas();
 		saveDatas.coin = CoinUI.instance.GetCoin();

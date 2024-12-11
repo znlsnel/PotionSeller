@@ -29,7 +29,7 @@ public class UpgradeUI : MonoBehaviour
 			return;
 
 		CoinUI.instance.AddCoin(-price);
-		_skill.SetLevel(_skill.GetLevel() + 1); 
+		_skill.SetLevel(_skill.GetLevel() + 1);  
 	}
 
 	void UpdatePrice()
