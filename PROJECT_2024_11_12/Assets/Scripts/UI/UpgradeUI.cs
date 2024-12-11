@@ -57,4 +57,11 @@ public class UpgradeUI : MonoBehaviour
 				_state[i - 1].color = Color.white;
 		}
 	}
+
+	
+	public void LoadAds()
+	{
+		AdmobManager.instance.LoadRewardAd(() => { AudioManager.instance.PlayAudioClip(_successAudio); _skill.SetLevel(_skill.GetLevel() + 1); });
+	}
+
 }
