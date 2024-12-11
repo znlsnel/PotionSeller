@@ -24630,6 +24630,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _closeBt: {fileID: 1131741797}
   _menu: {fileID: 1885716456}
+  _openSound: {fileID: 8300000, guid: 1e98a680bb8528a49b62fe76a5e485ba, type: 3}
+  _closeSound: {fileID: 8300000, guid: 53cb1abbe9b7aab40889f032a5c2ea58, type: 3}
 --- !u!1 &1932459491
 GameObject:
   m_ObjectHideFlags: 0
@@ -27703,6 +27705,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1627973952396310666, guid: 159aa9685d63df5499ac7adf63aa022a, type: 3}
+      propertyPath: m_StoppingDistance
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3352658287791256309, guid: 159aa9685d63df5499ac7adf63aa022a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.37

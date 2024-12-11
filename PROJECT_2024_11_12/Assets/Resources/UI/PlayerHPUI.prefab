@@ -137,6 +137,12 @@ PrefabInstance:
       value: 1801810542
       objectReference: {fileID: 0}
     - target: {fileID: 1127196958312849523, guid: b395a7acba38e40e2a895d3ee88bcc3e, type: 3}
+      propertyPath: m_text
+      value: '-
+
+'
+      objectReference: {fileID: 0}
+    - target: {fileID: 1127196958312849523, guid: b395a7acba38e40e2a895d3ee88bcc3e, type: 3}
       propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
       value: 1801810542
       objectReference: {fileID: 0}
