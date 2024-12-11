@@ -1,4 +1,6 @@
+using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -13,6 +15,7 @@ public abstract class HealthEntity : MonoBehaviour
 
 	[NonSerialized] public GameObject _hpBar;
 	[SerializeField] DamageUI _damageUI;
+
 	public int HP { get { return _curHp; } set { if (value == HP) return;  _curHp = Mathf.Max(Mathf.Min(value, MaxHP()), 0); _onChangedHp?.Invoke(); } }
 	public virtual int MaxHP() {  return _initHp;  } 
 	public bool isDead { get { return HP == 0; } }
@@ -34,7 +37,7 @@ public abstract class HealthEntity : MonoBehaviour
 		if (HP == 0)
 			return;
 
-		_damageUI.SetDamage(damage); 
+		_damageUI.SetDamage(damage);
 
 		HP = HP - damage;
 		if (HP == 0)

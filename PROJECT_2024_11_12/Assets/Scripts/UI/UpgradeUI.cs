@@ -9,6 +9,8 @@ public class UpgradeUI : MonoBehaviour
         [SerializeField] SkillUpgradeSO _skill;
         [SerializeField] TextMeshProUGUI _priceText;
 	[SerializeField] List<Image> _state = new List<Image>();
+	[SerializeField] AudioClip _successAudio;
+	[SerializeField] AudioClip _failedAudio;
 
 	private void Start()
 	{
@@ -26,7 +28,11 @@ public class UpgradeUI : MonoBehaviour
         {
 		int price = (int)Mathf.Pow(4, _skill.GetLevel()+1); 
 		if (_skill.GetLevel() == 10 || price > CoinUI.instance.GetCoin())
+		{
+			AudioManager.instance.PlayAudioClip(_failedAudio);
 			return;
+		}
+		AudioManager.instance.PlayAudioClip(_successAudio);
 
 		CoinUI.instance.AddCoin(-price);
 		_skill.SetLevel(_skill.GetLevel() + 1);  

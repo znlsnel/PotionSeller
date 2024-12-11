@@ -10,13 +10,15 @@ public class CoinSpawner : MonoBehaviour
 	[SerializeField] GameObject _coinPrefab;
 	[SerializeField] GameObject _spotLight;
 	[SerializeField] Transform _coinPosition;
-
 	ObjectPool<GameObject> _pool;
 
 	[SerializeField] Vector3 _coinOffset;
 	Stack<GameObject> _coins = new Stack<GameObject>();
 
 	GameObject _player;
+
+	[Space(10)]
+	[SerializeField] AudioClip _coinPickupAudio;
 	public int GetCoinCnt()
 	{
 		return _coins.Count;
@@ -94,7 +96,10 @@ public class CoinSpawner : MonoBehaviour
 		if ((findLayerMask.value & (1 << other.gameObject.layer)) == 0)
 			return;
 		_player = other.gameObject;
-		_sendCoin = StartCoroutine(SendCoin(other.GetComponent<PickupManager>()));
+
+		if (_sendCoin == null)
+			_sendCoin = StartCoroutine(SendCoin(other.GetComponent<PickupManager>()));
+
 	}
 
 	private void OnTriggerExit(Collider other)
@@ -108,6 +113,7 @@ public class CoinSpawner : MonoBehaviour
 			StopCoroutine(_sendCoin);
 			_sendCoin = null;
 		} 
+
 		_player = null ;
 	}
 
@@ -120,6 +126,7 @@ public class CoinSpawner : MonoBehaviour
 		{
 			float t = time / (_coins.Count / sendCnt); 
 			time -= Time.deltaTime;
+			AudioManager.instance.PlayAudioClip(_coinPickupAudio);
 			for (int i = 0; i < sendCnt && _coins.Count > 0; i++)
 			{ 
 				receiver.ReceiveItem(_coins.Peek());

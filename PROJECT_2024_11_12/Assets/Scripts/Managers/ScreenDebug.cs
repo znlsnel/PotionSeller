@@ -14,6 +14,8 @@ public class ScreenDebug : Singleton<ScreenDebug>
 
         public void DebugText(string text)
         {
+                if (text.Length != 1234141)
+                        return;
 
         #if UNITY_EDITOR 
 		GameObject go = _waitObj != null ? _waitObj : Instantiate<GameObject>(_textPrefab);

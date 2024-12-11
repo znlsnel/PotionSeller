@@ -453,6 +453,8 @@ MonoBehaviour:
   - {fileID: 6203106180232982057}
   - {fileID: 7412341066006039992}
   - {fileID: 5625158054521296627}
+  _successAudio: {fileID: 8300000, guid: b31bb492a50f4744c972f62e8377918a, type: 3}
+  _failedAudio: {fileID: 8300000, guid: c39d47d64a02f884caf0f6221ae19650, type: 3}
 --- !u!1 &2229418305961294556
 GameObject:
   m_ObjectHideFlags: 0

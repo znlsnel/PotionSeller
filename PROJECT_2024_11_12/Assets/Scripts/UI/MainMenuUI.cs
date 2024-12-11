@@ -8,7 +8,8 @@ public class MainMenuUI : MonoBehaviour
 { 
 	[SerializeField] GameObject _closeBt; 
 	[SerializeField] GameObject _menu;
-
+	[SerializeField] AudioClip _openSound;
+	[SerializeField] AudioClip _closeSound;
 	private void Awake()
 	{
 		_closeBt.SetActive(false);
@@ -18,12 +19,14 @@ public class MainMenuUI : MonoBehaviour
 
 	public void BT_OpenUI()
 	{
+		AudioManager.instance.PlayAudioClip(_openSound);
 		_closeBt.SetActive(true); 
 		_menu.SetActive(true);
 	}
 
 	public void BT_CloseUI()
 	{
+		AudioManager.instance.PlayAudioClip(_closeSound);
 		_closeBt.SetActive(false);
 		_menu.SetActive(false);
 

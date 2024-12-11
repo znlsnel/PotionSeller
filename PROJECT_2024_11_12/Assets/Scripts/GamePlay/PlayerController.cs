@@ -1,6 +1,8 @@
 using GooglePlayGames.BasicApi;
+using NUnit.Framework;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -25,13 +27,18 @@ public class PlayerController : HealthEntity
 	[SerializeField] GameObject _porter; 
 	[SerializeField] Transform _genPos; 
 	[SerializeField] float _moveSpeed = 5.0f;
+	[Space(10)]
+	[SerializeField] List<AudioClip> _footStepAudios = new List<AudioClip>();
+	[SerializeField] AudioClip _initSound;
+	[SerializeField] AudioClip _dieSound;
+	[SerializeField] float _footVolume = 1.0f;
 
-        Vector2 _touchStartPos;
+	Vector2 _touchStartPos;
 
 	Vector3 _lookTarget;
 	float _lookTime;
 
-	public UnityEvent _onDead = new UnityEvent();
+	[NonSerialized] public UnityEvent _onDead = new UnityEvent();
 
 	public override int MaxHP()
 	{
@@ -74,7 +81,7 @@ public class PlayerController : HealthEntity
 
 	void OnMove() 
         {
-		if (UIHandler.instance._isOpenMainMenu)
+		if (UIHandler.instance._isOpenMainMenu || isDead)
 			return;
 
 		Vector2 touchPos = _touchMove.ReadValue<Vector2>();
@@ -119,7 +126,13 @@ public class PlayerController : HealthEntity
 		_anim.SetBool("die", false);
 		HP = _initHp * DataBase.instance._hp.GetValue() / 100;
 		transform.position = _genPos.position;
-		_pickupManager.SetActive(true); 
+		_pickupManager.SetActive(true);
+		AudioManager.instance.PlayAudioClip(_initSound); 
+	}
+
+	public void AE_FootStep()
+	{
+		AudioManager.instance.PlayAudioClip(_footStepAudios, _footVolume);  
 	}
 
 	public override void OnDead()
@@ -129,7 +142,7 @@ public class PlayerController : HealthEntity
 		_anim.SetBool("die", true);
 		_combatCtrl.SetActiveUpperBody(false);
 		_pickupManager.ClearItem();
-
+		AudioManager.instance.PlayAudioClip(_dieSound);
 		Utils.instance.SetTimer(() => {
 			InitPlayer();
 		}, 2.0f); 

@@ -7,6 +7,7 @@ public class LoadingUI : MonoBehaviour
 {
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         [SerializeField] UnityEngine.UI.Slider _slider;
+        [SerializeField] AudioClip _finishAudio;
     void Start()
     {
 		_slider.value = 0;      
@@ -22,6 +23,7 @@ public class LoadingUI : MonoBehaviour
 		        yield return null;
 		}
                 yield return new WaitForSeconds(0.5f);
+                AudioManager.instance.PlayAudioClip(_finishAudio);
                 gameObject.SetActive(false); 
 	}
 }

@@ -558,6 +558,9 @@ MonoBehaviour:
   _hpPos: {fileID: 2183488135415404519}
   _initHp: 700
   _damageUI: {fileID: 1391092040544268770}
+  _damageSounds:
+  - {fileID: 8300000, guid: 4a2e4f5f8e8237e4390c43a4b6cb519d, type: 3}
+  - {fileID: 8300000, guid: e213f1abe8c2bc449a90be08507b19f6, type: 3}
   _attackRange: 2
   _dropItem: {fileID: 5366707112403216439, guid: 80477c503071ecb44b1ff39923c0f827, type: 3}
   _damage: 15

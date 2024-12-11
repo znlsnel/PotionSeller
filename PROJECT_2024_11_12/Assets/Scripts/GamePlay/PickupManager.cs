@@ -29,10 +29,12 @@ public class PickupManager : MonoBehaviour, IItemReceiver
 	[SerializeField] Vector2 _sortDir = new Vector2(1,1);
 
 	[Space(10)]
+	[SerializeField] int _maxCarrySize = 8;
+	[SerializeField] AudioClip _pickupAudio;
+
 	Stack<GameObject> _items = new Stack<GameObject>();
 
 	[NonSerialized] public bool isReceivingItem = false;
-	[SerializeField] int _maxCarrySize = 8;
 
 	public bool destoryItem = false;
 	public UnityAction _onGetItem;
@@ -110,6 +112,7 @@ public class PickupManager : MonoBehaviour, IItemReceiver
 			pos.x += _sortDir.x * xIdx * (renderer.bounds.size.x + _xOffset);
 
 		}
+		AudioManager.instance.PlayAudioClip(_pickupAudio);
 
 		StartCoroutine(MoveInParabola(go, go.transform.position, pos, destroy));
 
@@ -145,7 +148,6 @@ public class PickupManager : MonoBehaviour, IItemReceiver
 		Vector3 end =  _handPos.position;
 		go.transform.position = end + offset;
 		_onGetItem?.Invoke();
-
 		if (destoryItem || destory)
 			go.GetComponent<Item>()?.Relase();  
 		

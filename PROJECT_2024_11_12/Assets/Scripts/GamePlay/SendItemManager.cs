@@ -17,6 +17,7 @@ public class SendItemManager : MonoBehaviour, IItemSender
 {
 	PickupManager _pickupManager;
 	[SerializeField] float _sendTime = 1.0f;
+	[SerializeField] AudioClip _sendAudio;
 
 	Stack<GameObject> _items;
 	GameObject _target;
@@ -80,6 +81,7 @@ public class SendItemManager : MonoBehaviour, IItemSender
 			float t = Mathf.Min(_sendTime / size, 0.2f); 
 			while (cnt> 0 && _pickupManager.GetItemStack().Count > 0 && receiver.isReceivable())
 			{
+				AudioManager.instance.PlayAudioClip(_sendAudio);
 				receiver.ReceiveItem(_pickupManager.GetItemStack().Peek());
 				_pickupManager.GetItemStack().Pop();
 				cnt--;

@@ -9,8 +9,9 @@ public class DungeonDoorway : Singleton<DungeonDoorway>
         [SerializeField] GameObject _exit;
 
 	PlayerCombatController _playerCombat;
-        void Awake()
+        public override void Awake()
         {
+		base.Awake();
                 _enter.GetComponent<DelegateColliderBinder>()._triggerEnter.AddListener((GameObject go) => EnterDungeon(go));
 	        _exit.GetComponent<DelegateColliderBinder>()._triggerEnter.AddListener((GameObject go) => ExitDungeon(go));
                 _player._onDead.AddListener(()=>ExitDungeon(_player.gameObject));
@@ -35,7 +36,9 @@ public class DungeonDoorway : Singleton<DungeonDoorway>
 			return;
 
 		var pc = go.GetComponent<PlayerController>();
-		pc.HP = pc.MaxHP();
+
+		if (pc.isDead == false)
+			pc.HP = pc.MaxHP(); 
 
 		_playerCombat.isInHuntZone = false;
 		MonsterSpawner[] mss = FindObjectsByType<MonsterSpawner>(FindObjectsSortMode.None);

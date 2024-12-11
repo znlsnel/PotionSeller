@@ -9,7 +9,8 @@ using UnityEngine;
 public class PlayerCombatController : MonoBehaviour
 {
 	[SerializeField] int _damage = 100;
-
+	[SerializeField] List<AudioClip> _attackSounds = new List<AudioClip>();
+	[SerializeField] List<AudioClip> _monsterDamageSounds = new List<AudioClip>();
 	HashSet<MonsterController> _monsters = new HashSet<MonsterController>();
 
 	PlayerController _playerCtrl;
@@ -95,8 +96,15 @@ public class PlayerCombatController : MonoBehaviour
 
 	public void AE_Attack(int rate)
 	{
+		AudioManager.instance.PlayAudioClip(_attackSounds);
+		if (_monsters.Count > 0)
+			AudioManager.instance.PlayAudioClip(_monsterDamageSounds);
+	  
 		foreach(MonsterController mc in _monsters)
 		{
+			if (mc.isDead)
+				continue;
+
 			int DAMAVE = _damage * DataBase.instance._attack.GetValue() / 100;
 			mc.OnDamage(gameObject, (DAMAVE * rate) / 100);   
 		}
