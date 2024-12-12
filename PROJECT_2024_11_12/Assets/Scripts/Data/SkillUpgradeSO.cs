@@ -19,11 +19,14 @@ public class SkillUpgradeSO : ScriptableObject
 		return effect[level]; 
 	}
 
-	public void SetLevel(int value)
+	public void SetLevel(int value, bool isLoad = false)
 	{
 		level = value; 
-		_onChangedLevel?.Invoke(); 
+		_onChangedLevel?.Invoke();
+
+		if (isLoad == false ) 
+			DataBase.instance.RegisterSave();
 	}
-	
+
 
 }

@@ -16,15 +16,18 @@ public class CoinUI : Singleton<CoinUI>
 	{
 		return _coin;
 	}
-	public void AddCoin(long coin)
+
+	public void AddCoin(long coin, bool isLoad = false)
         { 
                 _coin += coin;
 
-		DataBase.instance.RegisterSave();
+		if (isLoad == false)
+			DataBase.instance.RegisterSave();
 
-		UpdateCoinText(); 
-
+		UpdateCoinText();  
 	}
+
+
 
 	void UpdateCoinText()
 	{

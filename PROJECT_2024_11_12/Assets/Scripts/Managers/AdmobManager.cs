@@ -1,6 +1,7 @@
 using GoogleMobileAds;
 using GoogleMobileAds.Api;
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class AdmobManager : Singleton<AdmobManager>
@@ -11,19 +12,28 @@ public class AdmobManager : Singleton<AdmobManager>
 	const string rewardTestId = "ca-app-pub-3940256099942544/5224354917";
 	const string rewardId = "123";
 	RewardedAd _rewardedAd = null;
+
 	public override void Awake()
 	{
 		base.Awake();
 		MobileAds.Initialize(initStatus => { });
 	}
-	public void LoadRewardAd(Action action)
+
+	bool _lock = false;
+	public bool LoadRewardAd(Action action)
 	{
+		if (_lock)
+			return false;
+
+		_lock = true;
+		UIHandler.instance.GetLoadingUI.StartLoading();
+
 		if (_rewardedAd != null)
 		{
 			_rewardedAd.Destroy();
 			_rewardedAd = null;
 		}
-
+		
 		var adRequest = new AdRequest();
 		 
 		// send the request to load the ad.
@@ -36,8 +46,14 @@ public class AdmobManager : Singleton<AdmobManager>
 			    
 			    Debug.Log("Rewarded ad loaded with response : "
 			    + ad.GetResponseInfo());
-
+			     
 			    _rewardedAd = ad;
+			    _rewardedAd.OnAdFullScreenContentClosed += () =>
+			    {
+				    _lock = false;
+				    UIHandler.instance.GetLoadingUI.EndLoading();
+				    Debug.Log("±¤°í Á¾·á");
+			    };
 
 			    if (_rewardedAd != null && _rewardedAd.CanShowAd())
 			    {
@@ -50,6 +66,6 @@ public class AdmobManager : Singleton<AdmobManager>
 			    }
 		    });
 
-
+		return true;
 	}
 }

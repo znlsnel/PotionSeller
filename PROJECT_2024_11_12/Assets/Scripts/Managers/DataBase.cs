@@ -41,7 +41,7 @@ public class DataBase : Singleton<DataBase>
 	private void Start()
 	{
 		ScreenDebug.instance.DebugText("Call Load Data Function"); 
-		LoadData();
+
 	}
 
 	Coroutine save;
@@ -97,7 +97,7 @@ public class DataBase : Singleton<DataBase>
 			ScreenDebug.instance.DebugText("Save Success");
 		//	Debug.Log("저장 성공");
 			var update = new SavedGameMetadataUpdate.Builder().Build();
-
+			UIHandler.instance.GetLogUI.WriteLog("save game...");
 			var json = JsonUtility.ToJson(saveDatas);
 			byte[] bytes = Encoding.UTF8.GetBytes(json);
 
@@ -124,11 +124,16 @@ public class DataBase : Singleton<DataBase>
 
 	 
 	
-	public void LoadData()
+	public bool LoadData()
 	{
-		ISavedGameClient savedGameClient = PlayGamesPlatform.Instance.SavedGame;
+
+		var savedGameClient = PlayGamesPlatform.Instance.SavedGame;
+		if (savedGameClient == null)
+			return false;
+		
 		savedGameClient.OpenWithAutomaticConflictResolution(fileName, DataSource.ReadCacheOrNetwork,
 			ConflictResolutionStrategy.UseLastKnownGood, LoadGameData);
+		return true;
 	}
 
 	void LoadGameData(SavedGameRequestStatus status, ISavedGameMetadata data)
@@ -142,7 +147,10 @@ public class DataBase : Singleton<DataBase>
 			savedGameClient.ReadBinaryData(data, OnSavedGameDataRead);
 		}
 		else
+		{
 			ScreenDebug.instance.DebugText("Load Failed");
+			UIHandler.instance.GetLogUI.WriteLog("Load Failed");
+		}
 		//	Debug.Log("로드 실패");
 	}
 
@@ -152,7 +160,8 @@ public class DataBase : Singleton<DataBase>
 		if (data == "")
 		{
 			ScreenDebug.instance.DebugText("There's No Data - Failed Load Game - Save Current Datas");
-			SaveData();  
+			UIHandler.instance.GetLogUI.WriteLog("Load Failed");
+			SaveData();
 			OpenLoadGame(); 
 		}
 		else
@@ -160,12 +169,14 @@ public class DataBase : Singleton<DataBase>
 			ScreenDebug.instance.DebugText("Game Data Load Success ");
 			saveDatas = new SaveDatas(); 
 			saveDatas = JsonUtility.FromJson<SaveDatas>(data);
-			OpenLoadGame(); 
+			UIHandler.instance.GetLogUI.WriteLog("load game...");
+			OpenLoadGame();
 		}
 	}
 	 void OpenLoadGame()
 	{
 		Dictionary<string, int> datas = new Dictionary<string, int>();
+		UIHandler.instance.GetLoadingUI.EndLoading();
 
 		ScreenDebug.instance.DebugText($"COIN : {saveDatas.coin} "); 
 		foreach (var entry in saveDatas.levels)
@@ -174,12 +185,12 @@ public class DataBase : Singleton<DataBase>
 			datas.Add(entry.key, entry.value);
 		}
 
-		CoinUI.instance.AddCoin(-CoinUI.instance.GetCoin() + saveDatas.coin);
+		CoinUI.instance.AddCoin(-CoinUI.instance.GetCoin() + saveDatas.coin, true);
 
 		void LoadSkill(SkillUpgradeSO skillSO, string key)
 		{
 			if (datas.ContainsKey(key))
-				skillSO.SetLevel(datas[key]);
+				skillSO.SetLevel(datas[key], true);
 		}
 
 		LoadSkill(_speed, nameof(_speed));

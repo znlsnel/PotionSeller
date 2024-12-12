@@ -1,29 +1,26 @@
-using System.Collections;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.UIElements;
 
 public class LoadingUI : MonoBehaviour
 {
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
-        [SerializeField] UnityEngine.UI.Slider _slider;
-        [SerializeField] AudioClip _finishAudio;
-    void Start()
-    {
-		_slider.value = 0;      
+	[SerializeField] GameObject _loadingUI;
 
-		StartCoroutine(UpdateLoadingBar());
-    }
-         
-        IEnumerator UpdateLoadingBar()
-        {
-                while (_slider.value < 1.0f)
-                {
-                        _slider.value += (Time.deltaTime / 1.5f);
-		        yield return null;
-		}
-                yield return new WaitForSeconds(0.5f);
-                AudioManager.instance.PlayAudioClip(_finishAudio);
-                gameObject.SetActive(false); 
+	private void Awake()
+	{
+		_loadingUI.SetActive(false);
 	}
+
+	public void StartLoading()
+	{
+		_loadingUI.SetActive(true);
+	} 
+
+	public void EndLoading()
+	{
+		_loadingUI.SetActive(false);
+
+	}
+
+	public bool isLoading => _loadingUI.activeSelf;
+
 }

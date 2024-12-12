@@ -61,7 +61,9 @@ public class UpgradeUI : MonoBehaviour
 	
 	public void LoadAds()
 	{
-		AdmobManager.instance.LoadRewardAd(() => { AudioManager.instance.PlayAudioClip(_successAudio); _skill.SetLevel(_skill.GetLevel() + 1); });
+		if (!AdmobManager.instance.LoadRewardAd(() => { AudioManager.instance.PlayAudioClip(_successAudio); _skill.SetLevel(_skill.GetLevel() + 1); }))
+			AudioManager.instance.PlayAudioClip(_failedAudio);
+
 	}
 
 }

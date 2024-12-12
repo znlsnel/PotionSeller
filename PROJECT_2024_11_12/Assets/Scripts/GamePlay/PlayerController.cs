@@ -81,7 +81,7 @@ public class PlayerController : HealthEntity
 
 	void OnMove() 
         {
-		if (UIHandler.instance._isOpenMainMenu || isDead)
+		if (UIHandler.instance._isOpenUI || isDead)
 			return;
 
 		Vector2 touchPos = _touchMove.ReadValue<Vector2>();
