@@ -111,6 +111,9 @@ public class PlayerController : HealthEntity
 
 	void StartTouch(InputAction.CallbackContext context)
 	{
+		if (UIHandler.instance._isOpenUI || isDead)
+			return;
+
 		_anim.SetBool("moving", true); 
 		//_joystick.EnableJoystickUI();
 		_touchStartPos = _touchMove.ReadValue<Vector2>();

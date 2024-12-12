@@ -21,10 +21,16 @@ public class porter : MonoBehaviour
 		});
 		_agent = GetComponent<NavMeshAgent>();
                 StartCoroutine(GointToPlayer());
-        }
-         
-        
-        IEnumerator GointToPlayer()
+
+		_agent.speed = (5 * DataBase.instance._speed.GetValue()) / 100;
+                DataBase.instance._speed._onChangedLevel.AddListener(() =>
+                {
+                        _agent.speed = (7 * DataBase.instance._speed.GetValue()) / 100;
+                });
+	}
+
+
+	IEnumerator GointToPlayer()
         {
                 while( true)
                 {
@@ -48,5 +54,6 @@ public class porter : MonoBehaviour
                 } 
 
                  _max.gameObject.SetActive(_pickup._leftCarryCap == 0);
+
 	}
 }
