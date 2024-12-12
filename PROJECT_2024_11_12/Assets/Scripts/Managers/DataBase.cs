@@ -152,8 +152,8 @@ public class DataBase : Singleton<DataBase>
 		if (data == "")
 		{
 			ScreenDebug.instance.DebugText("There's No Data - Failed Load Game - Save Current Datas");
-			SaveData(); 
-			OpenLoadGame();
+			SaveData();  
+			OpenLoadGame(); 
 		}
 		else
 		{
