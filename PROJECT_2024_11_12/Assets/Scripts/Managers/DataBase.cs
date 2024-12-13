@@ -49,7 +49,7 @@ public class DataBase : Singleton<DataBase>
 	 
 	IEnumerator Save() 
 	{
-		yield return 1.0f;
+		yield return 5.0f; 
 		SaveData();
 		save = null;
 	}
