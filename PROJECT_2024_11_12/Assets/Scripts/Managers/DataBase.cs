@@ -38,11 +38,7 @@ public class DataBase : Singleton<DataBase>
 		public long coin = 0;
 		public List<SkillLevelEntry> levels = new List<SkillLevelEntry>();
 	}
-	private void Start()
-	{
-		ScreenDebug.instance.DebugText("Call Load Data Function"); 
 
-	}
 
 	Coroutine save;
 	public void RegisterSave()
@@ -71,20 +67,12 @@ public class DataBase : Singleton<DataBase>
 		saveDatas.levels.Add(new SkillLevelEntry { key = nameof(_itemDropRate), value = _itemDropRate.GetLevel() });
 		saveDatas.levels.Add(new SkillLevelEntry { key = nameof(_maxCarryItemCnt), value = _maxCarryItemCnt.GetLevel() });
 
-		ScreenDebug.instance.DebugText($"COIN : {saveDatas.coin} "); 
-
-		foreach (var data in saveDatas.levels)
-		{
-			ScreenDebug.instance.DebugText($"KEY : {data.key}, Value : {data.value} "); 
-
-		}
-
 		ISavedGameClient savedGameClient = PlayGamesPlatform.Instance.SavedGame;
 		savedGameClient.OpenWithAutomaticConflictResolution(fileName, DataSource.ReadCacheOrNetwork,
 			ConflictResolutionStrategy.UseLastKnownGood,
 			OnSavedGameOpened); 
 
-		//string json = JsonUtility.ToJson(saveDatas, true);
+		//string json = JsonUtility.ToJson(saveDatas, true); 
 		//File.WriteAllText(saveFilePath, json);
 	}
 
@@ -94,7 +82,6 @@ public class DataBase : Singleton<DataBase>
 
 		if (status == SavedGameRequestStatus.Success)
 		{
-			ScreenDebug.instance.DebugText("Save Success");
 		//	Debug.Log("저장 성공");
 			var update = new SavedGameMetadataUpdate.Builder().Build();
 			UIHandler.instance.GetLogUI.WriteLog("save game...");
@@ -104,8 +91,7 @@ public class DataBase : Singleton<DataBase>
 		//	Debug.Log("저장 데이터 : " + bytes);
 			savedGameClient.CommitUpdate(game, update, bytes, OnSavedGameWritten);
 		}
-		else
-			ScreenDebug.instance.DebugText("Save Failed");
+
 			//Debug.Log("저장 실패");
 
 	}
@@ -114,16 +100,13 @@ public class DataBase : Singleton<DataBase>
 	{
 		if (status == SavedGameRequestStatus.Success)
 		{
-			ScreenDebug.instance.DebugText("Data Save Success");
-	//		Debug.Log("저장 성공");
+			Debug.Log("저장 성공");
 		}
 		else
-			ScreenDebug.instance.DebugText("Data Save Failed");
-		//	Debug.Log("저장 실패");
+			Debug.Log("저장 실패");
 	}
 
 	 
-	
 	public bool LoadData()
 	{
 
@@ -142,13 +125,11 @@ public class DataBase : Singleton<DataBase>
 
 		if (status == SavedGameRequestStatus.Success)
 		{
-			ScreenDebug.instance.DebugText("Load Success");
 		//	Debug.Log("로드 성공");
 			savedGameClient.ReadBinaryData(data, OnSavedGameDataRead);
 		}
 		else
 		{
-			ScreenDebug.instance.DebugText("Load Failed");
 			UIHandler.instance.GetLogUI.WriteLog("Load Failed");
 		}
 		//	Debug.Log("로드 실패");
@@ -159,29 +140,26 @@ public class DataBase : Singleton<DataBase>
 		string data = System.Text.Encoding.UTF8.GetString(loadedData);
 		if (data == "")
 		{
-			ScreenDebug.instance.DebugText("There's No Data - Failed Load Game - Save Current Datas");
 			UIHandler.instance.GetLogUI.WriteLog("Load Failed");
 			SaveData();
 			OpenLoadGame(); 
 		}
 		else
 		{
-			ScreenDebug.instance.DebugText("Game Data Load Success ");
 			saveDatas = new SaveDatas(); 
 			saveDatas = JsonUtility.FromJson<SaveDatas>(data);
 			UIHandler.instance.GetLogUI.WriteLog("load game...");
 			OpenLoadGame();
 		}
 	}
+
 	 void OpenLoadGame()
 	{
 		Dictionary<string, int> datas = new Dictionary<string, int>();
 		UIHandler.instance.GetLoadingUI.EndLoading();
 
-		ScreenDebug.instance.DebugText($"COIN : {saveDatas.coin} "); 
 		foreach (var entry in saveDatas.levels)
 		{
-			ScreenDebug.instance.DebugText($"KEY : {entry.key}, Value : {entry.value} ");
 			datas.Add(entry.key, entry.value);
 		}
 

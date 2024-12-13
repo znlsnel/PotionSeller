@@ -9,7 +9,10 @@ public class StartLoadingUI : MonoBehaviour
         [SerializeField] UnityEngine.UI.Slider _slider;
         [SerializeField] AudioClip _finishAudio;
 
+        
         bool successLoad = false;
+        public bool isLoaded => _slider.value >= 1.0f;
+
         void Start()
         {
 	        _slider.value = 0;      

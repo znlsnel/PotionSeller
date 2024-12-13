@@ -28813,7 +28813,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1627973952396310666, guid: 159aa9685d63df5499ac7adf63aa022a, type: 3}
       propertyPath: m_StoppingDistance
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3352658287791256309, guid: 159aa9685d63df5499ac7adf63aa022a, type: 3}
       propertyPath: m_LocalPosition.x

@@ -5,6 +5,7 @@ public class LoadingUI : MonoBehaviour
 {
 	[SerializeField] GameObject _loadingUI;
 
+	int _calledLoad = 0;
 	private void Awake()
 	{
 		_loadingUI.SetActive(false);
@@ -13,12 +14,13 @@ public class LoadingUI : MonoBehaviour
 	public void StartLoading()
 	{
 		_loadingUI.SetActive(true);
+		_calledLoad++;
 	} 
 
 	public void EndLoading()
 	{
-		_loadingUI.SetActive(false);
-
+		if (--_calledLoad == 0)
+			_loadingUI.SetActive(false);
 	}
 
 	public bool isLoading => _loadingUI.activeSelf;
