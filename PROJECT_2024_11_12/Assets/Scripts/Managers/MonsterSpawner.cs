@@ -12,8 +12,6 @@ public class MonsterSpawner : MonoBehaviour
 	HashSet<MonsterController> _activeMonster = new HashSet<MonsterController>();
 	[SerializeField] int _maxCount = 20;
 
-	//public bool isPlayerIn = true;
-
 	private void Awake()
 	{
 		_pool = new ObjectPool<GameObject>(
@@ -43,8 +41,6 @@ public class MonsterSpawner : MonoBehaviour
 		return ret;
 	}
 
-	// Update is called once per frame
-
 	private void Start()
 	{
 		StartCoroutine(SpawnMonster());
@@ -73,26 +69,4 @@ public class MonsterSpawner : MonoBehaviour
 			monster.InitHp();
 		
 	}
-
-	//private void OnTriggerEnter(Collider other)
-	//{
-	//	PlayerCombatController pc = other.GetComponent<PlayerCombatController>();
-	//	if (pc != null)
-	//	{
-	//	//	isPlayerIn = true;
-	//		pc.isInHuntZone = true;
-	//	}
-	//}
-
-	//private void OnTriggerExit(Collider other)
-	//{
-	//	PlayerCombatController pc = other.GetComponent<PlayerCombatController>();
-	//	if (pc != null)
-	//	{
-	//	//	isPlayerIn = false; 
-	//		pc.isInHuntZone = false; 
-	//	}
-	//}
-
-
 }

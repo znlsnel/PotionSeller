@@ -7,7 +7,7 @@ public class AudioManager : Singleton<AudioManager>
 	[SerializeField] GameObject audioSourcePrefab;
 	Queue<AudioSource> _audioPool = new Queue<AudioSource>();
 
-	public AudioSource GetAudioSource()
+	AudioSource GetAudioSource()
 	{
 		if (_audioPool.Count > 0)
 		{
@@ -29,7 +29,7 @@ public class AudioManager : Singleton<AudioManager>
 		ReturnAudioSource(source); 
 	}
 
-	public void ReturnAudioSource(AudioSource source)
+	void ReturnAudioSource(AudioSource source)
 	{
 		source.Stop();
 		source.gameObject.SetActive(false);
