@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ItemDropRate
   m_EditorClassIdentifier: 
   effect: 320000003c00000046000000500000005a00000064000000780000008c000000a0000000b4000000c8000000
-  level: 0
+  level: 10
   _onChangedLevel:
     m_PersistentCalls:
       m_Calls: []

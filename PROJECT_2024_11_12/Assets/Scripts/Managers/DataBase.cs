@@ -38,6 +38,7 @@ public class DataBase : Singleton<DataBase>
 		public long coin = 0;
 		public List<SkillLevelEntry> levels = new List<SkillLevelEntry>();
 	}
+	
 
 
 	Coroutine save;
@@ -49,12 +50,17 @@ public class DataBase : Singleton<DataBase>
 	 
 	IEnumerator Save() 
 	{
-		yield return 5.0f; 
+		yield return 1.0f;  
 		SaveData();
 		save = null;
 	}
 
-	void SaveData()
+	public void SaveCloud()
+	{
+		SaveData(true);
+	}
+
+	void SaveData(bool cloud = false)
         {
 		saveDatas = new SaveDatas();
 		saveDatas.coin = CoinUI.instance.GetCoin();
@@ -67,13 +73,24 @@ public class DataBase : Singleton<DataBase>
 		saveDatas.levels.Add(new SkillLevelEntry { key = nameof(_itemDropRate), value = _itemDropRate.GetLevel() });
 		saveDatas.levels.Add(new SkillLevelEntry { key = nameof(_maxCarryItemCnt), value = _maxCarryItemCnt.GetLevel() });
 
+		if (cloud)
+			SaveCloudData(); 
+		else
+			SaveJsonData();
+	}
+
+	void SaveJsonData()
+	{
+		string json = JsonUtility.ToJson(saveDatas, true);
+		File.WriteAllText(saveFilePath, json);
+	}
+
+	void SaveCloudData()
+	{
 		ISavedGameClient savedGameClient = PlayGamesPlatform.Instance.SavedGame;
 		savedGameClient.OpenWithAutomaticConflictResolution(fileName, DataSource.ReadCacheOrNetwork,
 			ConflictResolutionStrategy.UseLastKnownGood,
-			OnSavedGameOpened); 
-
-		//string json = JsonUtility.ToJson(saveDatas, true); 
-		//File.WriteAllText(saveFilePath, json);
+			OnSavedGameOpened);
 	}
 
 	void OnSavedGameOpened(SavedGameRequestStatus status, ISavedGameMetadata game)
@@ -106,16 +123,27 @@ public class DataBase : Singleton<DataBase>
 			Debug.Log("저장 실패");
 	}
 
-	 
 	public bool LoadData()
 	{
+		if (File.Exists(saveFilePath) == false)
+			return false;
 
+		string json = File.ReadAllText(saveFilePath); // 파일 내용을 읽어옴
+		saveDatas = JsonUtility.FromJson<SaveDatas>(json); // JSON 데이터를 객체로 역직렬화
+		OpenLoadGame();
+		 
+		return true;
+	}
+
+	public bool LoadCloudData()
+	{
 		var savedGameClient = PlayGamesPlatform.Instance.SavedGame;
 		if (savedGameClient == null)
 			return false;
 		
 		savedGameClient.OpenWithAutomaticConflictResolution(fileName, DataSource.ReadCacheOrNetwork,
 			ConflictResolutionStrategy.UseLastKnownGood, LoadGameData);
+
 		return true;
 	}
 
@@ -141,8 +169,6 @@ public class DataBase : Singleton<DataBase>
 		if (data == "")
 		{
 			UIHandler.instance.GetLogUI.WriteLog("Load Failed");
-			SaveData();
-			OpenLoadGame(); 
 		}
 		else
 		{

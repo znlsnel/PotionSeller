@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Attack
   m_EditorClassIdentifier: 
   effect: 640000007d00000096000000af000000c8000000e1000000fa000000130100002c0100005e01000090010000
-  level: 0
+  level: 10
   _onChangedLevel:
     m_PersistentCalls:
       m_Calls: []

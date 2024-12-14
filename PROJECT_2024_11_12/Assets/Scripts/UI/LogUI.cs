@@ -20,7 +20,7 @@ public class LogUI : MonoBehaviour
 
                 _crt = StartCoroutine(EraseLog());
 	}
-         
+          
         IEnumerator EraseLog() 
         {
                 yield return new WaitForSeconds(2.0f);

@@ -36,6 +36,16 @@ public class CoinSpawner : MonoBehaviour
 				obj.GetComponent<Item>().AddReleaseAction(() => { _pool.Release(obj); });
 			}
 			) ;
+		StartCoroutine(CheckSpotLight());
+	}
+	IEnumerator CheckSpotLight()
+	{
+		while (true)
+		{
+			_spotLight.SetActive(_coins.Count > 0);
+			yield return new WaitForSeconds(0.3f);
+		}
+
 	}
 	public void AddCoin(int cnt)
 	{
@@ -136,6 +146,5 @@ public class CoinSpawner : MonoBehaviour
 			yield return new WaitForSeconds(t);
 		}
 		_sendCoin = null;
-		_spotLight.SetActive(false);
 	}
 }
