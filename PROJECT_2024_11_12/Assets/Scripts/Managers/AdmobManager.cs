@@ -10,9 +10,9 @@ public class AdmobManager : Singleton<AdmobManager>
 
 	bool isTestMode = true;
 	const string rewardTestId = "ca-app-pub-3940256099942544/5224354917";
-	const string rewardId = "123";
+	const string rewardId = "ca-app-pub-5986236102536809/4328895340";
 	RewardedAd _rewardedAd = null;
-
+	 
 	public override void Awake()
 	{
 		base.Awake();
