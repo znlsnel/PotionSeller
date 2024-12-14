@@ -77,6 +77,8 @@ public class DataBase : Singleton<DataBase>
 			SaveCloudData(); 
 		else
 			SaveJsonData();
+
+		UIHandler.instance.GetLogUI.WriteLog("save data . . .");
 	}
 
 	void SaveJsonData()
@@ -108,8 +110,10 @@ public class DataBase : Singleton<DataBase>
 		//	Debug.Log("저장 데이터 : " + bytes);
 			savedGameClient.CommitUpdate(game, update, bytes, OnSavedGameWritten);
 		}
+		else
+			UIHandler.instance.GetLogUI.WriteLog("failed save data");
 
-			//Debug.Log("저장 실패");
+		//Debug.Log("저장 실패");
 
 	}
 
@@ -131,7 +135,8 @@ public class DataBase : Singleton<DataBase>
 		string json = File.ReadAllText(saveFilePath); // 파일 내용을 읽어옴
 		saveDatas = JsonUtility.FromJson<SaveDatas>(json); // JSON 데이터를 객체로 역직렬화
 		OpenLoadGame();
-		 
+
+		UIHandler.instance.GetLogUI.WriteLog("load data . . .");
 		return true;
 	}
 
@@ -143,6 +148,7 @@ public class DataBase : Singleton<DataBase>
 		
 		savedGameClient.OpenWithAutomaticConflictResolution(fileName, DataSource.ReadCacheOrNetwork,
 			ConflictResolutionStrategy.UseLastKnownGood, LoadGameData);
+		UIHandler.instance.GetLogUI.WriteLog("load data . . .");
 
 		return true;
 	}
@@ -152,14 +158,11 @@ public class DataBase : Singleton<DataBase>
 		ISavedGameClient savedGameClient = PlayGamesPlatform.Instance.SavedGame;
 
 		if (status == SavedGameRequestStatus.Success)
-		{
-		//	Debug.Log("로드 성공");
 			savedGameClient.ReadBinaryData(data, OnSavedGameDataRead);
-		}
+		
 		else
-		{
 			UIHandler.instance.GetLogUI.WriteLog("Load Failed");
-		}
+		
 		//	Debug.Log("로드 실패");
 	}
 
@@ -167,14 +170,12 @@ public class DataBase : Singleton<DataBase>
 	{
 		string data = System.Text.Encoding.UTF8.GetString(loadedData);
 		if (data == "")
-		{
-			UIHandler.instance.GetLogUI.WriteLog("Load Failed");
-		}
+			UIHandler.instance.GetLogUI.WriteLog("There's no saved data");
 		else
 		{
 			saveDatas = new SaveDatas(); 
 			saveDatas = JsonUtility.FromJson<SaveDatas>(data);
-			UIHandler.instance.GetLogUI.WriteLog("load game...");
+			UIHandler.instance.GetLogUI.WriteLog("success load data");
 			OpenLoadGame();
 		}
 	}

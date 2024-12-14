@@ -10079,10 +10079,10 @@ RectTransform:
   - {fileID: 495832633}
   m_Father: {fileID: 314876563}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 275}
-  m_SizeDelta: {x: -200, y: -550}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 277.385}
+  m_SizeDelta: {x: 600, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &756799976
 MonoBehaviour:
@@ -10097,7 +10097,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.84364545, g: 0.7311321, b: 1, a: 0}
+  m_Color: {r: 0.84364545, g: 0.7311321, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -10113,7 +10113,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 6
 --- !u!222 &756799977
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -20631,7 +20631,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 5
 --- !u!222 &1586773623
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -30286,11 +30286,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1996235843400240823, guid: 82a396f8600654e4da9c45491be8d0f5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -255.64
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1996235843400240823, guid: 82a396f8600654e4da9c45491be8d0f5, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 434.78027
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2131622657656520002, guid: 82a396f8600654e4da9c45491be8d0f5, type: 3}
       propertyPath: m_AnchorMax.y
@@ -30598,7 +30598,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7817382233271126828, guid: 82a396f8600654e4da9c45491be8d0f5, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 219.26028
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7830395036875161866, guid: 82a396f8600654e4da9c45491be8d0f5, type: 3}
       propertyPath: _skill
