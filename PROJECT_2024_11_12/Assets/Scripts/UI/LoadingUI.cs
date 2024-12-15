@@ -14,12 +14,13 @@ public class LoadingUI : MonoBehaviour
 	public void StartLoading()
 	{
 		_loadingUI.SetActive(true);
-		_calledLoad++;
+		_calledLoad += 1;
 	} 
 
 	public void EndLoading()
 	{
-		if (--_calledLoad == 0)
+		_calledLoad = Mathf.Max(_calledLoad - 1, 0); 
+		if (_calledLoad <= 0)
 			_loadingUI.SetActive(false);
 	}
 

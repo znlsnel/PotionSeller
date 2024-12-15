@@ -10,6 +10,7 @@ using System.Text;
 using static UnityEngine.EventSystems.EventTrigger;
 using static DataBase;
 using System.Collections;
+using UnityEngine.Events;
 
 public class DataBase : Singleton<DataBase>
 {
@@ -24,24 +25,27 @@ public class DataBase : Singleton<DataBase>
 
 	private string saveFilePath => Path.Combine(Application.persistentDataPath, "PotionSellerSaveData.json");
 	private string fileName = "SaveData.dat";
+	private string _userId = "";
+
+	public UnityEvent _onLoadData = new UnityEvent();
+
 	SaveDatas saveDatas = new SaveDatas();
-	[System.Serializable] 
+	[System.Serializable]
+	public class SaveDatas
+	{
+		public string userId = "";
+		public long coin = 0;
+		public List<SkillLevelEntry> levels = new List<SkillLevelEntry>();
+	}
+
+	[System.Serializable]
 	public class SkillLevelEntry
 	{
 		public string key;
 		public int value;
 	}
-
-	[System.Serializable]
-	public class SaveDatas
-	{
-		public long coin = 0;
-		public List<SkillLevelEntry> levels = new List<SkillLevelEntry>();
-	}
-	
-
-
 	Coroutine save;
+
 	public void RegisterSave()
 	{
 		if (save == null)
@@ -63,6 +67,7 @@ public class DataBase : Singleton<DataBase>
 	void SaveData(bool cloud = false)
         {
 		saveDatas = new SaveDatas();
+		saveDatas.userId = _userId;
 		saveDatas.coin = CoinUI.instance.GetCoin();
 		saveDatas.levels.Add(new SkillLevelEntry { key = nameof(_speed), value = _speed.GetLevel() });
 		saveDatas.levels.Add(new SkillLevelEntry { key = nameof(_hp), value = _hp.GetLevel() });
@@ -80,13 +85,11 @@ public class DataBase : Singleton<DataBase>
 
 		UIHandler.instance.GetLogUI.WriteLog("save data . . .");
 	}
-
 	void SaveJsonData()
 	{
 		string json = JsonUtility.ToJson(saveDatas, true);
 		File.WriteAllText(saveFilePath, json);
 	}
-
 	void SaveCloudData()
 	{
 		ISavedGameClient savedGameClient = PlayGamesPlatform.Instance.SavedGame;
@@ -94,7 +97,6 @@ public class DataBase : Singleton<DataBase>
 			ConflictResolutionStrategy.UseLastKnownGood,
 			OnSavedGameOpened);
 	}
-
 	void OnSavedGameOpened(SavedGameRequestStatus status, ISavedGameMetadata game)
 	{
 		ISavedGameClient savedGameClient = PlayGamesPlatform.Instance.SavedGame;
@@ -116,7 +118,6 @@ public class DataBase : Singleton<DataBase>
 		//Debug.Log("저장 실패");
 
 	}
-
 	void OnSavedGameWritten(SavedGameRequestStatus status, ISavedGameMetadata game)
 	{
 		if (status == SavedGameRequestStatus.Success)
@@ -127,10 +128,11 @@ public class DataBase : Singleton<DataBase>
 			Debug.Log("저장 실패");
 	}
 
-	public bool LoadData()
+	public bool LoadData(string userId)
 	{
-		if (File.Exists(saveFilePath) == false)
+		if (File.Exists(saveFilePath) == false || userId == "") 
 			return false;
+		_userId = userId;
 
 		string json = File.ReadAllText(saveFilePath); // 파일 내용을 읽어옴
 		saveDatas = JsonUtility.FromJson<SaveDatas>(json); // JSON 데이터를 객체로 역직렬화
@@ -152,7 +154,6 @@ public class DataBase : Singleton<DataBase>
 
 		return true;
 	}
-
 	void LoadGameData(SavedGameRequestStatus status, ISavedGameMetadata data)
 	{
 		ISavedGameClient savedGameClient = PlayGamesPlatform.Instance.SavedGame;
@@ -165,7 +166,6 @@ public class DataBase : Singleton<DataBase>
 		
 		//	Debug.Log("로드 실패");
 	}
-
 	void OnSavedGameDataRead(SavedGameRequestStatus status, byte[] loadedData)
 	{
 		string data = System.Text.Encoding.UTF8.GetString(loadedData);
@@ -182,8 +182,10 @@ public class DataBase : Singleton<DataBase>
 
 	 void OpenLoadGame()
 	{
+		if (saveDatas.userId != _userId)
+			return;
+
 		Dictionary<string, int> datas = new Dictionary<string, int>();
-		UIHandler.instance.GetLoadingUI.EndLoading();
 
 		foreach (var entry in saveDatas.levels)
 		{
@@ -206,6 +208,8 @@ public class DataBase : Singleton<DataBase>
 		LoadSkill(_customerPurchaseCnt, nameof(_customerPurchaseCnt));
 		LoadSkill(_itemDropRate, nameof(_itemDropRate));
 		LoadSkill(_maxCarryItemCnt, nameof(_maxCarryItemCnt));
+
+		_onLoadData?.Invoke();
 	}
 
 }

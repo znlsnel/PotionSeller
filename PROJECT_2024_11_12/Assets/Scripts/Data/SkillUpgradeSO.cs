@@ -14,6 +14,14 @@ public class SkillUpgradeSO : ScriptableObject
 	public UnityEvent _onChangedLevel = new UnityEvent();
 	public int GetLevel() => level;
 
+	private void Awake()
+	{
+#if UNITY_EDITOR
+#else
+		level = 0;
+#endif
+	}
+
 	public int GetValue()
 	{
 		return effect[level]; 

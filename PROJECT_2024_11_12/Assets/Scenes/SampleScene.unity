@@ -8657,6 +8657,9 @@ MonoBehaviour:
   _customerPurchaseCnt: {fileID: 11400000, guid: 803b30d3b0bdcd143a00c49d277983eb, type: 2}
   _itemDropRate: {fileID: 11400000, guid: de990f4c93210f74997c688c21861cec, type: 2}
   _maxCarryItemCnt: {fileID: 11400000, guid: 4643611c147c18c4ba48ae287476201a, type: 2}
+  _onLoadData:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!4 &630966208
 Transform:
   m_ObjectHideFlags: 0
@@ -29978,11 +29981,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 276517575892251894, guid: 066cd4a3b6f00cb428ba69b36e03b051, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -400
       objectReference: {fileID: 0}
     - target: {fileID: 276517575892251894, guid: 066cd4a3b6f00cb428ba69b36e03b051, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 577.188
       objectReference: {fileID: 0}
     - target: {fileID: 2774278937452652547, guid: 066cd4a3b6f00cb428ba69b36e03b051, type: 3}
       propertyPath: m_UiScaleMode

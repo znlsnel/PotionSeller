@@ -19,7 +19,7 @@ public class StartLoadingUI : MonoBehaviour
 
 	        StartCoroutine(UpdateLoadingBar());
 
-		successLoad = DataBase.instance.LoadData();
+                DataBase.instance._onLoadData.AddListener(() => { successLoad = true; });
         }
          
         IEnumerator UpdateLoadingBar()
@@ -27,15 +27,9 @@ public class StartLoadingUI : MonoBehaviour
                 while (_slider.value < 1.0f)
                 {
 #if UNITY_EDITOR
-			_slider.value += (Time.deltaTime / 1.5f);
-#else
-			_slider.value += (Time.deltaTime / 1.5f);if (successLoad == false)
-                        {
-                                successLoad = DataBase.instance.LoadData();
-				_slider.value += (Time.deltaTime / 15); 
-			}
-			else
-			        _slider.value += (Time.deltaTime / 1.5f);
+			_slider.value += (Time.deltaTime / 1.5f); 
+#else 
+                        _slider.value += successLoad  == false ? Time.deltaTime / 15 : Time.deltaTime / 1.5f;
 #endif
 			yield return null;
 		}
