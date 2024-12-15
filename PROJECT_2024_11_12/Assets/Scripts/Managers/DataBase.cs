@@ -88,8 +88,10 @@ public class DataBase : Singleton<DataBase>
 	void SaveJsonData()
 	{
 		string json = JsonUtility.ToJson(saveDatas, true);
-		File.WriteAllText(saveFilePath, json);
+		string encryptedJson = EncryptionHelper.Encrypt(json);
+		File.WriteAllText(saveFilePath, encryptedJson);
 	}
+
 	void SaveCloudData()
 	{
 		ISavedGameClient savedGameClient = PlayGamesPlatform.Instance.SavedGame;
@@ -135,7 +137,8 @@ public class DataBase : Singleton<DataBase>
 		_userId = userId;
 
 		string json = File.ReadAllText(saveFilePath); // 파일 내용을 읽어옴
-		saveDatas = JsonUtility.FromJson<SaveDatas>(json); // JSON 데이터를 객체로 역직렬화
+		string decryptedJson = EncryptionHelper.Decrypt(json);
+		saveDatas = JsonUtility.FromJson<SaveDatas>(decryptedJson); // JSON 데이터를 객체로 역직렬화 
 		OpenLoadGame();
 
 		UIHandler.instance.GetLogUI.WriteLog("load data . . .");

@@ -7,8 +7,13 @@ public class CoinUI : Singleton<CoinUI>
        [SerializeField] TextMeshProUGUI _text;
         long _coin = 1000;
 
-	private void Start()
+	public override void Awake() 
 	{
+		base.Awake();
+#if UNITY_EDITOR == false
+	_coin = 0;
+#endif
+
 		UpdateCoinText(); 
 
 	}

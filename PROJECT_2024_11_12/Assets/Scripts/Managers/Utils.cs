@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Security.Cryptography;
+using System.Text;
 using UnityEngine;
 
 public class Utils : Singleton<Utils>	
@@ -53,3 +55,48 @@ public class Utils : Singleton<Utils>
 	}
 
 } 
+
+
+public static class EncryptionHelper
+{
+	private static readonly int keySize = 256;
+	private static readonly int IvSize = 16;
+	private static readonly string _key = "@%V152B@B&*Osdas247ASNAL2D@@$SLK";
+	public static string Encrypt(string plainText)
+	{
+		using (Aes aes = Aes.Create())
+		{
+			aes.Key = GenerateKey(_key);
+			aes.IV = new byte[IvSize]; // 초기화 벡터 (0으로 초기화)
+
+			using (var encryptor = aes.CreateEncryptor(aes.Key, aes.IV))
+			{
+				byte[] plainBytes = Encoding.UTF8.GetBytes(plainText);
+				byte[] encryptedBytes = encryptor.TransformFinalBlock(plainBytes, 0, plainBytes.Length);
+				return Convert.ToBase64String(encryptedBytes);
+			}
+		}
+	}
+
+	public static string Decrypt(string encryptedText) 
+	{
+		using (Aes aes = Aes.Create())
+		{
+			aes.Key = GenerateKey(_key);
+			aes.IV = new byte[IvSize];
+
+			using (var decryptor = aes.CreateDecryptor(aes.Key, aes.IV))
+			{
+				byte[] encryptedBytes = Convert.FromBase64String(encryptedText);
+				byte[] plainBytes = decryptor.TransformFinalBlock(encryptedBytes, 0, encryptedBytes.Length);
+				return Encoding.UTF8.GetString(plainBytes);
+			}
+		}
+	}
+
+	// 키 생성 함수 (32바이트 길이로 고정)
+	private static byte[] GenerateKey(string key)
+	{
+		return Encoding.UTF8.GetBytes(key.PadRight(32).Substring(0, 32));
+	}
+}
