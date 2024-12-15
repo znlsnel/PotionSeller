@@ -85,7 +85,7 @@ public class DataBase : Singleton<DataBase>
 
 		UIHandler.instance.GetLogUI.WriteLog("save data . . .");
 	}
-	void SaveJsonData()
+	void SaveJsonData() 
 	{
 		string json = JsonUtility.ToJson(saveDatas, true);
 		string encryptedJson = EncryptionHelper.Encrypt(json);
@@ -132,8 +132,13 @@ public class DataBase : Singleton<DataBase>
 
 	public bool LoadData(string userId)
 	{
-		if (File.Exists(saveFilePath) == false || userId == "") 
+		if (File.Exists(saveFilePath) == false) 
 			return false;
+
+#if UNITY_EDITOR == false
+	if (userId == "")
+		return false; 
+#endif
 		_userId = userId;
 
 		string json = File.ReadAllText(saveFilePath); // 파일 내용을 읽어옴
@@ -175,11 +180,12 @@ public class DataBase : Singleton<DataBase>
 		if (data == "")
 			UIHandler.instance.GetLogUI.WriteLog("There's no saved data");
 		else
-		{
+		{ 
 			saveDatas = new SaveDatas(); 
 			saveDatas = JsonUtility.FromJson<SaveDatas>(data);
 			UIHandler.instance.GetLogUI.WriteLog("success load data");
 			OpenLoadGame();
+			SaveData();
 		}
 	}
 

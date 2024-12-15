@@ -150,9 +150,9 @@ public class PickupManager : MonoBehaviour, IItemReceiver
 		_onGetItem?.Invoke();
 		if (destoryItem || destory)
 			go.GetComponent<Item>()?.Relase();  
-		
+		 
 
-		yield return new WaitForSeconds(duration * 2);
+		yield return new WaitForSeconds(duration / 2);
 		if (Time.time > moveEndTime)
 			isReceivingItem = false;
 	}

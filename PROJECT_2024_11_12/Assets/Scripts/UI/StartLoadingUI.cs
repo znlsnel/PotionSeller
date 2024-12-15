@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
@@ -9,28 +10,55 @@ public class StartLoadingUI : MonoBehaviour
         [SerializeField] UnityEngine.UI.Slider _slider;
         [SerializeField] AudioClip _finishAudio;
 
-        
-        bool successLoad = false;
-        public bool isLoaded => _slider.value >= 1.0f;
+        [SerializeField] TextMeshProUGUI _log;
+        [SerializeField] GameObject _sliderObject;
 
+        public bool isLoaded => _slider.value >= 1.0f;
+        
         void Start()
         {
-	        _slider.value = 0;      
+	        _slider.value = 0;
+		_log.text = "";
 
-	        StartCoroutine(UpdateLoadingBar());
+		_sliderObject.SetActive(false);
+	}
 
-                DataBase.instance._onLoadData.AddListener(() => { successLoad = true; });
+	float lastClickTime = -3.0f;
+        public void OnButton_Login()
+        {
+                if (Time.time - lastClickTime < 3.0f || GPGSManager.instance.isLoginSuccess)
+                        return; 
+
+		lastClickTime = Time.time;
+                GPGSManager.instance._onLogin.AddListener(OnLogin);
+		GPGSManager.instance.GPGSLogin();
         }
-         
-        IEnumerator UpdateLoadingBar()
+
+        void OnLogin(bool login)
+        {
+                if (login)
+                {
+                        _sliderObject.SetActive(true);
+			_log.text = "Login Success!";
+
+			StartCoroutine(UpdateLoadingBar());
+		}
+                else
+                {
+                        _log.text = "Login Failure";
+                }
+
+#if UNITY_EDITOR
+                _sliderObject.SetActive(true);
+		StartCoroutine(UpdateLoadingBar());
+#endif
+	}
+
+	IEnumerator UpdateLoadingBar()
         {
                 while (_slider.value < 1.0f)
                 {
-#if UNITY_EDITOR
 			_slider.value += (Time.deltaTime / 1.5f); 
-#else 
-                        _slider.value += successLoad  == false ? Time.deltaTime / 15 : Time.deltaTime / 1.5f;
-#endif
 			yield return null;
 		}
 
