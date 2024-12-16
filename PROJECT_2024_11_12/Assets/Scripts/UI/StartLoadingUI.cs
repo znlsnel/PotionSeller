@@ -26,12 +26,12 @@ public class StartLoadingUI : MonoBehaviour
 	float lastClickTime = -3.0f;
         public void OnButton_Login()
         {
-                if (Time.time - lastClickTime < 3.0f || GPGSManager.instance.isLoginSuccess)
+                if (Time.time - lastClickTime < 3.0f || LoginManager.instance.isLoginSuccess)
                         return; 
 
 		lastClickTime = Time.time;
-                GPGSManager.instance._onLogin.AddListener(OnLogin);
-		GPGSManager.instance.GPGSLogin();
+                LoginManager.instance._onLogin.AddListener(OnLogin);
+		LoginManager.instance.GPGSLogin();
         }
 
         void OnLogin(bool login)

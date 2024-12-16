@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "347901537087",
+    "project_id": "potion-seller-fb638",
+    "storage_bucket": "potion-seller-fb638.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:347901537087:android:fd4cbfdb2fd0fb2cc6018a",
+        "android_client_info": {
+          "package_name": "com.potionSeller"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZv8_0mLmyO4-WgwTC7GpZeBEh_efxDOA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

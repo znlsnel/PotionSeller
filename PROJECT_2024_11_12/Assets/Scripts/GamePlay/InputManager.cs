@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 public class InputManager : Singleton<InputManager>
 {
 	private InputActionMap _gamePlayMap;
-
+	
 	InputAction _touchMove;
 	InputAction _touch;
 	public InputAction TouchMove { get { return _touchMove; } private set { _touchMove = value; } }

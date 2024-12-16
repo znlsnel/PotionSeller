@@ -2,13 +2,10 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
-using GooglePlayGames;
-using GooglePlayGames.BasicApi;
-using GooglePlayGames.BasicApi.SavedGame;
 using System.Runtime.Serialization.Json;
 using System.Text;
-using static UnityEngine.EventSystems.EventTrigger;
-using static DataBase;
+
+
 using System.Collections;
 using UnityEngine.Events;
 
@@ -94,41 +91,41 @@ public class DataBase : Singleton<DataBase>
 
 	void SaveCloudData()
 	{
-		ISavedGameClient savedGameClient = PlayGamesPlatform.Instance.SavedGame;
-		savedGameClient.OpenWithAutomaticConflictResolution(fileName, DataSource.ReadCacheOrNetwork,
-			ConflictResolutionStrategy.UseLastKnownGood,
-			OnSavedGameOpened);
+		//ISavedGameClient savedGameClient = PlayGamesPlatform.Instance.SavedGame;
+		//savedGameClient.OpenWithAutomaticConflictResolution(fileName, DataSource.ReadCacheOrNetwork,
+		//	ConflictResolutionStrategy.UseLastKnownGood,
+		//	OnSavedGameOpened);
 	}
-	void OnSavedGameOpened(SavedGameRequestStatus status, ISavedGameMetadata game)
-	{
-		ISavedGameClient savedGameClient = PlayGamesPlatform.Instance.SavedGame;
+	//void OnSavedGameOpened(SavedGameRequestStatus status, ISavedGameMetadata game)
+	//{
+	//	ISavedGameClient savedGameClient = PlayGamesPlatform.Instance.SavedGame;
 
-		if (status == SavedGameRequestStatus.Success)
-		{
-		//	Debug.Log("저장 성공");
-			var update = new SavedGameMetadataUpdate.Builder().Build();
-			UIHandler.instance.GetLogUI.WriteLog("save game...");
-			var json = JsonUtility.ToJson(saveDatas);
-			byte[] bytes = Encoding.UTF8.GetBytes(json);
+	//	if (status == SavedGameRequestStatus.Success)
+	//	{
+	//	//	Debug.Log("저장 성공");
+	//		var update = new SavedGameMetadataUpdate.Builder().Build();
+	//		UIHandler.instance.GetLogUI.WriteLog("save game...");
+	//		var json = JsonUtility.ToJson(saveDatas);
+	//		byte[] bytes = Encoding.UTF8.GetBytes(json);
 
-		//	Debug.Log("저장 데이터 : " + bytes);
-			savedGameClient.CommitUpdate(game, update, bytes, OnSavedGameWritten);
-		}
-		else
-			UIHandler.instance.GetLogUI.WriteLog("failed save data");
+	//	//	Debug.Log("저장 데이터 : " + bytes);
+	//		savedGameClient.CommitUpdate(game, update, bytes, OnSavedGameWritten);
+	//	}
+	//	else
+	//		UIHandler.instance.GetLogUI.WriteLog("failed save data");
 
-		//Debug.Log("저장 실패");
+	//	//Debug.Log("저장 실패");
 
-	}
-	void OnSavedGameWritten(SavedGameRequestStatus status, ISavedGameMetadata game)
-	{
-		if (status == SavedGameRequestStatus.Success)
-		{
-			Debug.Log("저장 성공");
-		}
-		else
-			Debug.Log("저장 실패");
-	}
+	//}
+	//void OnSavedGameWritten(SavedGameRequestStatus status, ISavedGameMetadata game)
+	//{
+	//	if (status == SavedGameRequestStatus.Success)
+	//	{
+	//		Debug.Log("저장 성공");
+	//	}
+	//	else
+	//		Debug.Log("저장 실패");
+	//}
 
 	public bool LoadData(string userId)
 	{
@@ -152,42 +149,42 @@ public class DataBase : Singleton<DataBase>
 
 	public bool LoadCloudData()
 	{
-		var savedGameClient = PlayGamesPlatform.Instance.SavedGame;
-		if (savedGameClient == null)
-			return false;
+		//var savedGameClient = PlayGamesPlatform.Instance.SavedGame;
+		//if (savedGameClient == null)
+		//	return false;
 		
-		savedGameClient.OpenWithAutomaticConflictResolution(fileName, DataSource.ReadCacheOrNetwork,
-			ConflictResolutionStrategy.UseLastKnownGood, LoadGameData);
-		UIHandler.instance.GetLogUI.WriteLog("load data . . .");
+		//savedGameClient.OpenWithAutomaticConflictResolution(fileName, DataSource.ReadCacheOrNetwork,
+		//	ConflictResolutionStrategy.UseLastKnownGood, LoadGameData);
+		//UIHandler.instance.GetLogUI.WriteLog("load data . . .");
 
 		return true;
 	}
-	void LoadGameData(SavedGameRequestStatus status, ISavedGameMetadata data)
-	{
-		ISavedGameClient savedGameClient = PlayGamesPlatform.Instance.SavedGame;
+	//void LoadGameData(SavedGameRequestStatus status, ISavedGameMetadata data)
+	//{
+	//	ISavedGameClient savedGameClient = PlayGamesPlatform.Instance.SavedGame;
 
-		if (status == SavedGameRequestStatus.Success)
-			savedGameClient.ReadBinaryData(data, OnSavedGameDataRead);
+	//	if (status == SavedGameRequestStatus.Success)
+	//		savedGameClient.ReadBinaryData(data, OnSavedGameDataRead);
 		
-		else
-			UIHandler.instance.GetLogUI.WriteLog("Load Failed");
+	//	else
+	//		UIHandler.instance.GetLogUI.WriteLog("Load Failed");
 		
-		//	Debug.Log("로드 실패");
-	}
-	void OnSavedGameDataRead(SavedGameRequestStatus status, byte[] loadedData)
-	{
-		string data = System.Text.Encoding.UTF8.GetString(loadedData);
-		if (data == "")
-			UIHandler.instance.GetLogUI.WriteLog("There's no saved data");
-		else
-		{ 
-			saveDatas = new SaveDatas(); 
-			saveDatas = JsonUtility.FromJson<SaveDatas>(data);
-			UIHandler.instance.GetLogUI.WriteLog("success load data");
-			OpenLoadGame();
-			SaveData();
-		}
-	}
+	//	//	Debug.Log("로드 실패");
+	//}
+	//void OnSavedGameDataRead(SavedGameRequestStatus status, byte[] loadedData)
+	//{
+	//	string data = System.Text.Encoding.UTF8.GetString(loadedData);
+	//	if (data == "")
+	//		UIHandler.instance.GetLogUI.WriteLog("There's no saved data");
+	//	else
+	//	{ 
+	//		saveDatas = new SaveDatas(); 
+	//		saveDatas = JsonUtility.FromJson<SaveDatas>(data);
+	//		UIHandler.instance.GetLogUI.WriteLog("success load data");
+	//		OpenLoadGame();
+	//		SaveData();
+	//	}
+	//}
 
 	 void OpenLoadGame()
 	{
