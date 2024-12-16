@@ -2,6 +2,7 @@
   <packages>
     <package>androidx.constraintlayout:constraintlayout:2.1.4</package>
     <package>com.google.android.gms:play-services-ads:23.5.0</package>
+    <package>com.google.android.gms:play-services-auth:16+</package>
     <package>com.google.android.gms:play-services-base:18.5.0</package>
     <package>com.google.android.ump:user-messaging-platform:3.1.0</package>
     <package>com.google.firebase:firebase-analytics:22.1.2</package>
@@ -10,6 +11,7 @@
     <package>com.google.firebase:firebase-auth-unity:12.5.0</package>
     <package>com.google.firebase:firebase-common:21.0.0</package>
     <package>com.google.games:gpgs-plugin-support:2.0.0</package>
+    <package>com.google.signin:google-signin-support:1.0.4</package>
   </packages>
   <files>
     <file>Assets/GeneratedLocalRepo/Firebase/m2repository/com/google/firebase/firebase-app-unity/12.5.0/firebase-app-unity-12.5.0.aar</file>
@@ -18,6 +20,8 @@
     <file>Assets/GeneratedLocalRepo/Firebase/m2repository/com/google/firebase/firebase-auth-unity/12.5.0/firebase-auth-unity-12.5.0.pom</file>
     <file>Assets/GeneratedLocalRepo/GooglePlayGames/com.google.play.games/Editor/m2repository/com/google/games/gpgs-plugin-support/2.0.0/gpgs-plugin-support-2.0.0.aar</file>
     <file>Assets/GeneratedLocalRepo/GooglePlayGames/com.google.play.games/Editor/m2repository/com/google/games/gpgs-plugin-support/2.0.0/gpgs-plugin-support-2.0.0.pom</file>
+    <file>Assets/GeneratedLocalRepo/GoogleSignIn/Editor/m2repository/com/google/signin/google-signin-support/1.0.4/google-signin-support-1.0.4.aar</file>
+    <file>Assets/GeneratedLocalRepo/GoogleSignIn/Editor/m2repository/com/google/signin/google-signin-support/1.0.4/google-signin-support-1.0.4.pom</file>
   </files>
   <settings>
     <setting name="androidAbis" value="arm64-v8a" />

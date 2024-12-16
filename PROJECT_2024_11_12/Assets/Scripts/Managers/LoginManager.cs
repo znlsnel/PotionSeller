@@ -32,6 +32,7 @@ public class LoginManager : Singleton<LoginManager>
 		//	FirebaseApp app = FirebaseApp.DefaultInstance;
 		//});
 		//103616091400-21tteuk42v83f81kk9g5dnttgcv2tr25.apps.googleusercontent.com
+		
 	}
 
 	private void Start()
