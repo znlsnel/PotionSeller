@@ -7,7 +7,7 @@ public class UIHandler : Singleton<UIHandler>
      [SerializeField]  public JoystickController _joystick;
      [SerializeField]  public MainMenuUI _mainMenu;
 	[SerializeField] public InternetChecker _internetChecker;
-	[SerializeField] StartLoadingUI _startLoading;
+	[SerializeField] LoginUI _startLoading;
 	[SerializeField] LoadingUI _loading;
 	[SerializeField] LogUI _logUI;
 

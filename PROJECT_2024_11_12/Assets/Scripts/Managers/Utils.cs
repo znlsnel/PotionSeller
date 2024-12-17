@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 using UnityEngine;
@@ -54,6 +55,28 @@ public class Utils : Singleton<Utils>
 		action.Invoke();
 	}
 
+
+	Dictionary<string, float> _watch = new Dictionary<string, float>();
+	
+	public bool TimeCheck(MonoBehaviour _self, string functionName, float time)
+	{
+		string key = _self.name + functionName; 
+		if (_watch.ContainsKey(key) == false)
+		{
+			_watch.Add(key, Time.time + time);
+			return true;
+		}
+		else
+		{
+			if (_watch[key] <= Time.time)
+			{
+				_watch[key] = Time.time + time;
+				return true;
+			}
+			else
+				return false;
+		}
+	}
 } 
 
 

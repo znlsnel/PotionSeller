@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <dependencies>
-<!-- Internal library dependency generated at build time. 
-    It also defines the transitive dependencies on play-services
--->
+ <!--Internal library dependency generated at build time. 
+    It also defines the transitive dependencies on play-services-->
+
   <androidPackages>
+	  <androidPackage spec="com.google.android.gms:play-services-ads-lite:22.1.2" />
+	  <androidPackage spec="com.google.android.gms:play-services-measurement-api:22.1.2" />
     <androidPackage spec="com.google.games:gpgs-plugin-support:2.0.0">
       <repositories>
         <repository>Assets/GooglePlayGames/com.google.play.games/Editor/m2repository</repository>
@@ -11,3 +13,5 @@
     </androidPackage>
   </androidPackages>
 </dependencies>
+
+
