@@ -12,7 +12,20 @@
           "package_name": "com.potionSeller"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "488591001695-dm1b74n4hhfjpvh0ghtk8fdog52noden.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.potionSeller",
+            "certificate_hash": "af86fbfd4a46efc65d2b9207d50f833f97478d76"
+          }
+        },
+        {
+          "client_id": "488591001695-bclacitl20t9g0vj8dd0hfaa7l2jm2jm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyC1Qw04fMa6b9gqoW3chtfyTmn99X3GqtA"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "488591001695-bclacitl20t9g0vj8dd0hfaa7l2jm2jm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

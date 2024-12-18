@@ -29,13 +29,13 @@ public class LoginUI : MonoBehaviour
 	}
 
 	float lastClickTime = -3.0f;
-        public void OnButton_Login()
+        public void LoginGoogle()
         {
-                if (Time.time - lastClickTime < 3.0f || LoginManager.instance.isLoginSuccess)
+                if (Utils.instance.TimeCheck(this, "LoginGoogle", 3.0f) == false || LoginManager.instance.isLoginSuccess)
                         return; 
 
 		lastClickTime = Time.time;
-                LoginManager.instance.GoogleSignInButton();
+                LoginManager.instance.GoogleLogin();
 	//	LoginManager.instance.GPGSLogin();
         }
 

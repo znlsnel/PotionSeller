@@ -342,8 +342,8 @@
     <Compile Include="Library\PackageCache\com.unity.inputsystem\InputSystem\InputFeatureNames.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem\InputSystem\Editor\DeviceSimulator\InputSystemPlugin.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem\InputSystem\Controls\Processors\InvertVector3Processor.cs" />
-    <Compile Include="Library\PackageCache\com.unity.inputsystem\InputSystem\Devices\InputDeviceChange.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem\InputSystem\Plugins\Steam\SteamIGAConverter.cs" />
+    <Compile Include="Library\PackageCache\com.unity.inputsystem\InputSystem\Devices\InputDeviceChange.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem\InputSystem\Editor\PropertyDrawers\InputControlPathDrawer.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem\InputSystem\Editor\Internal\AdvancedDropdown\AdvancedDropdownGUI.cs" />
     <Compile Include="Library\PackageCache\com.unity.inputsystem\InputSystem\Actions\InputActionAsset.cs" />
