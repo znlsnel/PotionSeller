@@ -15,23 +15,38 @@ using Google;
 using System.Threading.Tasks;
 using Firebase.Extensions;
 
+
 public class LoginManager : Singleton<LoginManager>
 {
 	public UnityEvent _onLogin = new UnityEvent();
 	public bool isLoginSuccess = false;
 
 	public string GoogleAPI = "488591001695-bclacitl20t9g0vj8dd0hfaa7l2jm2jm.apps.googleusercontent.com";
+	//public string GoogleAPI = "488591001695-dm1b74n4hhfjpvh0ghtk8fdog52noden.apps.googleusercontent.com";
 
-	// af:86:fb:fd:4a:46:ef:c6:5d:2b:92:07:d5:0f:83:3f:97:47:8d:76
-	// AF:86:FB:FD:4A:46:EF:C6:5D:2B:92:07:D5:0F:83:3F:97:47:8D:76
+	Firebase.DependencyStatus dependencyStatus = Firebase.DependencyStatus.UnavailableOther;
 	private FirebaseAuth _auth;
 	private FirebaseUser _user;
 
 	private GoogleSignInConfiguration _configuration;
 
+	string _userId => _user == null ? "" : _user.UserId;
+	public string UserId => _userId;
+
+	public override void Awake()
+	{
+		base.Awake();
+
+		_configuration = new GoogleSignInConfiguration{
+			WebClientId = GoogleAPI,
+			RequestIdToken = true,
+		};
+	}
 	private void Start()
 	{
 		StartCoroutine(InitPlugin());
+
+	
 	}
 
 	IEnumerator InitPlugin()
@@ -48,7 +63,7 @@ public class LoginManager : Singleton<LoginManager>
 
 				// FirebaseAuth 초기화
 				_auth = FirebaseAuth.DefaultInstance;
-				//_auth.StateChanged += OnChangedUserState;
+				_auth.StateChanged += OnChangedUserState;
 
 			}
 			else
@@ -57,16 +72,12 @@ public class LoginManager : Singleton<LoginManager>
 			} 
 		});
 
-		_configuration = new GoogleSignInConfiguration
-		{
-			WebClientId = GoogleAPI,
-			RequestIdToken = true,
-		};
+
 	}
 	
 	public void EmailRegister(string email, string password)
 	{
-		UIHandler.instance.GetLogUI.WriteLog($"Email : {email} \nPassword : {password}"); 
+		//UIHandler.instance.GetLogUI.WriteLog($"Email : {email} \nPassword : {password}"); 
 
 		_auth.CreateUserWithEmailAndPasswordAsync(email, password).ContinueWithOnMainThread(task =>
 		{
@@ -81,7 +92,7 @@ public class LoginManager : Singleton<LoginManager>
 
 	public void EmailLogin(string email, string password) 
 	{
-		UIHandler.instance.GetLogUI.WriteLog($"Email : {email} \nPassword : {password}"); 
+		//UIHandler.instance.GetLogUI.WriteLog($"Email : {email} \nPassword : {password}"); 
 		_auth.SignInWithEmailAndPasswordAsync(email, password).ContinueWithOnMainThread(task =>
 		{
 			if (task.IsCanceled || task.IsFaulted)
@@ -89,7 +100,7 @@ public class LoginManager : Singleton<LoginManager>
 				UIHandler.instance.GetLogUI.WriteLog("로그인 실패"); 
 				return;
 			}  
-			UIHandler.instance.GetLogUI.WriteLog("로그인 성공"); 
+			UIHandler.instance.GetLogUI.WriteLog("로그인 성공");
 		});
 	}
 	  
@@ -107,31 +118,20 @@ public class LoginManager : Singleton<LoginManager>
 		GoogleSignIn.Configuration.UseGameSignIn = false;
 		GoogleSignIn.Configuration.RequestIdToken = true;
 		GoogleSignIn.Configuration.RequestEmail = true;
+	
+		UIHandler.instance.GetLogUI.WriteLog(GoogleSignIn.DefaultInstance.ToString()); 
 
-		UIHandler.instance.GetLogUI.WriteLog("로그인이 눌리긴 했어..");
-		GoogleSignIn.DefaultInstance.SignIn().ContinueWithOnMainThread(OnGoogleAuthFinished);
+		GoogleSignIn.DefaultInstance.SignIn().ContinueWith(OnGoogleAuthenticatedFinished);
 	}
-	private void OnGoogleAuthFinished(Task<GoogleSignInUser> task)
+	private void OnGoogleAuthenticatedFinished(Task<GoogleSignInUser> task)
 	{
 		if (task.IsFaulted || task.IsCanceled)
 			UIHandler.instance.GetLogUI.WriteLog("구글 로그인 실패 ");
 
 		else
 		{
-			Firebase.Auth.Credential credential = Firebase.Auth.GoogleAuthProvider.GetCredential(task.Result.IdToken, null);
-			UIHandler.instance.GetLogUI.WriteLog("구글 로그인 완료. \nID Token: " + task.Result.IdToken);
-			// Firebase 인증 처리
-			_auth.SignInWithCredentialAsync(credential).ContinueWithOnMainThread(task =>
-			{
-				if (task.IsCanceled || task.IsFaulted)
-				{
-					UIHandler.instance.GetLogUI.WriteLog("구글 로그인 실패 ");
-					return;
-				}
-			});
-
-			//SignInWithFirebase(task.Result.IdToken);
-			OnChangedUserState();
+			UIHandler.instance.GetLogUI.WriteLog("구글 로그인 완료");
+			SignInWithFirebase(task.Result.IdToken);
 		}
 	}
 	private void SignInWithFirebase(string idToken)
@@ -139,20 +139,19 @@ public class LoginManager : Singleton<LoginManager>
 		Credential credential = GoogleAuthProvider.GetCredential(idToken, null);
 		_auth.SignInWithCredentialAsync(credential).ContinueWith(task =>
 		{
-			if (task.IsFaulted)
+			if (task.IsCanceled || task.IsFaulted)
 			{
-				Debug.LogError("Firebase Sign-In failed: " + task.Exception.Message);
+				UIHandler.instance.GetLogUI.WriteLog("Firebase - Google 연결 실패 ");
+				return;
 			}
-			else
-			{
-				FirebaseUser newUser = task.Result;
-				Debug.Log($"Firebase Sign-In successful! User: {newUser.DisplayName}, Email: {newUser.Email}");
-			}
+
+			UIHandler.instance.GetLogUI.WriteLog("Firebase - Google 연결 성공 ");
 		});
+
 	}
 
 
-	void OnChangedUserState(/*object obj, EventArgs arg*/) 
+	void OnChangedUserState(object obj, EventArgs arg) 
 	{
 		if (_auth.CurrentUser == _user) 
 			return;
@@ -164,11 +163,13 @@ public class LoginManager : Singleton<LoginManager>
 		}
 
 		_user = _auth.CurrentUser;
+		
+
 		if (signed)
 		{
-			UIHandler.instance.GetLogUI.WriteLog("로그인 성공");
-			_onLogin?.Invoke();
-			DataBase.instance.LoadData(_user.UserId);
+			UIHandler.instance.GetLogUI.WriteLog($"로그인 성공 \n User ID : {_user.UserId}");
+			//_onLogin?.Invoke();
+			//DataBase.instance.LoadData(); 
 		}
 	} 
 }

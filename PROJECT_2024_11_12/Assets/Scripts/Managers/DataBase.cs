@@ -20,9 +20,9 @@ public class DataBase : Singleton<DataBase>
 	[SerializeField] public SkillUpgradeSO _itemDropRate;
 	[SerializeField] public SkillUpgradeSO _maxCarryItemCnt;
 
-	private string saveFilePath => Path.Combine(Application.persistentDataPath, "PotionSellerSaveData.json");
+	private string _userId => LoginManager.instance.UserId;
 	private string fileName = "SaveData.dat";
-	private string _userId = "";
+	private string saveFilePath => Path.Combine(Application.persistentDataPath, _userId+"SaveData.json");
 
 	public UnityEvent _onLoadData = new UnityEvent();
 
@@ -127,16 +127,15 @@ public class DataBase : Singleton<DataBase>
 	//		Debug.Log("저장 실패");
 	//}
 
-	public bool LoadData(string userId)
+	public bool LoadData()
 	{
 		if (File.Exists(saveFilePath) == false) 
 			return false;
 
 #if UNITY_EDITOR == false
-	if (userId == "")
+	if (_userId == "")
 		return false; 
 #endif
-		_userId = userId;
 
 		string json = File.ReadAllText(saveFilePath); // 파일 내용을 읽어옴
 		string decryptedJson = EncryptionHelper.Decrypt(json);
