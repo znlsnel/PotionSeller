@@ -679,6 +679,10 @@
       <HintPath>Assets\Firebase\Editor\Firebase.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Firebase.Firestore">
+      <HintPath>Assets\Firebase\Plugins\Firebase.Firestore.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Xcode">
       <HintPath>D:\PROJECTS\UNITY\VERSION\6000.0.24f1\Editor\Data\PlaybackEngines\iOSSupport\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
       <Private>False</Private>

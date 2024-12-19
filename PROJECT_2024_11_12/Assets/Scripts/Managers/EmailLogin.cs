@@ -6,16 +6,28 @@ public class EmailLogin : MonoBehaviour
 {
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         LoginManager _loginManager;
-        [SerializeField] TextMeshProUGUI _emailText;
-	[SerializeField] TextMeshProUGUI _passwordText;
+        [SerializeField] TMP_InputField _emailText;
+	[SerializeField] TMP_InputField _passwordText;
+	[SerializeField] TextMeshProUGUI _secretPassword;
 
         void Start()
         {
                 _loginManager = LoginManager.instance;
                 gameObject.SetActive(false);
         }
-         
-        public void LoginEmail() 
+
+	private void Update()
+	{
+		if (LoginManager.instance.isLogined)
+			gameObject.SetActive(false);
+
+                string str = "";
+                for (int i = 0; i < _passwordText.text.Length; i++)
+                        str += "*";
+                _secretPassword.text = str;  
+
+	}
+	public void LoginEmail() 
         {
                 if (Utils.instance.TimeCheck(this, "LoginEmail", 3.0f))
                         _loginManager.EmailLogin(_emailText.text, _passwordText.text);
@@ -36,11 +48,18 @@ public class EmailLogin : MonoBehaviour
         public void CloseUI()
         {
                 gameObject.SetActive(false);
-        }
+
+
+
+	}
 
         public void OpenUI()
         {
-		gameObject.SetActive(true);
 
+
+		gameObject.SetActive(true);
+                _emailText.text = "";
+		_passwordText.text = "";
+		_secretPassword.text = "";
 	}
 }

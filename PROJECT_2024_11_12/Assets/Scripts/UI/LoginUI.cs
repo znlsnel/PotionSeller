@@ -16,15 +16,20 @@ public class LoginUI : MonoBehaviour
         [SerializeField] GameObject _sliderObject;
 
         [Space(10)]
-        [SerializeField] List<GameObject> _loginButtons = new List<GameObject>();
+        [SerializeField] GameObject _googleLoginBt;
+        [SerializeField] GameObject _emailLoginBt;
+        [SerializeField] GameObject _gameStartBt;
+        [SerializeField] GameObject _logoutBt;
+        [SerializeField] TextMeshProUGUI _idInfoText;
 
 	public bool isLoaded => _slider.value >= 1.0f;
+        bool startGame = false;
 
 	void Start()
         {
 	        _slider.value = 0;
 
-                 LoginManager.instance._onLogin.AddListener(OnLogin);
+                 LoginManager.instance._onLogin.AddListener(OnGameStart);
 		_sliderObject.SetActive(false); 
 	}
 
@@ -39,12 +44,28 @@ public class LoginUI : MonoBehaviour
 	//	LoginManager.instance.GPGSLogin();
         }
 
-        void OnLogin()
+	private void Update()
+	{
+                bool login = LoginManager.instance.isLogined; 
+                
+                _googleLoginBt.SetActive(!login && !startGame);
+		_emailLoginBt.SetActive(!login && !startGame);
+
+                _idInfoText.text = "Email : " + LoginManager.instance.UserEmail;
+		_idInfoText.gameObject.SetActive(login && !startGame);
+		_gameStartBt.SetActive(login && !startGame);
+		_logoutBt.SetActive(login && !startGame);  
+		
+	}
+
+      
+
+	void OnGameStart()
         {
                 _sliderObject.SetActive(true);
+                startGame = true;
 
-		foreach (var go in _loginButtons)
-			go.SetActive(false);
+
 
 		StartCoroutine(UpdateLoadingBar());
 	} 

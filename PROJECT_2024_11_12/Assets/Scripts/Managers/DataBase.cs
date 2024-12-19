@@ -8,6 +8,9 @@ using System.Text;
 
 using System.Collections;
 using UnityEngine.Events;
+using static DataBase;
+using Newtonsoft.Json;
+using Firebase.Firestore;
 
 public class DataBase : Singleton<DataBase>
 {
@@ -21,26 +24,36 @@ public class DataBase : Singleton<DataBase>
 	[SerializeField] public SkillUpgradeSO _maxCarryItemCnt;
 
 	private string _userId => LoginManager.instance.UserId;
-	private string fileName = "SaveData.dat";
 	private string saveFilePath => Path.Combine(Application.persistentDataPath, _userId+"SaveData.json");
 
 	public UnityEvent _onLoadData = new UnityEvent();
 
+
 	SaveDatas saveDatas = new SaveDatas();
-	[System.Serializable]
+
+	[FirestoreData]
 	public class SaveDatas
 	{
-		public string userId = "";
-		public long coin = 0;
-		public List<SkillLevelEntry> levels = new List<SkillLevelEntry>();
+		[FirestoreProperty]
+		public string userId { get; set; } = "";
+
+		[FirestoreProperty]
+		public long coin { get; set; } = 0;
+
+		[FirestoreProperty]
+		public List<SkillLevelEntry> levels { get; set; } = new List<SkillLevelEntry>();
 	}
 
-	[System.Serializable]
+	[FirestoreData]
 	public class SkillLevelEntry
 	{
-		public string key;
-		public int value;
+		[FirestoreProperty]
+		public string key { get; set; }
+
+		[FirestoreProperty]
+		public int value { get; set; }
 	}
+
 	Coroutine save;
 
 	public void RegisterSave()
@@ -80,110 +93,86 @@ public class DataBase : Singleton<DataBase>
 		else
 			SaveJsonData();
 
-		UIHandler.instance.GetLogUI.WriteLog("save data . . .");
+		UIHandler.instance.GetLogUI.WriteLog("게임 저장...");
 	}
 	void SaveJsonData() 
 	{
-		string json = JsonUtility.ToJson(saveDatas, true);
+		string json = JsonConvert.SerializeObject(saveDatas, Formatting.Indented);
 		string encryptedJson = EncryptionHelper.Encrypt(json);
 		File.WriteAllText(saveFilePath, encryptedJson);
 	}
 
 	void SaveCloudData()
 	{
-		//ISavedGameClient savedGameClient = PlayGamesPlatform.Instance.SavedGame;
-		//savedGameClient.OpenWithAutomaticConflictResolution(fileName, DataSource.ReadCacheOrNetwork,
-		//	ConflictResolutionStrategy.UseLastKnownGood,
-		//	OnSavedGameOpened);
+		FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
+
+		// SaveDatas 객체를 Firestore에 저장
+		db.Collection("users").Document(_userId).SetAsync(new
+		{
+			coin = saveDatas.coin, // 코인 필드
+			skillLevels = saveDatas.levels // 스킬 데이터를 배열로 저장
+		}).ContinueWith(task =>
+		{
+			if (task.IsCompleted)
+			{
+				UIHandler.instance.GetLogUI.WriteLog("클라우드 저장 성공");
+			}
+			else
+			{
+				//task.Exception
+				UIHandler.instance.GetLogUI.WriteLog("클라우드 저장 실패");
+			}
+		});
+
 	}
-	//void OnSavedGameOpened(SavedGameRequestStatus status, ISavedGameMetadata game)
-	//{
-	//	ISavedGameClient savedGameClient = PlayGamesPlatform.Instance.SavedGame;
 
-	//	if (status == SavedGameRequestStatus.Success)
-	//	{
-	//	//	Debug.Log("저장 성공");
-	//		var update = new SavedGameMetadataUpdate.Builder().Build();
-	//		UIHandler.instance.GetLogUI.WriteLog("save game...");
-	//		var json = JsonUtility.ToJson(saveDatas);
-	//		byte[] bytes = Encoding.UTF8.GetBytes(json);
-
-	//	//	Debug.Log("저장 데이터 : " + bytes);
-	//		savedGameClient.CommitUpdate(game, update, bytes, OnSavedGameWritten);
-	//	}
-	//	else
-	//		UIHandler.instance.GetLogUI.WriteLog("failed save data");
-
-	//	//Debug.Log("저장 실패");
-
-	//}
-	//void OnSavedGameWritten(SavedGameRequestStatus status, ISavedGameMetadata game)
-	//{
-	//	if (status == SavedGameRequestStatus.Success)
-	//	{
-	//		Debug.Log("저장 성공");
-	//	}
-	//	else
-	//		Debug.Log("저장 실패");
-	//}
-
-	public bool LoadData()
+	public void LoadData()
 	{
 		if (File.Exists(saveFilePath) == false) 
-			return false;
+			return;
 
 #if UNITY_EDITOR == false
 	if (_userId == "")
-		return false; 
+		return; 
 #endif
 
 		string json = File.ReadAllText(saveFilePath); // 파일 내용을 읽어옴
 		string decryptedJson = EncryptionHelper.Decrypt(json);
-		saveDatas = JsonUtility.FromJson<SaveDatas>(decryptedJson); // JSON 데이터를 객체로 역직렬화 
+		//saveDatas = JsonUtility.FromJson<SaveDatas>(decryptedJson); // JSON 데이터를 객체로 역직렬화 
+		saveDatas = JsonConvert.DeserializeObject<SaveDatas>(decryptedJson);
 		OpenLoadGame();
 
-		UIHandler.instance.GetLogUI.WriteLog("load data . . .");
-		return true;
+		UIHandler.instance.GetLogUI.WriteLog("게임 불러오기...");
 	}
 
-	public bool LoadCloudData()
+	public void LoadCloudData()
 	{
-		//var savedGameClient = PlayGamesPlatform.Instance.SavedGame;
-		//if (savedGameClient == null)
-		//	return false;
-		
-		//savedGameClient.OpenWithAutomaticConflictResolution(fileName, DataSource.ReadCacheOrNetwork,
-		//	ConflictResolutionStrategy.UseLastKnownGood, LoadGameData);
-		//UIHandler.instance.GetLogUI.WriteLog("load data . . .");
+		FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
 
-		return true;
+		db.Collection("users").Document(_userId).GetSnapshotAsync().ContinueWith(task =>
+		{
+			if (task.IsCompleted && task.Result.Exists)
+			{
+				DocumentSnapshot snapshot = task.Result;
+
+				saveDatas = new SaveDatas();
+				saveDatas.userId = _userId; 
+				saveDatas.coin = snapshot.GetValue<long>("coin"); 
+				saveDatas.levels = snapshot.GetValue<List<SkillLevelEntry>>("skillLevels");
+				OpenLoadGame();
+
+				Debug.Log("클라우드 데이터 불러오기 성공");
+				UIHandler.instance.GetLogUI.WriteLog("클라우드 데이터 불러오기 성공");
+			}
+			else
+			{
+				UIHandler.instance.GetLogUI.WriteLog("클라우드 데이터 불러오기 실패");
+			}
+		});
+
+		return;
 	}
-	//void LoadGameData(SavedGameRequestStatus status, ISavedGameMetadata data)
-	//{
-	//	ISavedGameClient savedGameClient = PlayGamesPlatform.Instance.SavedGame;
 
-	//	if (status == SavedGameRequestStatus.Success)
-	//		savedGameClient.ReadBinaryData(data, OnSavedGameDataRead);
-		
-	//	else
-	//		UIHandler.instance.GetLogUI.WriteLog("Load Failed");
-		
-	//	//	Debug.Log("로드 실패");
-	//}
-	//void OnSavedGameDataRead(SavedGameRequestStatus status, byte[] loadedData)
-	//{
-	//	string data = System.Text.Encoding.UTF8.GetString(loadedData);
-	//	if (data == "")
-	//		UIHandler.instance.GetLogUI.WriteLog("There's no saved data");
-	//	else
-	//	{ 
-	//		saveDatas = new SaveDatas(); 
-	//		saveDatas = JsonUtility.FromJson<SaveDatas>(data);
-	//		UIHandler.instance.GetLogUI.WriteLog("success load data");
-	//		OpenLoadGame();
-	//		SaveData();
-	//	}
-	//}
 
 	 void OpenLoadGame()
 	{

@@ -32,6 +32,8 @@ public class LoginManager : Singleton<LoginManager>
 
 	string _userId => _user == null ? "" : _user.UserId;
 	public string UserId => _userId;
+	public bool isLogined => _auth != null && _auth.CurrentUser != null;
+	public string UserEmail => _user == null ? "" :  _user.Email;
 
 	public override void Awake()
 	{
@@ -45,8 +47,6 @@ public class LoginManager : Singleton<LoginManager>
 	private void Start()
 	{
 		StartCoroutine(InitPlugin());
-
-	
 	}
 
 	IEnumerator InitPlugin()
@@ -59,7 +59,7 @@ public class LoginManager : Singleton<LoginManager>
 
 			if (status == Firebase.DependencyStatus.Available)
 			{
-				UIHandler.instance.GetLogUI.WriteLog("Firebase 초기화 성공!");
+			//	UIHandler.instance.GetLogUI.WriteLog("Firebase 초기화 성공!");
 
 				// FirebaseAuth 초기화
 				_auth = FirebaseAuth.DefaultInstance;
@@ -68,7 +68,7 @@ public class LoginManager : Singleton<LoginManager>
 			}
 			else
 			{
-				UIHandler.instance.GetLogUI.WriteLog($"Firebase 초기화 실패: {status}");
+			//	UIHandler.instance.GetLogUI.WriteLog($"Firebase 초기화 실패: {status}");
 			} 
 		});
 
@@ -118,10 +118,10 @@ public class LoginManager : Singleton<LoginManager>
 		GoogleSignIn.Configuration.UseGameSignIn = false;
 		GoogleSignIn.Configuration.RequestIdToken = true;
 		GoogleSignIn.Configuration.RequestEmail = true;
-	
-		UIHandler.instance.GetLogUI.WriteLog(GoogleSignIn.DefaultInstance.ToString()); 
 
-		GoogleSignIn.DefaultInstance.SignIn().ContinueWith(OnGoogleAuthenticatedFinished);
+		GoogleSignIn.DefaultInstance.SignOut();
+		GoogleSignIn.DefaultInstance.SignIn().ContinueWith(OnGoogleAuthenticatedFinished);  
+		//GoogleSignIn.DefaultInstance.SignInSilently().ContinueWith(OnGoogleAuthenticatedFinished);
 	}
 	private void OnGoogleAuthenticatedFinished(Task<GoogleSignInUser> task)
 	{
@@ -141,11 +141,11 @@ public class LoginManager : Singleton<LoginManager>
 		{
 			if (task.IsCanceled || task.IsFaulted)
 			{
-				UIHandler.instance.GetLogUI.WriteLog("Firebase - Google 연결 실패 ");
+			//	UIHandler.instance.GetLogUI.WriteLog("Firebase - Google 연결 실패 ");
 				return;
 			}
 
-			UIHandler.instance.GetLogUI.WriteLog("Firebase - Google 연결 성공 ");
+			//UIHandler.instance.GetLogUI.WriteLog("Firebase - Google 연결 성공 ");
 		});
 
 	}
@@ -167,9 +167,18 @@ public class LoginManager : Singleton<LoginManager>
 
 		if (signed)
 		{
-			UIHandler.instance.GetLogUI.WriteLog($"로그인 성공 \n User ID : {_user.UserId}");
-			//_onLogin?.Invoke();
-			//DataBase.instance.LoadData(); 
+			UIHandler.instance.GetLogUI.WriteLog($"로그인 성공");
 		}
 	} 
+
+	public void StartGame()
+	{
+		if (_auth.CurrentUser == null)
+			return;
+
+		_onLogin?.Invoke(); 
+		DataBase.instance.LoadData(); 
+	}
+
+
 }
