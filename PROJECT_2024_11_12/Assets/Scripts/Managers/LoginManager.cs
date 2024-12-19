@@ -102,20 +102,20 @@ public class LoginManager : Singleton<LoginManager>
 
 	public void GoogleLogin()
 	{
-	
+
 		GoogleSignIn.Configuration = _configuration;
 		GoogleSignIn.Configuration.UseGameSignIn = false;
-		GoogleSignIn.Configuration.RequestIdToken = true; 
+		GoogleSignIn.Configuration.RequestIdToken = true;
 		GoogleSignIn.Configuration.RequestEmail = true;
 
 		UIHandler.instance.GetLogUI.WriteLog("로그인이 눌리긴 했어..");
 		GoogleSignIn.DefaultInstance.SignIn().ContinueWithOnMainThread(OnGoogleAuthFinished);
-	} 
+	}
 	private void OnGoogleAuthFinished(Task<GoogleSignInUser> task)
 	{
 		if (task.IsFaulted || task.IsCanceled)
 			UIHandler.instance.GetLogUI.WriteLog("구글 로그인 실패 ");
-		
+
 		else
 		{
 			Firebase.Auth.Credential credential = Firebase.Auth.GoogleAuthProvider.GetCredential(task.Result.IdToken, null);
@@ -129,7 +129,7 @@ public class LoginManager : Singleton<LoginManager>
 					return;
 				}
 			});
-			 
+
 			//SignInWithFirebase(task.Result.IdToken);
 			OnChangedUserState();
 		}
