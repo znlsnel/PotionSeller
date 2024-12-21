@@ -44,6 +44,7 @@ public class LoginManager : Singleton<LoginManager>
 			RequestIdToken = true,
 		};
 	}
+
 	private void Start()
 	{
 		StartCoroutine(InitPlugin());
@@ -78,29 +79,30 @@ public class LoginManager : Singleton<LoginManager>
 	public void EmailRegister(string email, string password)
 	{
 		//UIHandler.instance.GetLogUI.WriteLog($"Email : {email} \nPassword : {password}"); 
-
+		UIHandler.instance.GetLoadingUI.StartLoading();
 		_auth.CreateUserWithEmailAndPasswordAsync(email, password).ContinueWithOnMainThread(task =>
 		{
 			if (task.IsCanceled || task.IsFaulted)
-			{
 				UIHandler.instance.GetLogUI.WriteLog("회원가입 실패");
-				return;
-			}
-			UIHandler.instance.GetLogUI.WriteLog("회원가입 완료!");
+			else
+				UIHandler.instance.GetLogUI.WriteLog("회원가입 완료!");
+			
+			UIHandler.instance.GetLoadingUI.EndLoading();
+
 		});
 	}
 
 	public void EmailLogin(string email, string password) 
 	{
 		//UIHandler.instance.GetLogUI.WriteLog($"Email : {email} \nPassword : {password}"); 
+		UIHandler.instance.GetLoadingUI.StartLoading();
 		_auth.SignInWithEmailAndPasswordAsync(email, password).ContinueWithOnMainThread(task =>
 		{
 			if (task.IsCanceled || task.IsFaulted)
-			{ 
 				UIHandler.instance.GetLogUI.WriteLog("로그인 실패"); 
-				return;
-			}  
-			UIHandler.instance.GetLogUI.WriteLog("로그인 성공");
+			else
+				UIHandler.instance.GetLogUI.WriteLog("로그인 성공");
+			UIHandler.instance.GetLoadingUI.EndLoading(); 
 		});
 	}
 	  
@@ -120,6 +122,8 @@ public class LoginManager : Singleton<LoginManager>
 		GoogleSignIn.Configuration.RequestEmail = true;
 
 		GoogleSignIn.DefaultInstance.SignOut();
+		UIHandler.instance.GetLoadingUI.StartLoading();
+
 		GoogleSignIn.DefaultInstance.SignIn().ContinueWith(OnGoogleAuthenticatedFinished);  
 		//GoogleSignIn.DefaultInstance.SignInSilently().ContinueWith(OnGoogleAuthenticatedFinished);
 	}
@@ -127,12 +131,9 @@ public class LoginManager : Singleton<LoginManager>
 	{
 		if (task.IsFaulted || task.IsCanceled)
 			UIHandler.instance.GetLogUI.WriteLog("구글 로그인 실패 ");
-
 		else
-		{
-			UIHandler.instance.GetLogUI.WriteLog("구글 로그인 완료");
 			SignInWithFirebase(task.Result.IdToken);
-		}
+		 
 	}
 	private void SignInWithFirebase(string idToken)
 	{
@@ -140,12 +141,10 @@ public class LoginManager : Singleton<LoginManager>
 		_auth.SignInWithCredentialAsync(credential).ContinueWith(task =>
 		{
 			if (task.IsCanceled || task.IsFaulted)
-			{
-			//	UIHandler.instance.GetLogUI.WriteLog("Firebase - Google 연결 실패 ");
-				return;
-			}
-
-			//UIHandler.instance.GetLogUI.WriteLog("Firebase - Google 연결 성공 ");
+				UIHandler.instance.GetLogUI.WriteLog("구글 로그인 실패 ");
+			else
+				UIHandler.instance.GetLogUI.WriteLog("구글 로그인 완료");
+			UIHandler.instance.GetLoadingUI.EndLoading();
 		});
 
 	}
@@ -177,7 +176,7 @@ public class LoginManager : Singleton<LoginManager>
 			return;
 
 		_onLogin?.Invoke(); 
-		DataBase.instance.LoadData(); 
+		DataBase.instance.LoadGameData(); 
 	}
 
 

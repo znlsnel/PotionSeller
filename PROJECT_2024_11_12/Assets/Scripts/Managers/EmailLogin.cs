@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Text;
 using TMPro;
 using UnityEngine;
 
@@ -10,9 +11,11 @@ public class EmailLogin : MonoBehaviour
 	[SerializeField] TMP_InputField _passwordText;
 	[SerializeField] TextMeshProUGUI _secretPassword;
 
+
+
         void Start()
         {
-                _loginManager = LoginManager.instance;
+		_loginManager = LoginManager.instance;
                 gameObject.SetActive(false);
         }
 
@@ -29,14 +32,15 @@ public class EmailLogin : MonoBehaviour
 	}
 	public void LoginEmail() 
         {
-                if (Utils.instance.TimeCheck(this, "LoginEmail", 3.0f))
+
+		if (Utils.instance.TimeCheck(this, "LoginEmail", 3.0f))
                         _loginManager.EmailLogin(_emailText.text, _passwordText.text);
                 else
-                        UIHandler.instance.GetLogUI.WriteLog("잠시 뒤에 시도해주세요."); 
+                        UIHandler.instance.GetLogUI.WriteLog("잠시 뒤에 시도해주세요.");  
         }
 
         public void RegisterEmail()
-        {
+        { 
 		if (Utils.instance.TimeCheck(this, "RegisterEmail", 3.0f))
 			_loginManager.EmailRegister(_emailText.text, _passwordText.text);
                 else

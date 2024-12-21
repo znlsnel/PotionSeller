@@ -39,7 +39,7 @@ public class CloudUI : MonoBehaviour
 			return;
 		}
 		AudioManager.instance.PlayAudioClip(_success);
-		DataBase.instance.SaveCloud();
+		DataBase.instance.SaveDataToCloud();
 	}
 
 	public void LoadCloud()
@@ -50,7 +50,7 @@ public class CloudUI : MonoBehaviour
 			return;
 		}
 		AudioManager.instance.PlayAudioClip(_success);
-		DataBase.instance.LoadCloudData();
+		DataBase.instance.LoadGameData();
 	}
 }
 

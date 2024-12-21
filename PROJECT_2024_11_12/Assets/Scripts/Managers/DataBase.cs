@@ -11,6 +11,7 @@ using UnityEngine.Events;
 using static DataBase;
 using Newtonsoft.Json;
 using Firebase.Firestore;
+using System;
 
 public class DataBase : Singleton<DataBase>
 {
@@ -25,11 +26,9 @@ public class DataBase : Singleton<DataBase>
 
 	private string _userId => LoginManager.instance.UserId;
 	private string saveFilePath => Path.Combine(Application.persistentDataPath, _userId+"SaveData.json");
-
+	private Timestamp lastSaveTime = new Timestamp();
 	public UnityEvent _onLoadData = new UnityEvent();
 
-
-	SaveDatas saveDatas = new SaveDatas();
 
 	[FirestoreData]
 	public class SaveDatas
@@ -37,6 +36,9 @@ public class DataBase : Singleton<DataBase>
 		[FirestoreProperty]
 		public string userId { get; set; } = "";
 
+		[FirestoreProperty]
+		[JsonConverter(typeof(FirestoreTimestampConverter))]
+		public Timestamp date { get; set; }
 		[FirestoreProperty]
 		public long coin { get; set; } = 0;
 
@@ -54,31 +56,40 @@ public class DataBase : Singleton<DataBase>
 		public int value { get; set; }
 	}
 
-	Coroutine save;
+	Coroutine saveJson;
+	Coroutine saveCloud;
 
 	public void RegisterSave()
 	{
-		if (save == null)
-			save = StartCoroutine(Save());
+		if (saveJson == null)
+			saveJson = StartCoroutine(CallSaveToJson());
+		if (saveCloud == null)
+			saveCloud = StartCoroutine(CallSaveToCloud());
 	}
 	 
-	IEnumerator Save() 
+	IEnumerator CallSaveToJson() 
 	{
-		yield return 1.0f;  
-		SaveData();
-		save = null;
+		// 1초동안 쌓인 데이터 Local 저장
+		yield return new WaitForSeconds(1f);
+		SaveDataToLocal();
+		saveJson = null;
 	}
 
-	public void SaveCloud()
+	
+	IEnumerator CallSaveToCloud()
 	{
-		SaveData(true);
+		// 5분에 한번씩 cloud 저장 - 강제 종료에 의해 저장 누락시 다음 실행에 업데이트됨
+		yield return new WaitForSeconds(60.0f * 5f);
+		SaveDataToCloud(); 
+		saveCloud = null;
 	}
 
-	void SaveData(bool cloud = false)
+	SaveDatas MakeSaveDatas()
         {
-		saveDatas = new SaveDatas();
+		SaveDatas saveDatas = new SaveDatas();
 		saveDatas.userId = _userId;
 		saveDatas.coin = CoinUI.instance.GetCoin();
+		saveDatas.date = Timestamp.GetCurrentTimestamp();
 		saveDatas.levels.Add(new SkillLevelEntry { key = nameof(_speed), value = _speed.GetLevel() });
 		saveDatas.levels.Add(new SkillLevelEntry { key = nameof(_hp), value = _hp.GetLevel() });
 		saveDatas.levels.Add(new SkillLevelEntry { key = nameof(_attack), value = _attack.GetLevel() });
@@ -88,27 +99,30 @@ public class DataBase : Singleton<DataBase>
 		saveDatas.levels.Add(new SkillLevelEntry { key = nameof(_itemDropRate), value = _itemDropRate.GetLevel() });
 		saveDatas.levels.Add(new SkillLevelEntry { key = nameof(_maxCarryItemCnt), value = _maxCarryItemCnt.GetLevel() });
 
-		if (cloud)
-			SaveCloudData(); 
-		else
-			SaveJsonData();
+		lastSaveTime = Timestamp.GetCurrentTimestamp();
 
 		UIHandler.instance.GetLogUI.WriteLog("게임 저장...");
+		return saveDatas;
+
 	}
-	void SaveJsonData() 
+	public void SaveDataToLocal() 
 	{
+		SaveDatas saveDatas = MakeSaveDatas();
 		string json = JsonConvert.SerializeObject(saveDatas, Formatting.Indented);
 		string encryptedJson = EncryptionHelper.Encrypt(json);
 		File.WriteAllText(saveFilePath, encryptedJson);
 	}
 
-	void SaveCloudData()
+	public void SaveDataToCloud()
 	{
+		SaveDatas saveDatas = MakeSaveDatas();
+
 		FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
 
 		// SaveDatas 객체를 Firestore에 저장
 		db.Collection("users").Document(_userId).SetAsync(new
 		{
+			date = saveDatas.date, 
 			coin = saveDatas.coin, // 코인 필드
 			skillLevels = saveDatas.levels // 스킬 데이터를 배열로 저장
 		}).ContinueWith(task =>
@@ -126,7 +140,14 @@ public class DataBase : Singleton<DataBase>
 
 	}
 
-	public void LoadData()
+	public void LoadGameData()
+	{
+		UIHandler.instance.GetLogUI.WriteLog("게임 불러오기...");
+		LoadDataFromLocal();
+		LoadDataFromCloud();
+	} 
+
+	void LoadDataFromLocal()
 	{
 		if (File.Exists(saveFilePath) == false) 
 			return;
@@ -139,34 +160,41 @@ public class DataBase : Singleton<DataBase>
 		string json = File.ReadAllText(saveFilePath); // 파일 내용을 읽어옴
 		string decryptedJson = EncryptionHelper.Decrypt(json);
 		//saveDatas = JsonUtility.FromJson<SaveDatas>(decryptedJson); // JSON 데이터를 객체로 역직렬화 
-		saveDatas = JsonConvert.DeserializeObject<SaveDatas>(decryptedJson);
-		OpenLoadGame();
+		SaveDatas saveDatas = JsonConvert.DeserializeObject<SaveDatas>(decryptedJson);
 
-		UIHandler.instance.GetLogUI.WriteLog("게임 불러오기...");
+		ApplyLoadData(saveDatas);
 	}
 
-	public void LoadCloudData()
+	void LoadDataFromCloud()
 	{
 		FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
-
+		SaveDatas saveDatas = null;
 		db.Collection("users").Document(_userId).GetSnapshotAsync().ContinueWith(task =>
 		{
 			if (task.IsCompleted && task.Result.Exists)
 			{
-				DocumentSnapshot snapshot = task.Result;
+				DocumentSnapshot snapshot = task.Result; 
+				Timestamp ts = snapshot.GetValue<Timestamp>("date");
+				
+				// 최신 데이터가 아니라면 불러오기 캔슬 및 새로 저장
+				if (lastSaveTime.CompareTo(ts) > 0)
+				{
+					SaveDataToCloud();
+					return;
+				}
 
 				saveDatas = new SaveDatas();
-				saveDatas.userId = _userId; 
+				saveDatas.userId = _userId;
+				saveDatas.date = ts;
 				saveDatas.coin = snapshot.GetValue<long>("coin"); 
 				saveDatas.levels = snapshot.GetValue<List<SkillLevelEntry>>("skillLevels");
-				OpenLoadGame();
 
-				Debug.Log("클라우드 데이터 불러오기 성공");
+				ApplyLoadData(saveDatas);
 				UIHandler.instance.GetLogUI.WriteLog("클라우드 데이터 불러오기 성공");
 			}
 			else
 			{
-				UIHandler.instance.GetLogUI.WriteLog("클라우드 데이터 불러오기 실패");
+				//UIHandler.instance.GetLogUI.WriteLog("클라우드 데이터 불러오기 실패"); 
 			}
 		});
 
@@ -174,9 +202,9 @@ public class DataBase : Singleton<DataBase>
 	}
 
 
-	 void OpenLoadGame()
+	 void ApplyLoadData(SaveDatas saveDatas)
 	{
-		if (saveDatas.userId != _userId)
+		if (saveDatas == null || saveDatas.userId != _userId) 
 			return;
 
 		Dictionary<string, int> datas = new Dictionary<string, int>();
@@ -203,7 +231,25 @@ public class DataBase : Singleton<DataBase>
 		LoadSkill(_itemDropRate, nameof(_itemDropRate));
 		LoadSkill(_maxCarryItemCnt, nameof(_maxCarryItemCnt));
 
+		lastSaveTime = saveDatas.date;
+
 		_onLoadData?.Invoke();
+	}
+
+}
+ 
+
+public class FirestoreTimestampConverter : JsonConverter<Timestamp>
+{
+	public override void WriteJson(JsonWriter writer, Timestamp value, JsonSerializer serializer)
+	{
+		writer.WriteValue(value.ToDateTime().ToString("o"));
+	}
+
+	public override Timestamp ReadJson(JsonReader reader, Type objectType, Timestamp existingValue, bool hasExistingValue, JsonSerializer serializer)
+	{
+		DateTime dateTime = DateTime.Parse(reader.Value.ToString());
+		return Timestamp.FromDateTime(dateTime);
 	}
 
 }
