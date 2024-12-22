@@ -50,7 +50,7 @@ public class MonsterController : HealthEntity
 		_rigid.MovePosition(pos);
 
 		_ms = ms;
-		HP = _initHp;
+		InitHp();
 		if (_onRelase != null)
 			_onRelase.RemoveAllListeners();
 

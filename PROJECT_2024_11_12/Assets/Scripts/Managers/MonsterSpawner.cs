@@ -65,8 +65,12 @@ public class MonsterSpawner : MonoBehaviour
 
 	public void InitMonsters()
 	{
-		foreach (MonsterController monster in  _activeMonster)
-			monster.InitHp();
-		
+		foreach (MonsterController monster in _activeMonster)
+		{
+			if (monster.HP > 0)
+				monster.InitHp();
+
+		} 
+
 	}
 }

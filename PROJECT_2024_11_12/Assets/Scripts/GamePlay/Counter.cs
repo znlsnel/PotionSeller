@@ -57,7 +57,7 @@ public class Counter : MonoBehaviour, IPlayerSensor
 
 				Utils.instance.SetTimer(() =>
 				{
-					_coinSpawner.AddCoin(_customers.Peek()._requireItem * DataBase.instance._potionPrice.GetValue());
+					_coinSpawner.AddCoin(_customers.Peek()._requireItem * 10);
 					_customers.Peek().SetState(ECustomerState.Completed);
 					_customers.Dequeue();
 					int idx = 0;

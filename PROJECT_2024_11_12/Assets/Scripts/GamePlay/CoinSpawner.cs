@@ -141,8 +141,8 @@ public class CoinSpawner : MonoBehaviour
 			{ 
 				receiver.ReceiveItem(_coins.Peek());
 				_coins.Pop();
-				CoinUI.instance.AddCoin(1);
-			}
+				CoinUI.instance.AddCoin(DataBase.instance._potionPrice.GetValue());
+			} 
 			yield return new WaitForSeconds(t);
 		}
 		_sendCoin = null;
