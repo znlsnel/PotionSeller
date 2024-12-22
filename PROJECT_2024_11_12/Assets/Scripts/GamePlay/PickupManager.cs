@@ -34,6 +34,8 @@ public class PickupManager : MonoBehaviour, IItemReceiver
 
 	[Space(10)]
 	[SerializeField] AudioClip _pickupAudio;
+	
+	public UnityEvent _onPickedItem = new UnityEvent();	
 
 	Stack<GameObject> _items = new Stack<GameObject>();
 
@@ -157,7 +159,9 @@ public class PickupManager : MonoBehaviour, IItemReceiver
 		Item item = go.GetComponent<Item>();
 		item.isMoving = false;
 		item._onMoveStop?.Invoke();
-		item._onMoveStop = null; 
+		item._onMoveStop = null;
+		_onPickedItem?.Invoke();
+
 
 		if (detory)
 			go.GetComponent<Item>()?.Relase(); 

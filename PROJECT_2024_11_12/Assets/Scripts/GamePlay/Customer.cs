@@ -30,8 +30,11 @@ public class Customer : MonoBehaviour
         [SerializeField] List<GameObject> eyebow;
         [SerializeField] List<GameObject> hat;
         [Space(10)]
-	#endregion
-	
+        #endregion
+        [Space(10)]
+        [SerializeField] Transform _chatUIPos;
+        [SerializeField] CustomerChatUI _chatUI;
+
 	[NonSerialized] public PickupManager _pickup;
         [NonSerialized] public int _requireItem = 1;
 	[NonSerialized] public UnityEvent _onRelase = new UnityEvent();
@@ -49,6 +52,7 @@ public class Customer : MonoBehaviour
 		_agent = GetComponent<NavMeshAgent>();
 		_pickup = GetComponent<PickupManager>();
 		_anim = GetComponent<Animator>();
+                _chatUI.SetTransform(_chatUIPos);
 	}
 	private void Start()
 	{
@@ -98,7 +102,9 @@ public class Customer : MonoBehaviour
 
         void CompletedState()
         {
-                _agent.SetDestination(_endPos.position);
+		_chatUI.SetActive(false);
+
+		_agent.SetDestination(_endPos.position);
                 Utils.instance.SetTimer(()=>StartCoroutine(CheckArrival()), 1.0f); 
 	}
 
@@ -112,7 +118,14 @@ public class Customer : MonoBehaviour
 		_counter = counter;
                 _endPos = endPos;
 
-                SetState(ECustomerState.MovingToStore);
+		_chatUI.SetPotionCnt(_requireItem);
+
+                _pickup._onPickedItem.RemoveAllListeners();
+		_pickup._onPickedItem.AddListener(() => { _chatUI.SetPotionCnt(--_requireItem); });
+
+		_chatUI.SetActive(true);
+
+		SetState(ECustomerState.MovingToStore);
 	}
 
         IEnumerator CheckArrival()
