@@ -47,7 +47,7 @@ public class PotionJar : MonoBehaviour
 	{ 
 		while (true) 
 		{
-			while (_IGItemSender.GetItemCount() == 0 && _IGItemReceiver.isReceiving())
+			while (_IGItemSender.GetItemCount() == 0 && _IGItemReceiver.isReceivable() == false)
 				yield return new WaitForSeconds(0.5f);
 
 

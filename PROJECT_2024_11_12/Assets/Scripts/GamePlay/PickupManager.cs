@@ -3,14 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using static UnityEditor.PlayerSettings;
 
 public interface IItemReceiver
 {
-	public void ReceiveItem(GameObject item, bool destroy = false);
+	public void ReceiveItem(GameObject item, float speed = 0.2f);
 	public bool CheckItemType(EItemType type);
 
 	public bool isReceivable();
-	public bool isReceiving();
 }
 
 public class PickupManager : MonoBehaviour, IItemReceiver
@@ -30,14 +30,13 @@ public class PickupManager : MonoBehaviour, IItemReceiver
 
 	[Space(10)]
 	[SerializeField] int _maxCarrySize = 8;
+	[SerializeField] bool _destoryItem = false;
+
+	[Space(10)]
 	[SerializeField] AudioClip _pickupAudio;
 
 	Stack<GameObject> _items = new Stack<GameObject>();
 
-	[NonSerialized] public bool isReceivingItem = false;
-
-	public bool destoryItem = false;
-	public UnityAction _onGetItem;
 
 	bool isEnable = true;
 
@@ -55,17 +54,16 @@ public class PickupManager : MonoBehaviour, IItemReceiver
 	{
 		return _items.Count < _maxCarrySize;
 	}
-	public bool isReceiving()
-	{
-		return isReceivingItem;
-	}
+
+
 	public EItemType GetItemType()
 	{
 		if (_items.Count == 0)
 			return EItemType.None;
 		return _items.Peek().GetComponent<Item>()._itemType;
-	}
-	public int _leftCarryCap { get { return _maxCarrySize - _items.Count; } }
+	} 
+
+	public int _leftCarryCap { get { return _maxCarrySize - (_items.Count); } }
 	public Stack<GameObject> GetItemStack() { return _items; }
 	public int GetItemCount() { return _items.Count; }
 
@@ -86,50 +84,58 @@ public class PickupManager : MonoBehaviour, IItemReceiver
 		return _items.Peek().GetComponent<Item>()._itemType == type;
 	}
 
-	public void ReceiveItem(GameObject go, bool destroy = false)
+	Vector3 GetItemOffset()
+	{
+		Vector3 pos = Vector3.zero;
+		Renderer renderer = _items.Count == 0 ? null : _items.Peek().GetComponent<Renderer>();
+		if (renderer != null)
+		{
+			int size = _carrySizeX * _carrySizeZ;
+			int yIdx = (_items.Count) / size;
+			int zIdx = (_items.Count) % size / _carrySizeX;
+			int xIdx = (_items.Count) % size % _carrySizeX;
+
+			pos.y += yIdx * (renderer.bounds.size.y + _yOffset);
+			pos.z += _sortDir.y * zIdx * (renderer.bounds.size.z + _zOffset);
+			pos.x += _sortDir.x * xIdx * (renderer.bounds.size.x + _xOffset);
+			
+		}
+		return pos;
+	}
+	public void ReceiveItem(GameObject go, float speed = 0.2f)
 	{
 		Item item = go.GetComponent<Item>();
 		if (isEnable == false || _leftCarryCap == 0 || !CheckItemType(item._itemType))
 			return;
 
-		isReceivingItem = true;
-
 		go.GetComponent<IngredientItem>()?.OnHand();
 		 
 		go.transform.SetParent(null);
 		go.transform.rotation = _handPos.rotation;
-		Vector3 pos = Vector3.zero;
-
-		Renderer renderer = _items.Count == 0 ? null : _items.Peek().GetComponent<Renderer>();
-		if (renderer != null)
-		{
-			int yIdx = _items.Count / (_carrySizeX * _carrySizeZ);
-			int zIdx = _items.Count % (_carrySizeX * _carrySizeZ) / _carrySizeX;
-			int xIdx = _items.Count % (_carrySizeX * _carrySizeZ) % _carrySizeX;
-
-			pos.y += yIdx * (renderer.bounds.size.y + _yOffset);
-			pos.z += _sortDir.y *  zIdx * (renderer.bounds.size.z + _zOffset);
-			pos.x += _sortDir.x * xIdx * (renderer.bounds.size.x + _xOffset);
-
-		}
 		AudioManager.instance.PlayAudioClip(_pickupAudio);
 
-		StartCoroutine(MoveInParabola(go, go.transform.position, pos, destroy));
-
-		if (destoryItem == false)
+		if (item.isMoving)
+		{
+			Vector3 offset = GetItemOffset();
+			item._onMoveStop += () => { StartCoroutine(MoveInParabola(go, go.transform.position, offset, _destoryItem)); };
+		}
+		else
+		{
+			StartCoroutine(MoveInParabola(go, go.transform.position, GetItemOffset(), _destoryItem));
+			item.isMoving = true;
+		}
+		if (!_destoryItem)
 		{
 			go.transform.SetParent(_handPos);
 			_items.Push(go);
-			 
-		}
-
+		} 
 	}
 
-	float moveEndTime = 0.0f;
-
-	IEnumerator MoveInParabola(GameObject go, Vector3 start, Vector3 offset, bool destory, float height = 2.0f, float duration = 0.2f)
+	IEnumerator MoveInParabola(GameObject go, Vector3 start, Vector3 offset, bool detory = false)
 	{
-		moveEndTime = Time.deltaTime + duration;
+		float height = 2.0f;
+		float duration = 0.4f;
+
 		float elapsedTime = 0f;
 		while (elapsedTime < duration)
 		{
@@ -147,15 +153,17 @@ public class PickupManager : MonoBehaviour, IItemReceiver
 
 		Vector3 end =  _handPos.position;
 		go.transform.position = end + offset;
-		_onGetItem?.Invoke();
-		if (destoryItem || destory)
-			go.GetComponent<Item>()?.Relase();  
-		 
 
-		yield return new WaitForSeconds(duration / 2);
-		if (Time.time > moveEndTime)
-			isReceivingItem = false;
-	}
+		Item item = go.GetComponent<Item>();
+		item.isMoving = false;
+		item._onMoveStop?.Invoke();
+		item._onMoveStop = null; 
+
+		if (detory)
+			go.GetComponent<Item>()?.Relase(); 
+	} 
+
+
 
 	public void ClearItem()
 	{

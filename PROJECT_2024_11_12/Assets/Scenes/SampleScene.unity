@@ -12219,8 +12219,8 @@ MonoBehaviour:
   _yOffset: 0
   _sortDir: {x: 1, y: -1}
   _maxCarrySize: 100000
+  _destoryItem: 0
   _pickupAudio: {fileID: 0}
-  destoryItem: 0
 --- !u!65 &831620394
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -22943,8 +22943,8 @@ MonoBehaviour:
   _yOffset: 0
   _sortDir: {x: -1, y: -1}
   _maxCarrySize: 100000
+  _destoryItem: 0
   _pickupAudio: {fileID: 0}
-  destoryItem: 0
 --- !u!135 &1564867650
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -23844,8 +23844,8 @@ MonoBehaviour:
   _yOffset: 0
   _sortDir: {x: 0, y: 0}
   _maxCarrySize: 999999
+  _destoryItem: 1
   _pickupAudio: {fileID: 0}
-  destoryItem: 1
 --- !u!114 &1615760998
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25101,8 +25101,8 @@ MonoBehaviour:
   _yOffset: 0
   _sortDir: {x: -1, y: -1}
   _maxCarrySize: 100000
+  _destoryItem: 0
   _pickupAudio: {fileID: 0}
-  destoryItem: 0
 --- !u!114 &1671802258
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25883,7 +25883,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uB85C\uADF8\uC778 \uC131\uACF5 \\n\uC720\uC800 ID : aslkdjhaslkjhqwirhalskd\uADF8asdasdqwklrjhklarjsklrjlakrjaklsjlkasrklsarlkasrrasklrjlas"
+  m_text: "\uB85C\uADF8\uC778 \uC131\uACF5"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 915f8f67c374a964482834996b52a5e9, type: 2}
   m_sharedMaterial: {fileID: 5609948271075508397, guid: 915f8f67c374a964482834996b52a5e9, type: 2}
@@ -33990,11 +33990,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 276517575892251894, guid: 066cd4a3b6f00cb428ba69b36e03b051, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -400
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 276517575892251894, guid: 066cd4a3b6f00cb428ba69b36e03b051, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 576.1162
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2774278937452652547, guid: 066cd4a3b6f00cb428ba69b36e03b051, type: 3}
       propertyPath: m_UiScaleMode
@@ -34212,6 +34212,10 @@ PrefabInstance:
     - target: {fileID: 6843991042622031671, guid: eff482cf896daf64f8d8b714024ce741, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7109792433876921816, guid: eff482cf896daf64f8d8b714024ce741, type: 3}
+      propertyPath: _destoryItem
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8305218244917683400, guid: eff482cf896daf64f8d8b714024ce741, type: 3}
       propertyPath: m_Name

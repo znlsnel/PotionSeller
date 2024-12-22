@@ -15,7 +15,7 @@ public interface IItemSender
 
 public class SendItemManager : MonoBehaviour, IItemSender
 {
-	PickupManager _pickupManager;
+	PickupManager _myPickup;
 	[SerializeField] float _sendTime = 1.0f;
 	[SerializeField] AudioClip _sendAudio;
 
@@ -23,8 +23,8 @@ public class SendItemManager : MonoBehaviour, IItemSender
 	GameObject _target;
 	private void Awake()
 	{
-		_pickupManager = GetComponent<PickupManager>();
-		_items = _pickupManager.GetItemStack();
+		_myPickup = GetComponent<PickupManager>();
+		_items = _myPickup.GetItemStack();
 	}
 
 	public int GetItemCount()
@@ -63,7 +63,7 @@ public class SendItemManager : MonoBehaviour, IItemSender
 	{ 
 		while (true)
 		{
-			int size = Mathf.Min(_pickupManager.GetItemStack().Count, cnt);
+			int size = Mathf.Min(_myPickup.GetItemStack().Count, cnt);
 			if (size == 0 || !receiver.CheckItemType(_items.Peek().GetComponent<Item>()._itemType))
 			{
 				if (_target == null)
@@ -75,15 +75,12 @@ public class SendItemManager : MonoBehaviour, IItemSender
 				}
 			}
 
-			while (_pickupManager.isReceivingItem)
-				yield return new WaitForSeconds(0.3f);
-
 			float t = Mathf.Min(_sendTime / size, 0.2f); 
-			while (cnt> 0 && _pickupManager.GetItemStack().Count > 0 && receiver.isReceivable())
+			while (cnt> 0 && _myPickup.GetItemStack().Count > 0 && receiver.isReceivable())
 			{
 				AudioManager.instance.PlayAudioClip(_sendAudio);
-				receiver.ReceiveItem(_pickupManager.GetItemStack().Peek());
-				_pickupManager.GetItemStack().Pop();
+				receiver.ReceiveItem(_myPickup.GetItemStack().Peek());
+				_myPickup.GetItemStack().Pop();
 				cnt--;
 				yield return new WaitForSeconds(t);
 			}
