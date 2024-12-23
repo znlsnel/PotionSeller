@@ -47,7 +47,7 @@ public class Counter : MonoBehaviour, IPlayerSensor
         {
                 while (true)
                 {
-			if (_customers.Count > 0 && _itemSender.GetItemCount() > _customers.Peek()._requireItem)
+			if (_customers.Count > 0 && _itemSender.GetItemCount() >= _customers.Peek()._requireItem)
                         {
 				isActive = true;
 				while (CheckCounterArrival(_customers.Peek().gameObject) == false)

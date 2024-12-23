@@ -45,7 +45,7 @@ public class Customer : MonoBehaviour
 	NavMeshAgent _agent;
 
         private ECustomerState _state;
-      //  int _lowerBodyIdx = -1;
+        int _displayItemCnt = 0;
 
 	private void Awake()
 	{ 
@@ -114,14 +114,16 @@ public class Customer : MonoBehaviour
                 _onRelase.AddListener(relaseAction);
                 int cnt = DataBase.instance._customerPurchaseCnt.GetValue();
 
-		_requireItem = Random.Range(cnt - 2, cnt);
+                _requireItem = Random.Range(Mathf.Max(1, cnt - 2), cnt); 
+                _displayItemCnt = _requireItem; 
+
 		_counter = counter;
                 _endPos = endPos;
 
-		_chatUI.SetPotionCnt(_requireItem);
+		_chatUI.SetPotionCnt(_displayItemCnt);
 
                 _pickup._onPickedItem.RemoveAllListeners();
-		_pickup._onPickedItem.AddListener(() => { _chatUI.SetPotionCnt(--_requireItem); });
+		_pickup._onPickedItem.AddListener(() => { _chatUI.SetPotionCnt(--_displayItemCnt); });
 
 		_chatUI.SetActive(true);
 

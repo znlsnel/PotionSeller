@@ -124,13 +124,21 @@ public class LoginManager : Singleton<LoginManager>
 		GoogleSignIn.DefaultInstance.SignOut();
 		UIHandler.instance.GetLoadingUI.StartLoading();
 
-		GoogleSignIn.DefaultInstance.SignIn().ContinueWith(OnGoogleAuthenticatedFinished);  
+		Utils.instance.SetTimer(() =>
+		{
+			GoogleSignIn.DefaultInstance.SignIn().ContinueWith(OnGoogleAuthenticatedFinished);
+		}, 0.1f);
+		
 		//GoogleSignIn.DefaultInstance.SignInSilently().ContinueWith(OnGoogleAuthenticatedFinished);
 	}
 	private void OnGoogleAuthenticatedFinished(Task<GoogleSignInUser> task)
 	{
 		if (task.IsFaulted || task.IsCanceled)
-			UIHandler.instance.GetLogUI.WriteLog("구글 로그인 실패 ");
+		{
+			if (task.IsFaulted)
+				UIHandler.instance.GetLogUI.WriteLog("구글 로그인 실패 ");
+			UIHandler.instance.GetLoadingUI.EndLoading();
+		}
 		else
 			SignInWithFirebase(task.Result.IdToken);
 		 

@@ -10,9 +10,9 @@ public class CoinUI : Singleton<CoinUI>
 	public override void Awake() 
 	{
 		base.Awake();
-#if UNITY_EDITOR == false
-	_coin = 0;
-#endif
+
+		_coin = 0;
+
 
 		UpdateCoinText(); 
 

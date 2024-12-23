@@ -23,13 +23,28 @@ public class DataBase : Singleton<DataBase>
 	[SerializeField] public SkillUpgradeSO _customerPurchaseCnt;
 	[SerializeField] public SkillUpgradeSO _itemDropRate;
 	[SerializeField] public SkillUpgradeSO _maxCarryItemCnt;
-
+	
+	
 	private string _userId => LoginManager.instance.UserId;
 	private string saveFilePath => Path.Combine(Application.persistentDataPath, _userId+"SaveData.json");
 	private Timestamp lastSaveTime = new Timestamp();
 	public UnityEvent _onLoadData = new UnityEvent();
 
+	public int GetHighestSkillLevel()
+	{
+		int ret = 99999;
 
+		ret = Mathf.Min(_speed.GetLevel(), ret);
+		ret = Mathf.Min(_hp.GetLevel(), ret);
+		ret = Mathf.Min(_attack.GetLevel(), ret);
+		ret = Mathf.Min(_potionSpawnSpeed.GetLevel(), ret);
+		ret = Mathf.Min(_potionPrice.GetLevel(), ret);
+		ret = Mathf.Min(_customerPurchaseCnt.GetLevel(), ret);
+		ret = Mathf.Min(_itemDropRate.GetLevel(), ret);
+		ret = Mathf.Min(_maxCarryItemCnt.GetLevel(), ret); 
+
+		return ret;
+	}
 	[FirestoreData]
 	public class SaveDatas
 	{
@@ -139,7 +154,6 @@ public class DataBase : Singleton<DataBase>
 		});
 
 	}
-
 	public void LoadGameData()
 	{
 		UIHandler.instance.GetLogUI.WriteLog("게임 불러오기...");
@@ -164,7 +178,6 @@ public class DataBase : Singleton<DataBase>
 
 		ApplyLoadData(saveDatas);
 	}
-
 	void LoadDataFromCloud()
 	{
 		FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
@@ -200,8 +213,6 @@ public class DataBase : Singleton<DataBase>
 
 		return;
 	}
-
-
 	 void ApplyLoadData(SaveDatas saveDatas)
 	{
 		if (saveDatas == null || saveDatas.userId != _userId) 

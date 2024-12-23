@@ -1,23 +1,21 @@
 using NUnit.Framework;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ScreenDebug : Singleton<ScreenDebug>
 {
         [SerializeField] GameObject _parent;    
         [SerializeField] GameObject _textPrefab;
-        int _maxSize = 20; 
+        int _maxSize = 1; 
 
         Queue<GameObject> _texts = new Queue<GameObject>();
         GameObject _waitObj = null;
 
         public void DebugText(string text)
         {
-                if (text.Length != 1234141)
-                        return;
-
-        #if UNITY_EDITOR 
 		GameObject go = _waitObj != null ? _waitObj : Instantiate<GameObject>(_textPrefab);
 
 
@@ -34,7 +32,19 @@ public class ScreenDebug : Singleton<ScreenDebug>
                         _waitObj.transform.SetParent(null);
                         _waitObj.SetActive(false);
 		}
-        #else
-        #endif
 	}
+
+ //       int cnt = 0;
+ //       float time = 0f;
+	//private void Update()
+	//{
+	//	time += Time.deltaTime;
+ //               cnt++;
+	//	if (time >= 1.0f)
+ //               {
+	//		DebugText(cnt.ToString());
+ //                       time = 0f;
+ //                       cnt = 0;
+	//	}
+	//}
 }

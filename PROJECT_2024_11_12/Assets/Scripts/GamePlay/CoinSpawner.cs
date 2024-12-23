@@ -14,7 +14,7 @@ public class CoinSpawner : MonoBehaviour
 
 	[SerializeField] Vector3 _coinOffset;
 	Stack<GameObject> _coins = new Stack<GameObject>();
-
+	int _coinCnt = 0;
 	GameObject _player;
 
 	[Space(10)]
@@ -50,11 +50,14 @@ public class CoinSpawner : MonoBehaviour
 	public void AddCoin(int cnt)
 	{
 		_spotLight.SetActive(true);
-		while (cnt-- > 0)
+		_coinCnt += cnt;
+		while (_coinCnt < 300 && cnt-- > 0)
+		{
 			_pool.Get();
+		}
 
 		Vector3 pos = _spotLight.transform.position;
-		pos.y = _coins.Peek().transform.position.y + 5.0f;  
+		pos.y = (_coins.Count == 0 ? _coinPosition.position.y : _coins.Peek().transform.position.y) + 5.0f;  
 		_spotLight.transform.position = pos;
 		 
 		if (_player != null && _sendCoin == null)
@@ -88,10 +91,10 @@ public class CoinSpawner : MonoBehaviour
 			pos.z +=  -zIdx * (renderer.bounds.size.z + _coinOffset.z);
 			pos.x += xIdx * (renderer.bounds.size.x + _coinOffset.x);
 
-			Debug.Log($"Start Pos : [{_coinPosition.position.x}, {_coinPosition.position.y}, {_coinPosition.position.z}]");
-			Debug.Log($"bounding size : [{renderer.bounds.size.x}, {renderer.bounds.size.y}, {renderer.bounds.size.z}]");
-			Debug.Log($"coinOffset size : [{_coinOffset.x}, {_coinOffset.y}, {_coinOffset.z}]");
-			Debug.Log($"XYZ IDX  : [{xIdx}, {yIdx}, {zIdx}]"); 
+			//Debug.Log($"Start Pos : [{_coinPosition.position.x}, {_coinPosition.position.y}, {_coinPosition.position.z}]");
+		//	Debug.Log($"bounding size : [{renderer.bounds.size.x}, {renderer.bounds.size.y}, {renderer.bounds.size.z}]");
+		//	Debug.Log($"coinOffset size : [{_coinOffset.x}, {_coinOffset.y}, {_coinOffset.z}]");
+		///	Debug.Log($"XYZ IDX  : [{xIdx}, {yIdx}, {zIdx}]"); 
 
 			coin.transform.position = pos;
 		}
@@ -131,7 +134,6 @@ public class CoinSpawner : MonoBehaviour
 	{
 		float time = 1.0f;
 		int sendCnt = Mathf.Max(1, _coins.Count / 30);
-
 		while (_coins.Count > 0) 
 		{
 			float t = time / (_coins.Count / sendCnt); 
@@ -139,9 +141,16 @@ public class CoinSpawner : MonoBehaviour
 			AudioManager.instance.PlayAudioClip(_coinPickupAudio);
 			for (int i = 0; i < sendCnt && _coins.Count > 0; i++)
 			{ 
+				int sendCoin = (_coinCnt / _coins.Count);
+				if (_coinCnt > _coins.Count && _coinCnt % _coins.Count > 0)
+					sendCoin++;
+
+				_coinCnt -= sendCoin;
 				receiver.ReceiveItem(_coins.Peek());
 				_coins.Pop();
-				CoinUI.instance.AddCoin(DataBase.instance._potionPrice.GetValue());
+
+				 
+				CoinUI.instance.AddCoin(Mathf.Min(_coinCnt, sendCoin) * DataBase.instance._potionPrice.GetValue());
 			} 
 			yield return new WaitForSeconds(t);
 		}

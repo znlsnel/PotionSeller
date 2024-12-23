@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -16,10 +17,15 @@ public class SkillUpgradeSO : ScriptableObject
 
 	private void Awake()
 	{
-#if UNITY_EDITOR
-#else
+
+	//	level = 0;
+
+	}
+
+	private void OnEnable()
+	{
 		level = 0;
-#endif
+
 	}
 
 	public int GetValue()

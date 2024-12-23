@@ -13,7 +13,7 @@ public class InputManager : Singleton<InputManager>
 	public override void Awake()  
 	{
 		//base.Awake();
-		//Application.targetFrameRate = 30; 
+		Application.targetFrameRate = 120; 
 		var inputSystem = Resources.Load<InputActionAsset>("Inputs/InputSystem");
 		_gamePlayMap = inputSystem.FindActionMap("GamePlay");
 		_touchMove = _gamePlayMap["TouchMove"];
