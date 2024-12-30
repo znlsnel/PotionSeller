@@ -13,7 +13,7 @@
 -언어 : C#<br>
 -엔진 : Unity Engine <br>
 -SDK : Firebase Auth, Firbase Firestore, Google Sign in, Google Admob <br>
--개발 환경 : Windows 11, Unity 6000.0.24f1, Android SDK <br>
+-개발 환경 : Windows 11, Unity 6000.0.24f1, Android <br>
 <br>
 
 ---
@@ -53,14 +53,38 @@
 ---
 
 ## 핵심 로직
-### Firebase를 이용한 구글, 메일 회원가입 및 로그인 기능
+### [![Link](https://img.shields.io/badge/Link-%23181717.svg?&style=for-the-badge&logo=github&logoColor=white)](https://github.com/znlsnel/PotionSeller/blob/main/PROJECT_2024_11_12/Assets/Scripts/Managers/LoginManager.cs) - Firebase를 이용한 구글, 메일 회원가입 및 로그인 기능
+- 구글 아이디를 이용하여 로그인 하는 기능과 이메일 형식의 계정으로 회원가입, 로그인 하는 기능을 만들었습니다.
+<div style="display: flex; justify-content: space-around;">
+  <img src="https://github.com/user-attachments/assets/2f8cd3fe-c7fd-48c3-a578-7aa0a121d190" alt="KakaoTalk_20241230_212921650_01" width="200">
+  <img src="https://github.com/user-attachments/assets/8d4efbb1-bf8b-4f25-b370-9b259966d6c6" alt="KakaoTalk_20241230_212921650_02" width="200">
+  <img src="https://github.com/user-attachments/assets/2e60af82-07e6-454b-b73f-f031d1f6166e" alt="KakaoTalk_20241230_212921650" width="200">
+</div>
 
-### 클라우드 저장 기능
+<br><br>
 
-### AES복호화를 이용한 데이터 복호화
 
-### Google API를 이용한 광고 시스템
 
-### 풀링 오브젝트 시스템
+### [![Link](https://img.shields.io/badge/Link-%23181717.svg?&style=for-the-badge&logo=github&logoColor=white)](https://github.com/znlsnel/PotionSeller/blob/main/PROJECT_2024_11_12/Assets/Scripts/Managers/DataBase.cs) - 클라우드 저장 기능
+- Firebase firestore를 이용하여 데이터를 저장하는 기능을 추가했습니다.
+<div style="display: flex; justify-content: space-around;">
+  <img src="https://github.com/user-attachments/assets/50ccef01-0ee5-46be-b4ce-97b8f61564d4" alt="Image" width="600">
+</div>
 
-### 포션 제작 & 판매 시스템
+<br><br>
+
+### [![Link](https://img.shields.io/badge/Link-%23181717.svg?&style=for-the-badge&logo=github&logoColor=white)](https://github.com/znlsnel/PotionSeller/blob/main/PROJECT_2024_11_12/Assets/Scripts/Managers/Utils.cs) - AES 알고리즘을 이용한 데이터 보호
+<div style="display: flex; justify-content: space-around;">
+  <img src="https://github.com/user-attachments/assets/128f2e65-d1d2-4c92-baa7-ff4eae578ddc" alt="Image" width="700">
+</div>
+
+<br><br>
+
+### [![Link](https://img.shields.io/badge/Link-%23181717.svg?&style=for-the-badge&logo=github&logoColor=white)](https://github.com/znlsnel/PotionSeller/blob/main/PROJECT_2024_11_12/Assets/Scripts/Managers/AdmobManager.cs) - Google API를 이용한 광고 시스템
+- Google Admob api를 이용하여 광고 기능을 추가했습니다. <br>
+  광고가 중복으로 호출되는 문제가 발생하여 이를 해결하기 위해 lock을 걸어두는 방법을 사용했습니다.
+<div style="display: flex; justify-content: space-around;">
+  <img src="https://github.com/user-attachments/assets/e9e21993-1aa2-4b71-881e-5a648a4a84e8" alt="Image" width="600">
+</div>
+
+
