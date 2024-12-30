@@ -89,17 +89,15 @@
 
 <br><br>
 ### 플레이어 전투 및 아이템 습득
-- 영상 링크 (아래 이미지를 클릭하면 유튜브 링크로 이동합니다. )<br>
-[![Video](https://img.youtube.com/vi/lpBEm4esF6Y/0.jpg)](https://www.youtube.com/watch?time_continue=21&v=lpBEm4esF6Y&embeds_referring_euri=https%3A%2F%2Fwww.notion.so%2F&source_ve_path=MjM4NTE)
 - 몬스터가 공격 범위 안에 있다면 자동으로 공격하도록 하였습니다.
 - 몬스터가 일정 확률로 아이템을 떨어뜨리게 하였습니다.
+[![Video](https://github.com/user-attachments/assets/47c39712-fe2f-437e-a3a7-a066d5e5d11a)](https://www.youtube.com/watch?time_continue=21&v=lpBEm4esF6Y&embeds_referring_euri=https%3A%2F%2Fwww.notion.so%2F&source_ve_path=MjM4NTE)
 <br>
 
 ### 포션 생성
-- 영상 링크 (아래 이미지를 클릭하면 유튜브 링크로 이동합니다. )<br>
-  [![Video](https://img.youtube.com/vi/F9ag3K9WppQ/0.jpg)](https://www.youtube.com/watch?time_continue=21&v=lpBEm4esF6Y&embeds_referring_euri=https%3A%2F%2Fwww.notion.so%2F&source_ve_path=MjM4NTE)
 - 몬스터로 부터 습득한 재료 아이템을 연금술사에게 가져가면 포션을 생성하여 테이블에 놔두도록 했습니다.
 - 포션을 카운터로 옮기면 손님들이 계산 후 포션을 들고 나가도록 했습니다.
+  [![Video](https://github.com/user-attachments/assets/5872fd7c-a786-481e-bee5-2a601a493384)](https://www.youtube.com/watch?time_continue=21&v=lpBEm4esF6Y&embeds_referring_euri=https%3A%2F%2Fwww.notion.so%2F&source_ve_path=MjM4NTE)
 <br>
 
 
