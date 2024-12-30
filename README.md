@@ -20,7 +20,7 @@
 ## 목차
 - 기획 의도
 - 발생 및 해결한 주요 문제점
-- 핵심 로직
+- 핵심 기능
 <br>
 
 ---
@@ -51,7 +51,7 @@
   <br><br>
 ---
 
-## 핵심 로직
+## 핵심 기능
 ### [![Link](https://img.shields.io/badge/Link-%23181717.svg?&style=for-the-badge&logo=github&logoColor=white)](https://github.com/znlsnel/PotionSeller/blob/main/PROJECT_2024_11_12/Assets/Scripts/Managers/LoginManager.cs) - Firebase를 이용한 구글, 메일 회원가입 및 로그인 기능
 - 구글 아이디를 이용하여 로그인 하는 기능과 이메일 형식의 계정으로 회원가입, 로그인 하는 기능을 만들었습니다.
 <div style="display: flex; justify-content: space-around;">
