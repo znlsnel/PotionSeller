@@ -46,12 +46,14 @@ public class LoginUI : MonoBehaviour
 
 	private void Update()
 	{
-                bool login = LoginManager.instance.isLogined; 
+                bool login = LoginManager.instance.IsLoginSuccessful; 
                 
                 _googleLoginBt.SetActive(!login && !startGame);
+#if UNITY_EDITOR
 		_emailLoginBt.SetActive(!login && !startGame);
-
-                _idInfoText.text = "Email : " + LoginManager.instance.UserEmail;
+#endif 
+                 
+                _idInfoText.text = "Email : " + LoginManager.instance.GetUserEmail;
 		_idInfoText.gameObject.SetActive(login && !startGame);
 		_gameStartBt.SetActive(login && !startGame);
 		_logoutBt.SetActive(login && !startGame);  

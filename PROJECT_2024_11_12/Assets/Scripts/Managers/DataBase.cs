@@ -25,7 +25,7 @@ public class DataBase : Singleton<DataBase>
 	[SerializeField] public SkillUpgradeSO _maxCarryItemCnt;
 	
 	
-	private string _userId => LoginManager.instance.UserId;
+	private string _userId => LoginManager.instance.GetUserId;
 	private string saveFilePath => Path.Combine(Application.persistentDataPath, _userId+"SaveData.json");
 	private Timestamp lastSaveTime = new Timestamp();
 	public UnityEvent _onLoadData = new UnityEvent();
@@ -76,27 +76,31 @@ public class DataBase : Singleton<DataBase>
 
 	public void RegisterSave()
 	{
-		if (saveJson == null)
-			saveJson = StartCoroutine(CallSaveToJson());
-		if (saveCloud == null)
-			saveCloud = StartCoroutine(CallSaveToCloud());
+		if (saveJson != null)
+			StopCoroutine(saveJson);
+
+		if (saveCloud != null)
+			StopCoroutine(saveCloud);
+
+		saveJson = StartCoroutine(CallSaveToJson());
+		saveCloud = StartCoroutine(CallSaveToCloud());
 	}
 	 
 	IEnumerator CallSaveToJson() 
 	{
 		// 1초동안 쌓인 데이터 Local 저장
 		yield return new WaitForSeconds(1f);
-		SaveDataToLocal();
 		saveJson = null;
+		SaveDataToLocal();
 	}
 
 	
 	IEnumerator CallSaveToCloud()
 	{
-		// 5분에 한번씩 cloud 저장 - 강제 종료에 의해 저장 누락시 다음 실행에 업데이트됨
-		yield return new WaitForSeconds(60.0f * 5f);
-		SaveDataToCloud(); 
+		// 5초에 한번씩 cloud 저장 - 강제 종료에 의해 저장 누락시 다음 실행에 업데이트됨
+		yield return new WaitForSeconds(5.0f);
 		saveCloud = null;
+		SaveDataToCloud(); 
 	}
 
 	SaveDatas MakeSaveDatas()
@@ -116,7 +120,6 @@ public class DataBase : Singleton<DataBase>
 
 		lastSaveTime = Timestamp.GetCurrentTimestamp();
 
-		UIHandler.instance.GetLogUI.WriteLog("게임 저장...");
 		return saveDatas;
 
 	}
@@ -126,25 +129,24 @@ public class DataBase : Singleton<DataBase>
 		string json = JsonConvert.SerializeObject(saveDatas, Formatting.Indented);
 		string encryptedJson = EncryptionHelper.Encrypt(json);
 		File.WriteAllText(saveFilePath, encryptedJson);
+		UIHandler.instance.GetLogUI.WriteLog("게임 저장..."); 
 	}
 
 	public void SaveDataToCloud()
 	{
 		SaveDatas saveDatas = MakeSaveDatas();
+		FirebaseFirestore db = FirebaseFirestore.GetInstance("potionsellerkorea");
 
-		FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
-
-		// SaveDatas 객체를 Firestore에 저장
-		db.Collection("users").Document(_userId).SetAsync(new
+		db.Collection("userData").Document(_userId).SetAsync(new
 		{
 			date = saveDatas.date, 
 			coin = saveDatas.coin, // 코인 필드
-			skillLevels = saveDatas.levels // 스킬 데이터를 배열로 저장
-		}).ContinueWith(task =>
+			skillLevels = saveDatas.levels // 스킬 데이터를 배열로 저장 
+		}).ContinueWith(task => 
 		{
 			if (task.IsCompleted)
 			{
-				UIHandler.instance.GetLogUI.WriteLog("클라우드 저장 성공");
+				UIHandler.instance.GetLogUI.WriteLog("클라우드 저장.."); 
 			}
 			else
 			{
@@ -152,8 +154,8 @@ public class DataBase : Singleton<DataBase>
 				UIHandler.instance.GetLogUI.WriteLog("클라우드 저장 실패");
 			}
 		});
-
 	}
+
 	public void LoadGameData()
 	{
 		UIHandler.instance.GetLogUI.WriteLog("게임 불러오기...");
@@ -166,7 +168,7 @@ public class DataBase : Singleton<DataBase>
 		if (File.Exists(saveFilePath) == false) 
 			return;
 
-#if UNITY_EDITOR == false
+#if UNITY_EDITOR == false 
 	if (_userId == "")
 		return; 
 #endif
@@ -178,19 +180,20 @@ public class DataBase : Singleton<DataBase>
 
 		ApplyLoadData(saveDatas);
 	}
-	void LoadDataFromCloud()
+
+	void LoadDataFromCloud() 
 	{
-		FirebaseFirestore db = FirebaseFirestore.DefaultInstance;
-		SaveDatas saveDatas = null;
-		db.Collection("users").Document(_userId).GetSnapshotAsync().ContinueWith(task =>
+		FirebaseFirestore db = FirebaseFirestore.GetInstance("potionsellerkorea");
+		SaveDatas saveDatas = null; 
+		db.Collection("userData").Document(_userId).GetSnapshotAsync().ContinueWith(task =>
 		{
 			if (task.IsCompleted && task.Result.Exists)
 			{
 				DocumentSnapshot snapshot = task.Result; 
 				Timestamp ts = snapshot.GetValue<Timestamp>("date");
-				
+
 				// 최신 데이터가 아니라면 불러오기 캔슬 및 새로 저장
-				if (lastSaveTime.CompareTo(ts) > 0)
+				if (lastSaveTime.CompareTo(ts) > 0) 
 				{
 					SaveDataToCloud();
 					return;

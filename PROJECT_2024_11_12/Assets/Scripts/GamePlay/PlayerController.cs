@@ -146,9 +146,14 @@ public class PlayerController : HealthEntity
 		_combatCtrl.SetActiveUpperBody(false);
 		_pickupManager.ClearItem();
 		AudioManager.instance.PlayAudioClip(_dieSound);
-		Utils.instance.SetTimer(() => {
-			InitPlayer();
-		}, 2.0f); 
+
+		Utils.instance.SetTimer(() =>
+		{
+			AdmobManager.instance.LoadRewardAd(null, () => { InitPlayer(); }); 
+		}, 2.0f);
+
+
+		
 	}
 
 	public override void TargetEnter(GameObject go)

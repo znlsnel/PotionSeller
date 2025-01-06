@@ -36,7 +36,7 @@ public class CoinUI : Singleton<CoinUI>
 
 	void UpdateCoinText()
 	{
-		_text.text = Utils.instance.ConvertToCoin(_coin);
+		_text.text = Utils.instance.FormatGameNumber(_coin);
 	}
 
 

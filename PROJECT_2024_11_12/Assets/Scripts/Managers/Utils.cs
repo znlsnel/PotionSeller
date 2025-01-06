@@ -8,38 +8,21 @@ using UnityEngine;
 public class Utils : Singleton<Utils>	
 {
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
-	long T = (long)1000 * 1000 * 1000 * 1000;
-	long B = (long)1000 * 1000 * 1000;
-	long M = (long)1000 * 1000;
-	long K = 1000;
-
-	public string ConvertToCoin(long n)
+	string u = "KMBTABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	public string FormatGameNumber(long n)
 	{
-		long A = 1;
-		string Level = "";
+		int i = -1;
+		long t = n;
 
-		if (n / T > 0)
+		while (t / 1000 > 0)
 		{
-			A = T;
-			Level = "T";
-		}
-		else if (n / B > 0)
-		{
-			A = B;
-			Level = "B";
-		}
-		else if (n / M > 0)
-		{
-			A = M;
-			Level = "M";
-		}
-		else if (n / K > 0)
-		{
-			A = K; 
-			Level = "K";
+			i++;
+			t /= 1000;
 		}
 
-		return  (n / A).ToString() + Level;
+		char U = i == -1 ? ' ' : u[i];
+
+		return  (t).ToString() + U;
 	}
 	public void SetTimer(Action action, float time = 0.0f)
 	{
@@ -53,24 +36,24 @@ public class Utils : Singleton<Utils>
 		else
 			yield return new WaitForSeconds(time);
 		action.Invoke();
-	}
+	} 
 
 
-	Dictionary<string, float> _watch = new Dictionary<string, float>();
+	Dictionary<string, float> _clock = new Dictionary<string, float>();
 	
-	public bool TimeCheck(MonoBehaviour _self, string functionName, float time)
+	public bool TimeCheck(MonoBehaviour obj, string functionName, float time)
 	{
-		string key = _self.name + functionName; 
-		if (_watch.ContainsKey(key) == false)
+		string key = obj.name + functionName; 
+		if (_clock.ContainsKey(key) == false)
 		{
-			_watch.Add(key, Time.time + time);
+			_clock.Add(key, Time.time + time);
 			return true;
 		}
 		else
 		{
-			if (_watch[key] <= Time.time)
+			if (_clock[key] <= Time.time)
 			{
-				_watch[key] = Time.time + time;
+				_clock[key] = Time.time + time;
 				return true;
 			}
 			else
@@ -82,7 +65,6 @@ public class Utils : Singleton<Utils>
 
 public static class EncryptionHelper
 {
-	private static readonly int keySize = 256;
 	private static readonly int IvSize = 16;
 	private static readonly string _key = "@%V152B@B&*Osdas247ASNAL2D@@$SLK";
 	public static string Encrypt(string plainText)

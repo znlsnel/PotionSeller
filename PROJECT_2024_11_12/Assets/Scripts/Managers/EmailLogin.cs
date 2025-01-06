@@ -21,7 +21,7 @@ public class EmailLogin : MonoBehaviour
 
 	private void Update()
 	{
-		if (LoginManager.instance.isLogined)
+		if (LoginManager.instance.IsLoginSuccessful)
 			gameObject.SetActive(false);
 
                 string str = "";

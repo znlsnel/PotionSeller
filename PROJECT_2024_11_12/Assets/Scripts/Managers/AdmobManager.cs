@@ -25,7 +25,7 @@ public class AdmobManager : Singleton<AdmobManager>
 	}
 
 	bool _lock = false;
-	public bool LoadRewardAd(Action action)
+	public bool LoadRewardAd(Action rewardAction, Action close = null)
 	{
 		if (_lock)
 			return false;
@@ -41,36 +41,31 @@ public class AdmobManager : Singleton<AdmobManager>
 		
 		var adRequest = new AdRequest();
 		 
-		// send the request to load the ad.
 		RewardedAd.Load(isTestMode ? rewardTestId : rewardId, adRequest,
 		    (RewardedAd ad, LoadAdError error) =>
 		    {
-			    // if error is not null, the load request failed.
 			    if (error != null || ad == null)
 				    return;
-			    
-			    Debug.Log("Rewarded ad loaded with response : "
-			    + ad.GetResponseInfo());
-			     
+			    			     
 			    _rewardedAd = ad;
 			    _rewardedAd.OnAdFullScreenContentClosed += () =>
 			    {
 				    _lock = false;
+				    close?.Invoke();
 				    UIHandler.instance.GetLoadingUI.EndLoading();
-				    Debug.Log("광고 종료");
 			    };
 
 			    if (_rewardedAd != null && _rewardedAd.CanShowAd())
 			    {
 				    _rewardedAd.Show((Reward reward) =>
 				    {
-					    action?.Invoke();
-					    // TODO: Reward the user.
-					    Debug.Log("리워드 보상!");
+
+					    rewardAction?.Invoke();
+					    if (rewardAction != null) 
+						UIHandler.instance.GetLogUI.WriteLog("광고 보상 수령 완료!");
 				    });
 			    }
 		    });
-
 		return true;
 	}
 }

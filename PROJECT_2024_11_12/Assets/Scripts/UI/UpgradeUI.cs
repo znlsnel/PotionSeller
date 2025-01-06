@@ -40,7 +40,7 @@ public class UpgradeUI : MonoBehaviour
 
 	void UpdatePrice()
 	{
-		_priceText.text = _skill.GetLevel() == 10 ? "-" : Utils.instance.ConvertToCoin((long)Mathf.Pow(4, _skill.GetLevel()+1));
+		_priceText.text = _skill.GetLevel() == 10 ? "-" : Utils.instance.FormatGameNumber((long)Mathf.Pow(4, _skill.GetLevel()+1));
 	} 
 
 	void UpdateColor()
