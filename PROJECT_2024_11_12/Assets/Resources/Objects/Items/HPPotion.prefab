@@ -60,6 +60,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -1504981713932161579, guid: ba7f76b76f6e8ce44b2d2141824184a7, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -1504981713932161579, guid: ba7f76b76f6e8ce44b2d2141824184a7, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 535cfd526c49cff4ebbe1f270aafab17, type: 2}
     - target: {fileID: -927199367670048503, guid: ba7f76b76f6e8ce44b2d2141824184a7, type: 3}
       propertyPath: m_Name
       value: HPPotion
@@ -90,3 +98,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _itemType: 3
+  isMoving: 0

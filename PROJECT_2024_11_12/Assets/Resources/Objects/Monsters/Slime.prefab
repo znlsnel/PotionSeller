@@ -712,16 +712,10 @@ MonoBehaviour:
   _hpPos: {fileID: 3188094155950123576}
   _initHp: 500
   _damageUI: {fileID: 9205208253024043525}
-  _damageSounds:
-  - {fileID: 8300000, guid: 4a2e4f5f8e8237e4390c43a4b6cb519d, type: 3}
-  - {fileID: 8300000, guid: e213f1abe8c2bc449a90be08507b19f6, type: 3}
   _attackRange: 1
   _dropItem: {fileID: 5366707112403216439, guid: 80477c503071ecb44b1ff39923c0f827, type: 3}
   _damage: 10
-  _dropRate: 100
-  _onDead:
-    m_PersistentCalls:
-      m_Calls: []
+  _dropRate: 50
 --- !u!54 &3348997548610125189
 Rigidbody:
   m_ObjectHideFlags: 0

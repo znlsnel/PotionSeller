@@ -7,8 +7,6 @@ using UnityEngine.Experimental.GlobalIllumination;
 public class IngredientItem : Item, IPlayerSensor
 {
 	[Space(10)]
-	[SerializeField] GameObject _pointLight;
-
 	IItemReceiver _playerItemReceiver;
 	SphereCollider _collider;
 	
@@ -61,12 +59,10 @@ public class IngredientItem : Item, IPlayerSensor
 
 	public void OnHand() 
 	{
-		_pointLight.SetActive(false);
 		_collider.enabled = false;
 	}
 	public void InitItem()
 	{
-		_pointLight.SetActive(true);
 		transform.SetParent(null);
 		_collider.enabled = true;
 		StartCoroutine(ItemAnim());

@@ -7,15 +7,15 @@ using UnityEngine.Pool;
 
 public class MonsterSpawner : MonoBehaviour
 {
-        [SerializeField] List<GameObject> _monsterPrefab;
+        [SerializeField] GameObject _monsterPrefab;
         ObjectPool<GameObject> _pool;
 	HashSet<MonsterController> _activeMonster = new HashSet<MonsterController>();
 	[SerializeField] int _maxCount = 20;
 
-	private void Awake()
+	private void Awake() 
 	{
 		_pool = new ObjectPool<GameObject>(
-			createFunc: () => Instantiate<GameObject>(_monsterPrefab[Random.Range(0, _monsterPrefab.Count)]),
+			createFunc: () => Instantiate<GameObject>( _monsterPrefab),
 			actionOnGet: (obj) => {
 				obj.SetActive(false);
 				obj.GetComponent<MonsterController>().InitMonster(this, GetSpawnPos(), () => { _pool.Release(obj); });

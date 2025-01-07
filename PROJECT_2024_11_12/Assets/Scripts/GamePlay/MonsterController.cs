@@ -22,7 +22,7 @@ public class MonsterController : HealthEntity
         GameObject _target;
 
 	UnityEvent _onRelase = new UnityEvent();
-	public UnityEvent _onDead = new UnityEvent();
+	[NonSerialized] public UnityEvent _onDead = new UnityEvent();
 
 
         protected override void Awake()
@@ -47,6 +47,9 @@ public class MonsterController : HealthEntity
 	public void InitMonster(MonsterSpawner ms, Vector3 pos, Action relaseListener)
 	{
 		transform.position = pos;
+
+		transform.rotation = Quaternion.Euler(0, UnityEngine.Random.Range(0f, 360f), 0);
+
 		_rigid.MovePosition(pos);
 
 		_ms = ms;
