@@ -18,7 +18,7 @@ public class MonsterController : HealthEntity
 	protected Animator _anim;
         Rigidbody _rigid;
 	NavMeshAgent _agent;
-	MonsterSpawner _ms;
+
 
         GameObject _target;
 
@@ -37,7 +37,7 @@ public class MonsterController : HealthEntity
 		_BTRoot = new Selector(new List<BTNode>
 		{
 			// 둘 중 하나의 로직 실행
-			// 공격 모드
+			// 공격 모드 
 			new Sequence(new List<BTNode>
 			{
 				// 플레이어가 보이는지 ( 안보이면 return -> 대기모드 )
@@ -98,7 +98,16 @@ public class MonsterController : HealthEntity
 
 	public BTNode.State OnMove()
 	{
-		transform.LookAt(_target.transform.position);
+		//transform.LookAt(_target.transform.position);
+
+		Quaternion targetRotation = Quaternion.LookRotation(_target.transform.position - transform.position);
+		// 현재 회전에서 목표 회전으로 부드럽게 회전
+		transform.rotation = Quaternion.RotateTowards(
+		    transform.rotation,
+		    targetRotation,
+		    720 * Time.deltaTime 
+		);
+
 		_agent.SetDestination(_target.transform.position);
 		return BTNode.State.Running;
 	} 
@@ -109,32 +118,25 @@ public class MonsterController : HealthEntity
 		HP = _initHp;
 	}
 
-	public void InitMonster(MonsterSpawner ms, Vector3 pos, Action relaseListener)
+	public void InitMonster(Vector3 pos, Action relaseListener)
 	{
 		transform.position = pos;
-
 		transform.rotation = Quaternion.Euler(0, UnityEngine.Random.Range(0f, 360f), 0);
 
 		_rigid.MovePosition(pos);
 
-		_ms = ms;
 		InitHp();
 		if (_onRelase != null)
 			_onRelase.RemoveAllListeners();
-
 		_onRelase.AddListener(() => relaseListener.Invoke());
 
 		_anim.SetBool("die", false);
-		Utils.instance.SetTimer(() =>
-		{
-			gameObject.SetActive(true);
-		}, 1.0f);
+		Utils.instance.SetTimer(() =>{gameObject.SetActive(true);}, 1.0f); 
 	}
 
 	public override void TargetEnter(GameObject go)
 	{
-		PlayerController pc = go.GetComponent<PlayerController>();
-                if (pc == null)
+                if (go.GetComponent<PlayerController>() == null)
                         return;
 
 		_target = go;
@@ -142,8 +144,7 @@ public class MonsterController : HealthEntity
 
 	public override void TargetExit(GameObject go)
 	{
-		PlayerController pc = go.GetComponent<PlayerController>();
-		if (pc == null) 
+		if (go.GetComponent<PlayerController>() == null)
 			return;
 
 		_target = null;

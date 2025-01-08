@@ -18,7 +18,7 @@ public class MonsterSpawner : MonoBehaviour
 			createFunc: () => Instantiate<GameObject>( _monsterPrefab),
 			actionOnGet: (obj) => {
 				obj.SetActive(false);
-				obj.GetComponent<MonsterController>().InitMonster(this, GetSpawnPos(), () => { _pool.Release(obj); });
+				obj.GetComponent<MonsterController>().InitMonster(GetSpawnPos(), () => { _pool.Release(obj); });
 				_activeMonster.Add(obj.GetComponent<MonsterController>());
 				},
 
