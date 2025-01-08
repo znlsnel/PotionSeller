@@ -366,11 +366,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _hpBarPrefab: {fileID: 7102024989149935545, guid: 172416e99d0e6fc408dccec52b62544e, type: 3}
   _hpPos: {fileID: 2183488135415404519}
-  _initHp: 1500
+  _initHp: 900
   _damageUI: {fileID: 1391092040544268770}
   _attackRange: 2
   _dropItem: {fileID: 5366707112403216439, guid: 80477c503071ecb44b1ff39923c0f827, type: 3}
-  _damage: 50
+  _damage: 35
   _dropRate: 150
 --- !u!54 &7624309420127575322
 Rigidbody:

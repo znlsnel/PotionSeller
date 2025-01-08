@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Build.Pipeline;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
@@ -14,7 +15,7 @@ public class MonsterController : HealthEntity
 	[SerializeField] int _damage = 10;
 	[SerializeField] int _dropRate = 100;
 	   
-	Animator _anim;
+	protected Animator _anim;
         Rigidbody _rigid;
 	NavMeshAgent _agent;
 	MonsterSpawner _ms;
@@ -24,6 +25,7 @@ public class MonsterController : HealthEntity
 	UnityEvent _onRelase = new UnityEvent();
 	[NonSerialized] public UnityEvent _onDead = new UnityEvent();
 
+	private BTNode _BTRoot;
 
         protected override void Awake()
         {
@@ -31,13 +33,76 @@ public class MonsterController : HealthEntity
                 _anim = GetComponent<Animator>();
 		_rigid = GetComponent<Rigidbody>();
 		_agent = GetComponent<NavMeshAgent>();
+
+		_BTRoot = new Selector(new List<BTNode>
+		{
+			// 둘 중 하나의 로직 실행
+			// 공격 모드
+			new Sequence(new List<BTNode>
+			{
+				// 플레이어가 보이는지 ( 안보이면 return -> 대기모드 )
+				new ConditionNode(()=>{return isPlayerVisible();}),
+
+				// 플레이어가 보인다
+				new Selector(new List<BTNode>
+				{
+					new Sequence(new List<BTNode>
+					{
+						// 플레이어가 공격 범위 안에 있는지 (없다면 return -> 이동 )
+						new ConditionNode(()=>{return isAttackable(); }),
+
+						// 플레이어 공격
+						new ActionNode(()=>{return BTNode.State.Running; })
+					}),
+
+					// 플레이어에게 이동
+					new ActionNode(()=>{return OnMove(); })
+				}),
+			}),
+
+			// 대기 모드
+			new ActionNode(()=>{return BTNode.State.Running; })
+		});
 	}
 
-        void Update()
+        public virtual void Update()
         {
-		if (DungeonDoorway.instance.isPlayerInDungeon() && _target != null && isDead == false)
-			AttackMove();
+		_BTRoot.Execute();
 	}
+
+	public bool isPlayerVisible()
+	{
+		if (isDead || DungeonDoorway.instance.isPlayerInDungeon() == false || _target == null || 
+			(_target != null && _target.GetComponent<PlayerController>().isDead))
+		{
+			_anim.SetBool("attack", false); 
+			_anim.SetBool("move", false);
+			return false;
+		}
+
+		return true;
+	}
+	 
+	public bool isAttackable()
+	{
+	
+		Vector3 dir = (_target.transform.position - transform.position);
+		float dist = dir.magnitude;
+		bool attack = dist < _attackRange;
+
+		_anim.SetBool("attack", attack);
+		_anim.SetBool("move", !attack);
+
+		return attack;
+	}
+
+	public BTNode.State OnMove()
+	{
+		transform.LookAt(_target.transform.position);
+		_agent.SetDestination(_target.transform.position);
+		return BTNode.State.Running;
+	} 
+
 
 	public void InitHp()
 	{
@@ -63,40 +128,9 @@ public class MonsterController : HealthEntity
 		Utils.instance.SetTimer(() =>
 		{
 			gameObject.SetActive(true);
-
 		}, 1.0f);
 	}
 
-
-        void AttackMove()
-        {
-                transform.LookAt(_target.transform.position); 
-
-                Vector3 dir = (_target.transform.position - transform.position);
-		float dist = dir.magnitude;
-
-		bool attack = dist < _attackRange;
-
-		_anim.SetBool("move", !attack);
-		_anim.SetBool("attack", attack);
-
-		_agent.isStopped = attack; 
-
-		if (!attack)
-		{
-			_agent.SetDestination(_target.transform.position);
-		}
-
-
-		if (DungeonDoorway.instance.isPlayerInDungeon() == false || _target.GetComponent<PlayerController>().isDead)
-		{
-			_target = null;
-			_anim.SetBool("move", false);
-			_anim.SetBool("attack", false);
-		}
-	}
-
-	Coroutine goingToTarget;
 	public override void TargetEnter(GameObject go)
 	{
 		PlayerController pc = go.GetComponent<PlayerController>();
@@ -104,7 +138,6 @@ public class MonsterController : HealthEntity
                         return;
 
 		_target = go;
-		//goingToTarget = StartCoroutine(GoingToTarget()); 
 	}
 
 	public override void TargetExit(GameObject go)
@@ -112,15 +145,8 @@ public class MonsterController : HealthEntity
 		PlayerController pc = go.GetComponent<PlayerController>();
 		if (pc == null) 
 			return;
+
 		_target = null;
-		_agent.isStopped = true;
-		if (goingToTarget != null)
-		{
-			StopCoroutine(goingToTarget);
-			goingToTarget = null;
-		}
-		_anim.SetBool("attack", false);
-		_anim.SetBool("move", false); 
 	}
 
 	public override void OnDead()

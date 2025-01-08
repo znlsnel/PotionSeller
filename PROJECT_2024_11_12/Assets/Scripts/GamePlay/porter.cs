@@ -20,7 +20,7 @@ public class porter : MonoBehaviour
 			GetComponent<PickupManager>().SetCarrySize(DataBase.instance._maxCarryItemCnt.GetValue());
 		});
 		_agent = GetComponent<NavMeshAgent>();
-                StartCoroutine(GointToPlayer());
+          //      StartCoroutine(GointToPlayer());
 
 		_agent.speed = (5 * DataBase.instance._speed.GetValue()) / 100;
                 DataBase.instance._speed._onChangedLevel.AddListener(() =>
@@ -41,7 +41,7 @@ public class porter : MonoBehaviour
 
                         
                          
-			yield return new WaitForSeconds(0.1f);
+			yield return new WaitForSeconds(0.5f);
 		}
         }
 
@@ -51,9 +51,14 @@ public class porter : MonoBehaviour
                 {
                         Vector2 targetPos = Camera.main.WorldToScreenPoint(_maxUIPos.position);
                         _max.localPosition = _max.parent.InverseTransformPoint(targetPos);
-                } 
+                }
 
-                 _max.gameObject.SetActive(_pickup._leftCarryCap == 0);
+		if ((_agent.transform.position - _player.transform.position).magnitude > 10)
+			_agent.transform.position = _player.transform.position;
+		else
+			_agent.SetDestination(_player.transform.position);
+
+		_max.gameObject.SetActive(_pickup._leftCarryCap == 0);
 
 	}
 }

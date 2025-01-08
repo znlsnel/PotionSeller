@@ -14,6 +14,8 @@ public class AdmobManager : Singleton<AdmobManager>
 	const string rewardId_1 = "ca-app-pub-5986236102536809/4328895340";
 	const string rewardId_2 = "ca-app-pub-5986236102536809/8492539044";
 	const string rewardId_3 = "ca-app-pub-5986236102536809/5866375708"; 
+
+	string[] rewardIds = {rewardId_1,  rewardId_2, rewardId_3};
 	RewardedAd[] _rewardedAds = { null, null, null }; 
 	 
 	public override void Awake()
@@ -77,9 +79,9 @@ public class AdmobManager : Singleton<AdmobManager>
 			return;
 		}
 
-		var adRequest = new AdRequest();
-		  
-		RewardedAd.Load(rewardId_1, adRequest,
+		var adRequest = new AdRequest(); 
+
+		RewardedAd.Load(rewardIds[0], adRequest,
 		(RewardedAd ad, LoadAdError error) =>
 		{
 			if (error != null || ad == null)
