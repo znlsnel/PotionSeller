@@ -135,6 +135,18 @@ public class MonsterController : HealthEntity
 
 	public void AE_Attack() 
 	{
+		Attack(_damage);
+	} 
+
+	public void AE_AttackRate(int rate)
+	{
+		int DAMAGE = _damage * rate / 100;
+
+		Attack(DAMAGE);
+	}
+	
+	void Attack(int damage)
+	{
 		if (_target == null)
 			return;
 
@@ -142,9 +154,9 @@ public class MonsterController : HealthEntity
 		float dist = dir.magnitude;
 
 		if (dist < _attackRange)
-			_target.GetComponent<HealthEntity>().OnDamage(gameObject, _damage);
+			_target.GetComponent<HealthEntity>().OnDamage(gameObject, damage);
 	}
-	 
+
 	public void AE_Die()
 	{
 		int rate = _dropRate * DataBase.instance._itemDropRate.GetValue() / 100; 

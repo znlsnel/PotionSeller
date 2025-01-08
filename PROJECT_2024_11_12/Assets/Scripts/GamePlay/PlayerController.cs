@@ -149,7 +149,9 @@ public class PlayerController : HealthEntity
 
 		Utils.instance.SetTimer(() =>
 		{
-			AdmobManager.instance.LoadRewardAd(null, () => { InitPlayer(); }); 
+			if (AdmobManager.instance.PlayRewardAd(null, () => { InitPlayer(); }) == false)
+				InitPlayer();
+				
 		}, 2.0f);
 
 

@@ -129,7 +129,7 @@ public class DataBase : Singleton<DataBase>
 		string json = JsonConvert.SerializeObject(saveDatas, Formatting.Indented);
 		string encryptedJson = EncryptionHelper.Encrypt(json);
 		File.WriteAllText(saveFilePath, encryptedJson);
-		UIHandler.instance.GetLogUI.WriteLog("게임 저장..."); 
+		UIHandler.instance.logUI.WriteLog("게임 저장..."); 
 	}
 
 	public void SaveDataToCloud()
@@ -146,19 +146,19 @@ public class DataBase : Singleton<DataBase>
 		{
 			if (task.IsCompleted)
 			{
-				UIHandler.instance.GetLogUI.WriteLog("클라우드 저장.."); 
+				UIHandler.instance.logUI.WriteLog("클라우드 저장.."); 
 			}
 			else
 			{
 				//task.Exception
-				UIHandler.instance.GetLogUI.WriteLog("클라우드 저장 실패");
+				UIHandler.instance.logUI.WriteLog("클라우드 저장 실패");
 			}
 		});
 	}
 
 	public void LoadGameData()
 	{
-		UIHandler.instance.GetLogUI.WriteLog("게임 불러오기...");
+		UIHandler.instance.logUI.WriteLog("게임 불러오기...");
 		LoadDataFromLocal();
 		LoadDataFromCloud();
 	} 
@@ -206,7 +206,7 @@ public class DataBase : Singleton<DataBase>
 				saveDatas.levels = snapshot.GetValue<List<SkillLevelEntry>>("skillLevels");
 
 				ApplyLoadData(saveDatas);
-				UIHandler.instance.GetLogUI.WriteLog("클라우드 데이터 불러오기 성공");
+				UIHandler.instance.logUI.WriteLog("클라우드 데이터 불러오기 성공");
 			}
 			else
 			{

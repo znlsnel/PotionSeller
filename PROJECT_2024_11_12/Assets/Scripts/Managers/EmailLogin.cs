@@ -36,7 +36,7 @@ public class EmailLogin : MonoBehaviour
 		if (Utils.instance.TimeCheck(this, "LoginEmail", 3.0f))
                         _loginManager.EmailLogin(_emailText.text, _passwordText.text);
                 else
-                        UIHandler.instance.GetLogUI.WriteLog("잠시 뒤에 시도해주세요.");  
+                        UIHandler.instance.logUI.WriteLog("잠시 뒤에 시도해주세요.");  
         }
 
         public void RegisterEmail()
@@ -44,7 +44,7 @@ public class EmailLogin : MonoBehaviour
 		if (Utils.instance.TimeCheck(this, "RegisterEmail", 3.0f))
 			_loginManager.EmailRegister(_emailText.text, _passwordText.text);
                 else
-			UIHandler.instance.GetLogUI.WriteLog("잠시 뒤에 시도해주세요.");
+			UIHandler.instance.logUI.WriteLog("잠시 뒤에 시도해주세요.");
 	}
 
       
