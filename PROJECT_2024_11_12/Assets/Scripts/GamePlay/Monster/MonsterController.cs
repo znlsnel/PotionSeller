@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEditor.Build.Pipeline;
 using UnityEngine;
 using UnityEngine.AI;
@@ -17,15 +18,15 @@ public class MonsterController : HealthEntity
 	   
 	protected Animator _anim;
         Rigidbody _rigid;
-	NavMeshAgent _agent;
+	protected NavMeshAgent _agent;
 
 
-        GameObject _target;
+        protected GameObject _target;
 
-	UnityEvent _onRelase = new UnityEvent();
+	protected UnityEvent _onRelase = new UnityEvent();
 	[NonSerialized] public UnityEvent _onDead = new UnityEvent();
 
-	private BTNode _BTRoot;
+	protected BTNode _BTRoot;
 
         protected override void Awake()
         {
@@ -34,6 +35,11 @@ public class MonsterController : HealthEntity
 		_rigid = GetComponent<Rigidbody>();
 		_agent = GetComponent<NavMeshAgent>();
 
+		SetBehaviorTree();
+	}
+
+	public virtual void SetBehaviorTree()
+	{
 		_BTRoot = new Selector(new List<BTNode>
 		{
 			// 둘 중 하나의 로직 실행
@@ -56,7 +62,7 @@ public class MonsterController : HealthEntity
 					}),
 
 					// 플레이어에게 이동
-					new ActionNode(()=>{return OnMove(); })
+					new ActionNode(()=>{return MoveToTarget(); })
 				}),
 			}),
 
@@ -65,7 +71,7 @@ public class MonsterController : HealthEntity
 		});
 	}
 
-        public virtual void Update()
+        public virtual void FixedUpdate()
         {
 		_BTRoot.Execute();
 	}
@@ -96,34 +102,48 @@ public class MonsterController : HealthEntity
 		return attack;
 	}
 
-	public BTNode.State OnMove()
+	public BTNode.State MoveToTarget()
+	{
+		return MoveToTarget(_target.transform.position);
+	}
+
+	public BTNode.State MoveToTarget(Vector3 targetPos)
 	{
 		//transform.LookAt(_target.transform.position);
+		if ((targetPos - transform.position).magnitude < 0.1f)
+			return BTNode.State.Success;
 
-		Quaternion targetRotation = Quaternion.LookRotation(_target.transform.position - transform.position);
+		LookTarget(targetPos);
+		_agent.SetDestination(targetPos); 
+		return BTNode.State.Running;
+	}
+
+	public void LookTarget(Vector3 target)
+	{
+		Quaternion targetRotation = Quaternion.LookRotation(target - transform.position);
 		// 현재 회전에서 목표 회전으로 부드럽게 회전
 		transform.rotation = Quaternion.RotateTowards(
 		    transform.rotation,
 		    targetRotation,
-		    720 * Time.deltaTime 
+		    720 * Time.deltaTime
 		);
+	}
 
-		_agent.SetDestination(_target.transform.position);
-		return BTNode.State.Running;
-	} 
-
-
+	protected float GetDistToPlayer()
+	{
+		return _target == null  ? -1 : (_target.transform.position - transform.position).magnitude; 
+	}
 	public void InitHp()
 	{
 		HP = _initHp;
 	}
 
-	public void InitMonster(Vector3 pos, Action relaseListener)
+	public virtual void InitMonster(Vector3 pos, Action relaseListener)
 	{
 		transform.position = pos;
 		transform.rotation = Quaternion.Euler(0, UnityEngine.Random.Range(0f, 360f), 0);
 
-		_rigid.MovePosition(pos);
+	//	_rigid.MovePosition(pos);
 
 		InitHp();
 		if (_onRelase != null)

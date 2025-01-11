@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class BehaviorTree
 {
-	
+
 }
 
 public abstract class BTNode
@@ -61,11 +61,11 @@ public class Selector : BTNode
 		foreach (var child in _children)
 		{
 			var childState = child.Execute();
-			if (childState == State.Success)
-			{
-				_state = State.Success;
-				return _state;
-			}
+			//if (childState == State.Success)
+			//{
+			//	_state = State.Success;
+			//	//return _state;
+			//}
 			if (childState == State.Running)
 			{
 				_state = State.Running;

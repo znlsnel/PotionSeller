@@ -46,9 +46,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42e9bdfea5f80c7439a657187087c1cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _monsterPrefab:
-  - {fileID: 7577318126605719824, guid: 4e9345fe676ad9441a6d56418d7ff024, type: 3}
+  _monsterPrefab: {fileID: 0}
   _maxCount: 20
+  _spawnInterval: 2
 --- !u!65 &2465374378787846488
 BoxCollider:
   m_ObjectHideFlags: 0

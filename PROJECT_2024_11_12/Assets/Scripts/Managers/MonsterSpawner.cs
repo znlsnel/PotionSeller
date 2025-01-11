@@ -11,6 +11,7 @@ public class MonsterSpawner : MonoBehaviour
         ObjectPool<GameObject> _pool;
 	HashSet<MonsterController> _activeMonster = new HashSet<MonsterController>();
 	[SerializeField] int _maxCount = 20;
+	[SerializeField, Range(2, 120)] float _spawnInterval = 2.0f;
 
 	private void Awake() 
 	{
