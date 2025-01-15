@@ -68,7 +68,7 @@ public class Selector : BTNode
 			//}
 			if (childState == State.Running)
 			{
-				_state = State.Running;
+				_state = State.Running; 
 				return _state;
 			}
 		}

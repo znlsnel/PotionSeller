@@ -36,8 +36,13 @@ public class Utils : Singleton<Utils>
 		else
 			yield return new WaitForSeconds(time);
 		action.Invoke();
-	} 
-
+	}
+	public static float AngleDifference(Transform self, Vector3 target)
+	{
+		Quaternion targetRotation = Quaternion.LookRotation(target - self.position);
+		Quaternion currentRotation = self.rotation;
+		return Quaternion.Angle(currentRotation, targetRotation);
+	}
 
 	Dictionary<string, float> _clock = new Dictionary<string, float>();
 	

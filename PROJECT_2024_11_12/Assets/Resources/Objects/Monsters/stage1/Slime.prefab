@@ -162,6 +162,72 @@ Transform:
   m_Children: []
   m_Father: {fileID: 7613099431291366932}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4664950495956087336
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8883568227589072923}
+  - component: {fileID: 5600436383324168420}
+  - component: {fileID: 1087541160659325186}
+  m_Layer: 0
+  m_Name: attackSensor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8883568227589072923
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4664950495956087336}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.467, z: 0.66}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7613099431291366932}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5600436383324168420
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4664950495956087336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22982f3bcf76960479404ef203cbd1ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!65 &1087541160659325186
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4664950495956087336}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 2}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &4903919725719206765
 GameObject:
   m_ObjectHideFlags: 0
@@ -513,7 +579,7 @@ GameObject:
   - component: {fileID: 1162727335281836028}
   - component: {fileID: 2076831021177355635}
   m_Layer: 3
-  m_Name: AttackSeneor
+  m_Name: DetectionSensor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -558,7 +624,7 @@ SphereCollider:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 4294967295
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -669,9 +735,10 @@ Transform:
   - {fileID: 8795942754003719094}
   - {fileID: 6070376812501820379}
   - {fileID: 3188094155950123576}
-  - {fileID: 3064601509587515966}
   - {fileID: 210199962233324281}
+  - {fileID: 3064601509587515966}
   - {fileID: 7087591143978115397}
+  - {fileID: 8883568227589072923}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &6921258662427569117
@@ -712,9 +779,21 @@ MonoBehaviour:
   _hpPos: {fileID: 3188094155950123576}
   _initHp: 500
   _damageUI: {fileID: 9205208253024043525}
-  _attackRange: 1
+  _skills:
+  - _range: 3
+    _coolTime: 3
+    sensor: {fileID: 5600436383324168420}
+    particle: {fileID: 0}
+    spawnPos: {fileID: 0}
+    damage: 15
+  _attackInfo:
+    _range: 2
+    _coolTime: 2
+    sensor: {fileID: 5600436383324168420}
+    particle: {fileID: 0}
+    spawnPos: {fileID: 0}
+    damage: 10
   _dropItem: {fileID: 5366707112403216439, guid: 80477c503071ecb44b1ff39923c0f827, type: 3}
-  _damage: 10
   _dropRate: 50
 --- !u!54 &3348997548610125189
 Rigidbody:

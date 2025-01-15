@@ -2,78 +2,136 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using TreeEditor;
 using UnityEditor.Build.Pipeline;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
 
 
+[Serializable]
+public struct SKILLINFO
+{
+	public float _range;
+	public float _coolTime;
+
+	public ObjectSensor sensor;
+	public GameObject particle;
+	public Transform spawnPos;
+	public int damage;
+}
+
+
 public class MonsterController : HealthEntity
 {
 	[Space(10)]
-	[SerializeField] float _attackRange = 1.0f;
+	[SerializeField] List<SKILLINFO> _skills = new List<SKILLINFO>();
+	[SerializeField] SKILLINFO _attackInfo;
+	int _curSkillIdx = -1;
+
+	[Space(10)]
 	[SerializeField] GameObject _dropItem;
-	[SerializeField] int _damage = 10;
 	[SerializeField] int _dropRate = 100;
-	   
-	protected Animator _anim;
-        Rigidbody _rigid;
-	protected NavMeshAgent _agent;
+	
+	Rigidbody _rigid;
+	Animator _anim;
+	NavMeshAgent _agent;
+
+	List<float> coolTimeChecker = new List<float>();
+	float lastAttackTime = 0.0f;
+	GameObject _target;
+	Vector3 _spawnPosition;
+	bool _isAttacking = false;
+	bool _isPlayerInThisStage = false;
+
+	UnityEvent _onRelase = new UnityEvent();
+	UnityEvent _onDead = new UnityEvent();
+
+	BTNode _BTRoot;
+	
+	// Funtions
+	public void SetPlayerInThisStage(bool b) => _isPlayerInThisStage = b;
+	public void InitHp() => HP = _initHp;
+	public void AddActionOnDead(Action ac) => _onDead.AddListener(() => ac?.Invoke());
+
+	#region Animation Events
+
+	protected void AE_StartAttack() => _isAttacking = true;
+	protected void AE_EndAttack() => _isAttacking = false;
+	public void AE_Die() => _onRelase?.Invoke();
+
+	#endregion
 
 
-        protected GameObject _target;
-
-	protected UnityEvent _onRelase = new UnityEvent();
-	[NonSerialized] public UnityEvent _onDead = new UnityEvent();
-
-	protected BTNode _BTRoot;
-
-        protected override void Awake()
+	protected override void Awake()
         {
 		base.Awake();
                 _anim = GetComponent<Animator>();
 		_rigid = GetComponent<Rigidbody>();
 		_agent = GetComponent<NavMeshAgent>();
-
+		_agent.stoppingDistance = 2.0f * transform.localScale.x;
 		SetBehaviorTree();
 	}
 
 	public virtual void SetBehaviorTree()
 	{
+		_skills.Add(_attackInfo);
+		List<BTNode> attackMode = new List<BTNode>();
+		for (int i = 0; i < _skills.Count; i++)
+		{
+			int idx = i;
+			attackMode.Add(new Sequence(new List<BTNode>
+			{
+				new ConditionNode(()=>isAttackable(idx)),
+				new ActionNode(() =>
+				{
+					OnAttack(idx);
+					_agent.isStopped = true;
+					return BTNode.State.Running;
+				})
+			}));
+			coolTimeChecker.Add(0.0f);
+		}
+
+		attackMode.Add(new ActionNode(() => {
+			_agent.isStopped = false;
+
+			if (_target != null)
+				return MoveToTarget();
+			else 
+				return BTNode.State.Running;
+		}));
+		
+
 		_BTRoot = new Selector(new List<BTNode>
 		{
-			// 둘 중 하나의 로직 실행
-			// 공격 모드 
 			new Sequence(new List<BTNode>
 			{
-				// 플레이어가 보이는지 ( 안보이면 return -> 대기모드 )
-				new ConditionNode(()=>{return isPlayerVisible();}),
+				// 유저가 Stage에 입장했는가?
+				new ConditionNode(()=>{
 
-				// 플레이어가 보인다
-				new Selector(new List<BTNode>
-				{
-					new Sequence(new List<BTNode>
-					{
-						// 플레이어가 공격 범위 안에 있는지 (없다면 return -> 이동 )
-						new ConditionNode(()=>{return isAttackable(); }),
+					return _isPlayerInThisStage && !_isAttacking;
 
-						// 플레이어 공격
-						new ActionNode(()=>{return BTNode.State.Running; })
-					}),
-
-					// 플레이어에게 이동
-					new ActionNode(()=>{return MoveToTarget(); })
 				}),
-			}),
 
-			// 대기 모드
-			new ActionNode(()=>{return BTNode.State.Running; })
+				new Selector(attackMode)
+			}), 
+
+			// 원래 위치로 돌아가기
+		//	new ActionNode(()=>{return MoveToTarget(_spawnPosition); }),
+
+			// Idle 상태 유지
+			new ActionNode(()=>{
+				_agent.isStopped = true;
+				return BTNode.State.Running;
+			})
 		});
 	}
 
         public virtual void FixedUpdate()
         {
 		_BTRoot.Execute();
+		_hpBar.GetComponent<MonsterHpUI>().SetActive(_target != null); 
 	}
 
 	public bool isPlayerVisible()
@@ -81,38 +139,39 @@ public class MonsterController : HealthEntity
 		if (isDead || DungeonDoorway.instance.isPlayerInDungeon() == false || _target == null || 
 			(_target != null && _target.GetComponent<PlayerController>().isDead))
 		{
-			_anim.SetBool("attack", false); 
 			_anim.SetBool("move", false);
 			return false;
 		}
 
 		return true;
 	}
-	 
-	public bool isAttackable()
+
+	bool isAttackable(int idx)
 	{
-	
-		Vector3 dir = (_target.transform.position - transform.position);
-		float dist = dir.magnitude;
-		bool attack = dist < _attackRange;
+		if (_target == null)
+			return false;
 
-		_anim.SetBool("attack", attack);
-		_anim.SetBool("move", !attack);
+		float dist =  (_target.transform.position - transform.position).magnitude;
+		bool isInRange = dist >= 0.0f && dist <= _skills[idx]._range;
+		bool isCoolDown = Time.time - coolTimeChecker[idx] > _skills[idx]._coolTime && Time.time - lastAttackTime > 1.0f ;
+		bool isLookingAtTarget = Utils.AngleDifference(transform, _target.transform.position) < 1.0f;
+		 
+		return isInRange && isCoolDown && isLookingAtTarget;
+	} 
 
-		return attack;
+	void OnAttack(int idx)
+	{
+		//LookTarget(_target.transform.position); 
+		lastAttackTime = Time.time;
+		coolTimeChecker[idx] = Time.time;
+
+		_curSkillIdx = idx;
+		_anim.Play($"attack_{idx + 1}"); 
 	}
 
-	public BTNode.State MoveToTarget()
-	{
-		return MoveToTarget(_target.transform.position);
-	}
-
+	public BTNode.State MoveToTarget() => MoveToTarget(_target.transform.position);
 	public BTNode.State MoveToTarget(Vector3 targetPos)
 	{
-		//transform.LookAt(_target.transform.position);
-		if ((targetPos - transform.position).magnitude < 0.1f)
-			return BTNode.State.Success;
-
 		LookTarget(targetPos);
 		_agent.SetDestination(targetPos); 
 		return BTNode.State.Running;
@@ -129,29 +188,24 @@ public class MonsterController : HealthEntity
 		);
 	}
 
-	protected float GetDistToPlayer()
-	{
-		return _target == null  ? -1 : (_target.transform.position - transform.position).magnitude; 
-	}
-	public void InitHp()
-	{
-		HP = _initHp;
-	}
 
 	public virtual void InitMonster(Vector3 pos, Action relaseListener)
 	{
 		transform.position = pos;
-		transform.rotation = Quaternion.Euler(0, UnityEngine.Random.Range(0f, 360f), 0);
+		_spawnPosition = pos;
 
-	//	_rigid.MovePosition(pos);
+		if (gameObject.GetComponent<BossMonster>() == null)
+			transform.rotation = Quaternion.Euler(0, UnityEngine.Random.Range(0f, 360f), 0);
+
 
 		InitHp();
-		if (_onRelase != null)
-			_onRelase.RemoveAllListeners();
+		_onRelase.RemoveAllListeners();
 		_onRelase.AddListener(() => relaseListener.Invoke());
 
 		_anim.SetBool("die", false);
-		Utils.instance.SetTimer(() =>{gameObject.SetActive(true);}, 1.0f); 
+		_isAttacking = false;
+
+		Utils.instance.SetTimer(() =>{gameObject.SetActive(true);}, 1.0f);
 	}
 
 	public override void TargetEnter(GameObject go)
@@ -178,51 +232,26 @@ public class MonsterController : HealthEntity
 		_onDead?.Invoke();
 		_onDead.RemoveAllListeners();
 		_anim.SetBool("die", true);
+
+		int rate = _dropRate * DataBase.instance._itemDropRate.GetValue() / 100;
+		ItemSpawner.instance.SpawnItem(_dropItem, transform.position, rate);
 	}
 
-	public void AE_Attack() 
+	public void AE_OnSkill()
 	{
-		Attack(_damage);
-	} 
-
-	public void AE_AttackRate(int rate)
-	{
-		int DAMAGE = _damage * rate / 100;
-
-		Attack(DAMAGE);
-	}
-	
-	void Attack(int damage)
-	{
-		if (_target == null)
-			return;
-
-		Vector3 dir = (_target.transform.position - transform.position);
-		float dist = dir.magnitude;
-
-		if (dist < _attackRange)
-			_target.GetComponent<HealthEntity>().OnDamage(gameObject, damage);
-	}
-
-	public void AE_Die()
-	{
-		int rate = _dropRate * DataBase.instance._itemDropRate.GetValue() / 100; 
-		while ( DungeonDoorway.instance.isPlayerInDungeon() &&  rate > 0)
+		SKILLINFO skill = _skills[_curSkillIdx]; 
+		if (skill.particle != null)
 		{
-			int R = UnityEngine.Random.Range(1, 100);
-			if (R < rate)
-			{
-				GameObject go = ItemSpawner.instance.GetItem(_dropItem);
+			GameObject go = Instantiate<GameObject>(skill.particle);
+			go.transform.position = skill.spawnPos.position;
+			go.transform.rotation = skill.spawnPos.rotation;
 
-				Vector3 pos = gameObject.transform.position;
-				go.transform.position = new Vector3(pos.x + UnityEngine.Random.Range(-0.3f, 0.3f), pos.y, pos.z + UnityEngine.Random.Range(-0.3f, 0.3f));
+			Utils.instance.SetTimer(() => { Destroy(go); }, 10.0f);
+		}
 
-				IngredientItem item = go.GetComponent<IngredientItem>();
-				item.InitItem();
-				item.AddReleaseAction(() => ItemSpawner.instance.RelaseItem(_dropItem, go));
-			}
-			rate -= 100;
-		} 
-		_onRelase?.Invoke();
+		GameObject target = skill.sensor.FindTargetByLayer("Player");
+		if (target != null)
+			target.GetComponent<HealthEntity>()?.OnDamage(gameObject, skill.damage);
 	}
+
 }

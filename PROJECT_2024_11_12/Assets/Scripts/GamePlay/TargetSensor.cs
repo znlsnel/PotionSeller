@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class AttackSensor : MonoBehaviour
+public class TargetSensor : MonoBehaviour
 {
         [SerializeField] string _findLayer = "";
 	[SerializeField] HealthEntity _parent;

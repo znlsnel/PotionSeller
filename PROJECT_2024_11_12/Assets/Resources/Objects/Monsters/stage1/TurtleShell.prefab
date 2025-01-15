@@ -511,13 +511,14 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 7762827988389400865}
   - {fileID: 3877994452668064847}
   - {fileID: 5623275303860359287}
   - {fileID: 2183488135415404519}
   - {fileID: 7934103622173487390}
   - {fileID: 3148852499942428394}
+  - {fileID: 7762827988389400865}
   - {fileID: 9156536788185203809}
+  - {fileID: 8100319479418235796}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &7181812021466713739
@@ -558,9 +559,21 @@ MonoBehaviour:
   _hpPos: {fileID: 2183488135415404519}
   _initHp: 700
   _damageUI: {fileID: 1391092040544268770}
-  _attackRange: 2
+  _skills:
+  - _range: 2
+    _coolTime: 5
+    sensor: {fileID: 3732087610131649377}
+    particle: {fileID: 0}
+    spawnPos: {fileID: 0}
+    damage: 20
+  _attackInfo:
+    _range: 2
+    _coolTime: 2
+    sensor: {fileID: 3732087610131649377}
+    particle: {fileID: 0}
+    spawnPos: {fileID: 0}
+    damage: 15
   _dropItem: {fileID: 5366707112403216439, guid: 80477c503071ecb44b1ff39923c0f827, type: 3}
-  _damage: 15
   _dropRate: 70
 --- !u!54 &7624309420127575322
 Rigidbody:
@@ -987,6 +1000,72 @@ Transform:
   - {fileID: 266829349824459927}
   m_Father: {fileID: 73292141356835629}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5637255197224931804
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8100319479418235796}
+  - component: {fileID: 3732087610131649377}
+  - component: {fileID: 5932807204686461885}
+  m_Layer: 0
+  m_Name: AttackSensor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8100319479418235796
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5637255197224931804}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5316690509770502674}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3732087610131649377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5637255197224931804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22982f3bcf76960479404ef203cbd1ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!65 &5932807204686461885
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5637255197224931804}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 3}
+  m_Center: {x: 0, y: 0.36, z: 0.95}
 --- !u!1 &5815799532887152357
 GameObject:
   m_ObjectHideFlags: 0
@@ -1030,7 +1109,7 @@ GameObject:
   - component: {fileID: 3663355803402873171}
   - component: {fileID: 1184063772459423887}
   m_Layer: 3
-  m_Name: AttackSeneor
+  m_Name: detectionSensor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1045,7 +1124,7 @@ Transform:
   m_GameObject: {fileID: 5899708658348673963}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 1
   m_Children: []

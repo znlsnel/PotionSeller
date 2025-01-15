@@ -9,17 +9,20 @@ public class DungeonDoorway : Singleton<DungeonDoorway>
         [SerializeField] GameObject _exit;
 
 	PlayerCombatController _playerCombat;
-        public override void Awake()
+	MonsterPool[] monsterSpawners;
+
+	public override void Awake()
         {
 		base.Awake();
                 _enter.GetComponent<DelegateColliderBinder>()._triggerEnter.AddListener((GameObject go) => EnterDungeon(go));
 	        _exit.GetComponent<DelegateColliderBinder>()._triggerEnter.AddListener((GameObject go) => ExitDungeon(go));
                 _player._onDead.AddListener(()=>ExitDungeon(_player.gameObject));
 		_playerCombat = _player.GetComponent<PlayerCombatController>();
-		 
-	}
-          
-        void EnterDungeon(GameObject go)
+
+		monsterSpawners = FindObjectsByType<MonsterPool>(FindObjectsSortMode.None);
+	} 
+
+	void EnterDungeon(GameObject go)
 	{
 		LayerMask findLayerMask = LayerMask.GetMask("Player");
 		if ((findLayerMask.value & (1 << go.gameObject.layer)) == 0)
@@ -41,9 +44,8 @@ public class DungeonDoorway : Singleton<DungeonDoorway>
 			pc.HP = pc.MaxHP(); 
 
 		_playerCombat.isInHuntZone = false;
-		MonsterSpawner[] mss = FindObjectsByType<MonsterSpawner>(FindObjectsSortMode.None);
-		foreach (MonsterSpawner monster in mss)
-			monster.InitMonsters();
+		foreach (MonsterPool monster in monsterSpawners)
+			monster.InitPool();
 
 		ItemSpawner.instance.InitDungeon(); 
 	}

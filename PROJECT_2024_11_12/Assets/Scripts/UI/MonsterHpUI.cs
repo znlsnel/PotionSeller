@@ -8,24 +8,20 @@ public class MonsterHpUI : HpBar
 	[SerializeField] RectTransform _rectTransform;
 	Transform _hpUIRootPos;
 
+	public void SetParentTransform(Transform uipos) => _hpUIRootPos = uipos;
+
 	public override void Awake()
 	{
 		base.Awake();
 		gameObject.SetActive(false);
-		_rectTransform.localPosition = new Vector3(-100000, -100000, -100000);
 	}
 
-	public virtual void LateUpdate()
+	public virtual void FixedUpdate()
 	{
 		MoveUI();
 	}
 
-	// Update is called once per frame
-	public void SetParentTransform(Transform uipos)
-	{
-		_hpUIRootPos = uipos; 
-	}
-	public void SetHpBar(bool on)
+	public void SetActive(bool on)
 	{
 		if (_slider.value == 0.0f)
 			return;
@@ -33,6 +29,7 @@ public class MonsterHpUI : HpBar
 		MoveUI(); 
 		gameObject.SetActive(on); 
 	}
+
 	public override void UpdateRate() 
 	{
 		base.UpdateRate();

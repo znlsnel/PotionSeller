@@ -40,15 +40,8 @@ public class ItemSpawner : Singleton<ItemSpawner>
 		}
 	}  
 
-	public GameObject GetItem(GameObject itemPrefab)
-	{
-		return _itemPools[itemPrefab].Get();
-	}
-
-	public void RelaseItem(GameObject prefab, GameObject item)
-	{
-		_itemPools[prefab].Release(item); 
-	}
+	GameObject GetItem(GameObject itemPrefab) => _itemPools[itemPrefab].Get();
+	void RelaseItem(GameObject prefab, GameObject item) => _itemPools[prefab].Release(item); 
 
 	public void InitDungeon()
 	{
@@ -61,8 +54,24 @@ public class ItemSpawner : Singleton<ItemSpawner>
 
 	}
 	// Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
+	public void SpawnItem(GameObject itemPrefab, Vector3 spawnPos, int dropRate)
+	{
+		while (DungeonDoorway.instance.isPlayerInDungeon() && dropRate > 0)
+		{
+			int R = UnityEngine.Random.Range(1, 100);
+			if (R < dropRate)
+			{
+				GameObject go = GetItem(itemPrefab);
+
+				Vector3 pos = spawnPos;
+				go.transform.position = new Vector3(pos.x + UnityEngine.Random.Range(-0.3f, 0.3f), pos.y, pos.z + UnityEngine.Random.Range(-0.3f, 0.3f));
+
+				IngredientItem item = go.GetComponent<IngredientItem>();
+				item.InitItem();
+				item.AddReleaseAction(() => RelaseItem(itemPrefab, go));
+			}
+			dropRate -= 100;
+		}
+	}
 }

@@ -5,13 +5,14 @@ using UnityEngine;
 using UnityEngine.Pool;
 
 
-public class MonsterSpawner : MonoBehaviour
+public class MonsterPool : MonoBehaviour
 {
         [SerializeField] GameObject _monsterPrefab;
-        ObjectPool<GameObject> _pool;
-	HashSet<MonsterController> _activeMonster = new HashSet<MonsterController>();
 	[SerializeField] int _maxCount = 20;
-	[SerializeField, Range(2, 120)] float _spawnInterval = 2.0f;
+
+	HashSet<MonsterController> _activeMonster = new HashSet<MonsterController>();
+        ObjectPool<GameObject> _pool;
+
 
 	private void Awake() 
 	{
@@ -60,18 +61,36 @@ public class MonsterSpawner : MonoBehaviour
 				while (cnt-- > 0)
 					_pool.Get();
 			}
-			yield return new WaitForSeconds(2.0f);
+			yield return new WaitForSeconds(Random.Range(2.0f, 3.0f));
 		}
 	}
 
-	public void InitMonsters()
+	public void InitPool()
 	{
 		foreach (MonsterController monster in _activeMonster)
 		{
 			if (monster.HP > 0)
 				monster.InitHp();
-
 		} 
+	}
 
+	private void OnTriggerEnter(Collider other)
+	{
+		LayerMask findLayerMask = LayerMask.GetMask("Player"); // 비트마스크 값 생성
+		if ((findLayerMask.value & (1 << other.gameObject.layer)) != 0)
+		{
+			foreach (var m in _activeMonster)
+				m.SetPlayerInThisStage(true);
+		}
+	}
+
+	private void OnTriggerExit(Collider other)
+	{
+		LayerMask findLayerMask = LayerMask.GetMask("Player"); // 비트마스크 값 생성
+		if ((findLayerMask.value & (1 << other.gameObject.layer)) != 0)
+		{
+			foreach (var m in _activeMonster)
+				m.SetPlayerInThisStage(false);
+		}
 	}
 }

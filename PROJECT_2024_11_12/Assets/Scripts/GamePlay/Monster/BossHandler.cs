@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BossManager : MonoBehaviour
+public class BossHandler : MonoBehaviour
 {
      [SerializeField] BossMonster _boss;
 	[SerializeField] int respawnTime;
@@ -32,12 +32,16 @@ public class BossManager : MonoBehaviour
 	private void OnTriggerEnter(Collider other)
 	{
 		if (other.GetComponent<PlayerController>() != null)
-			_boss.isPlayerInBossRoom = true;
+			_boss.SetPlayerInThisStage(true);
 	}
 
 	private void OnTriggerExit(Collider other)
 	{
 		if (other.GetComponent<PlayerController>() != null)
-			_boss.isPlayerInBossRoom = false;
+		{
+			_boss.SetPlayerInThisStage(false);
+			_boss.InitHp();
+		}
 	}
-}
+
+} 
