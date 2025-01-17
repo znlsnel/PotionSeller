@@ -19,6 +19,9 @@ public struct SKILLINFO
 	public GameObject particle;
 	public Transform spawnPos;
 	public int damage;
+
+	[Space(10)]
+	public AudioClip _skillAudio;
 }
 
 
@@ -32,7 +35,7 @@ public class MonsterController : HealthEntity
 	[Space(10)]
 	[SerializeField] GameObject _dropItem;
 	[SerializeField] int _dropRate = 100;
-	
+
 	Rigidbody _rigid;
 	Animator _anim;
 	NavMeshAgent _agent;
@@ -48,15 +51,26 @@ public class MonsterController : HealthEntity
 	UnityEvent _onDead = new UnityEvent();
 
 	BTNode _BTRoot;
-	
+
 	// Funtions
-	public void SetPlayerInThisStage(bool b) => _isPlayerInThisStage = b;
+	public virtual void SetPlayerInThisStage(bool b) => _isPlayerInThisStage = b;
+	public bool isPlayerInThisStage => _isPlayerInThisStage;
 	public void InitHp() => HP = _initHp;
 	public void AddActionOnDead(Action ac) => _onDead.AddListener(() => ac?.Invoke());
+	public Vector3 GetTargetPos()
+	{
+		if (_target != null)
+			return _target.transform.position;
+
+		return Vector3.zero;
+	}
 
 	#region Animation Events
 
-	protected void AE_StartAttack() => _isAttacking = true;
+	protected void AE_StartAttack()
+	{
+		_isAttacking = true;
+	}
 	protected void AE_EndAttack() => _isAttacking = false;
 	public void AE_Die() => _onRelase?.Invoke();
 
@@ -110,7 +124,7 @@ public class MonsterController : HealthEntity
 				// 유저가 Stage에 입장했는가?
 				new ConditionNode(()=>{
 
-					return _isPlayerInThisStage && !_isAttacking;
+					return isPlayerVisible() && !_isAttacking;
 
 				}),
 
@@ -120,15 +134,15 @@ public class MonsterController : HealthEntity
 			// 원래 위치로 돌아가기
 		//	new ActionNode(()=>{return MoveToTarget(_spawnPosition); }),
 
-			// Idle 상태 유지
+			// Idle 상태 유지 
 			new ActionNode(()=>{
-				_agent.isStopped = true;
+				_agent.isStopped = true; 
 				return BTNode.State.Running;
 			})
 		});
 	}
 
-        public virtual void FixedUpdate()
+        public virtual void FixedUpdate() 
         {
 		_BTRoot.Execute();
 		_hpBar.GetComponent<MonsterHpUI>().SetActive(_target != null); 
@@ -136,14 +150,13 @@ public class MonsterController : HealthEntity
 
 	public bool isPlayerVisible()
 	{
-		if (isDead || DungeonDoorway.instance.isPlayerInDungeon() == false || _target == null || 
-			(_target != null && _target.GetComponent<PlayerController>().isDead))
-		{
-			_anim.SetBool("move", false);
-			return false;
-		}
+		bool ret = isDead || _isPlayerInThisStage == false || _target == null ||
+			_target.GetComponent<PlayerController>().isDead;
 
-		return true;
+		_anim.SetBool("move", !ret);
+
+		 
+		return !ret;
 	}
 
 	bool isAttackable(int idx)
@@ -196,16 +209,15 @@ public class MonsterController : HealthEntity
 
 		if (gameObject.GetComponent<BossMonster>() == null)
 			transform.rotation = Quaternion.Euler(0, UnityEngine.Random.Range(0f, 360f), 0);
-
-
-		InitHp();
+		
+		InitHp(); 
 		_onRelase.RemoveAllListeners();
 		_onRelase.AddListener(() => relaseListener.Invoke());
 
 		_anim.SetBool("die", false);
 		_isAttacking = false;
 
-		Utils.instance.SetTimer(() =>{gameObject.SetActive(true);}, 1.0f);
+		gameObject.SetActive(true); 
 	}
 
 	public override void TargetEnter(GameObject go)
@@ -226,16 +238,25 @@ public class MonsterController : HealthEntity
 
 	public override void OnDead()
 	{
-		_agent.isStopped = true; 
+		OnDead(true);
+	}
+
+	public void OnDead(bool getItem)
+	{
+		HP = 0;
 		_target = null;
 
 		_onDead?.Invoke();
 		_onDead.RemoveAllListeners();
 		_anim.SetBool("die", true);
 
-		int rate = _dropRate * DataBase.instance._itemDropRate.GetValue() / 100;
-		ItemSpawner.instance.SpawnItem(_dropItem, transform.position, rate);
+		if (getItem)
+		{
+			int rate = _dropRate * DataBase.instance._itemDropRate.GetValue() / 100;
+			ItemSpawner.instance.SpawnItem(_dropItem, transform.position, rate);
+		}
 	}
+
 
 	public void AE_OnSkill()
 	{
@@ -248,6 +269,7 @@ public class MonsterController : HealthEntity
 
 			Utils.instance.SetTimer(() => { Destroy(go); }, 10.0f);
 		}
+		AudioManager.instance.PlayAudioClip(_skills[_curSkillIdx]._skillAudio);
 
 		GameObject target = skill.sensor.FindTargetByLayer("Player");
 		if (target != null)
