@@ -14,7 +14,7 @@
 -언어 : C#<br>
 -엔진 : Unity Engine <br>
 -SDK : Firebase Auth, Firbase Firestore, Google Sign in, Google Admob <br>
--개발 환경 : Windows 11, Unity 6000.0.24f1, Android <br>
+-개발 환경 : Windows 11, Unity 6000.0.24f1, Android <br>   
 <br>
 
 ---
